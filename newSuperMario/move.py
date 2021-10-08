@@ -25,7 +25,7 @@ def handle_events():
 
 open_canvas()
 
-character = load_image('Mario.gif')
+character = load_image('boo.png')
 
 running = True
 x = 800 // 2
@@ -33,18 +33,22 @@ x = 800 // 2
 dir = 0 # LEFT = -1 RIGHT = 1
 
 frame = 0
+speed = 0
 
 while running:
     clear_canvas()
 
-    character.clip_draw(frame * 15, 23 * 7, 23, 23, x, 90)
+    character.clip_draw(0, (frame+3) * 32, 32, 32, x, 90)
 
     update_canvas()
 
     handle_events()
-    frame = (frame + 1) % 8
+
+    speed = (speed + 1) % 2
+    frame = (frame + speed) % 3
     x += dir * 5
-    delay(0.10)
+    delay(0.04)
 
 close_canvas()
+
 

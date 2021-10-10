@@ -26,55 +26,62 @@ def handle_events():
                 herodir = -1
     pass
 
-def hero_sprites():
-    if dir == 0: # 정지
-        if herodir == 1:
-            character.clip_draw(frame * 32, 960 - 40, 32, 40, x, 90)
+class hero:
+
+    def __init__(self, d, h, s, f, fd, x):
+        self.dir = d
+        self.herodir = h
+        self.speed = s
+        self.frame = f
+        self.framedir = fd
+        self.x = x
+
+    def sprites(self):
+        if self.dir == 0:  # 정지
+            if self.herodir == 1:
+                character.clip_draw(self.frame * 32, 960 - 40, 32, 40, self.x, 90)
+            else:
+                character.clip_composite_draw(self.frame * 32, 960 - 40, 32, 40, 0, 'h', self.x, 90, 32, 40)
+        elif self.dir == 1:  # 오른쪽 걸음
+            character.clip_draw(self.frame * 32, 960, 32, 40, self.x, 90)
+        elif self.dir == -1:  # 왼쪽 걸음
+            character.clip_composite_draw(self.frame * 32, 960, 32, 40, 0, 'h', self.x, 90, 32, 40)
+
+        self.speed = (self.speed + 1) % 2
+        if self.framedir == 0:
+            self.frame = self.frame + self.speed
+            if self.frame >= 4:
+                self.framedir = 1
         else:
-            character.clip_composite_draw(frame * 32, 960 - 40, 32, 40, 0, 'h', x, 90, 32, 40)
-    elif dir == 1: # 오른쪽 걸음
-        character.clip_draw(frame * 32, 960, 32, 40, x, 90)
-    elif dir == -1: # 왼쪽 걸음
-        character.clip_composite_draw(frame * 32, 960, 32, 40, 0, 'h', x, 90, 32, 40)
+            self.frame = self.frame - self.speed
+            if self.frame == 0:
+                self.framedir = 0
+
+    def move(self):
+        self.x += self.dir * 5
+
+    pass
+
+
 
 open_canvas()
 
 character = load_image('MarioMove.png')
 
 running = True
-x = 800 // 2
 
-dir = 0 # LEFT = -1 RIGHT = 1
-herodir = 1
-
-frame = 0
-speed = 0
-framedir = 0
+mario = hero(0, 0, 0, 0, 0, 800 // 2)
 
 while running:
     clear_canvas()
 
-    hero_sprites()
+    mario.sprites()
 
     update_canvas()
-
     handle_events()
 
+    mario.move()
 
-    speed = (speed + 1) % 2
-    # frame = (frame + speed) % 8
-
-    if framedir == 0:
-        frame = frame + speed
-        if frame >= 4:
-            framedir = 1
-    else:
-        frame = frame - speed
-        if frame == 0:
-            framedir = 0
-
-
-    x += dir * 5
     delay(0.04)
 
 close_canvas()

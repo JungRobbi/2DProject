@@ -1,31 +1,5 @@
 from pico2d import *
 
-
-def handle_events():
-    global running
-    global dir
-    global herodir
-
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            running = False
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_RIGHT:
-                dir += 1
-            elif event.key == SDLK_LEFT:
-                dir -= 1
-            elif event.key == SDLK_ESCAPE:
-                running = False
-        elif event.type == SDL_KEYUP:
-            if event.key == SDLK_RIGHT:
-                dir -= 1
-                herodir = 1
-            elif event.key == SDLK_LEFT:
-                dir += 1
-                herodir = -1
-    pass
-
 class hero:
 
     def __init__(self, d, h, s, f, fd, x):
@@ -35,6 +9,29 @@ class hero:
         self.frame = f
         self.framedir = fd
         self.x = x
+
+    def handle_events(self):
+        global running
+
+        self.events = get_events()
+        for event in self.events:
+            if event.type == SDL_QUIT:
+                running = False
+            elif event.type == SDL_KEYDOWN:
+                if event.key == SDLK_RIGHT:
+                    self.dir += 1
+                elif event.key == SDLK_LEFT:
+                    self.dir -= 1
+                elif event.key == SDLK_ESCAPE:
+                    running = False
+            elif event.type == SDL_KEYUP:
+                if event.key == SDLK_RIGHT:
+                    self.dir -= 1
+                    self.herodir = 1
+                elif event.key == SDLK_LEFT:
+                    self.dir += 1
+                    self.herodir = -1
+        pass
 
     def sprites(self):
         if self.dir == 0:  # 정지
@@ -78,8 +75,8 @@ while running:
     mario.sprites()
 
     update_canvas()
-    handle_events()
 
+    mario.handle_events()
     mario.move()
 
     delay(0.04)

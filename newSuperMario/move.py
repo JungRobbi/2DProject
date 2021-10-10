@@ -26,6 +26,17 @@ def handle_events():
                 herodir = -1
     pass
 
+def hero_sprites():
+    if dir == 0: # 정지
+        if herodir == 1:
+            character.clip_draw(frame * 32, 960 - 40, 32, 40, x, 90)
+        else:
+            character.clip_composite_draw(frame * 32, 960 - 40, 32, 40, 0, 'h', x, 90, 32, 40)
+    elif dir == 1: # 오른쪽 걸음
+        character.clip_draw(frame * 32, 960, 32, 40, x, 90)
+    elif dir == -1: # 왼쪽 걸음
+        character.clip_composite_draw(frame * 32, 960, 32, 40, 0, 'h', x, 90, 32, 40)
+
 open_canvas()
 
 character = load_image('MarioMove.png')
@@ -42,15 +53,8 @@ framedir = 0
 
 while running:
     clear_canvas()
-    if dir == 0:
-        if herodir == 1:
-            character.clip_draw(frame * 32, 960 - 40, 32, 40, x, 90)
-        else:
-            character.clip_composite_draw(frame * 32, 960 - 40, 32, 40, 0, 'h', x, 90, 32, 40)
-    elif dir == 1:
-        character.clip_draw(frame * 32, 960, 32, 40, x, 90)
-    elif dir == -1:
-        character.clip_composite_draw(frame * 32, 960, 32, 40, 0, 'h', x, 90, 32, 40)
+
+    hero_sprites()
 
     update_canvas()
 

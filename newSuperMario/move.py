@@ -8,9 +8,10 @@ class hero:
     frame = 0
     framedir = 0
     py = 0
-    jump_power = 100
-    g = 1.0
-    ga = 0.01
+    jump_power = 350
+    g = 0.0
+    gn = 0
+
     def __init__(self,x, y):
         self.x = x
         self.y = y
@@ -31,7 +32,8 @@ class hero:
                     self.frame = 0
                     self.framedir = 0
                 elif event.key == SDLK_UP and self.status == 0:
-                    self.g = 0.01
+                    self.g = 0.0
+                    self.gn = 0
                     self.py = self.y
                     self.status = 1
                     self.frame = 0
@@ -95,19 +97,23 @@ class hero:
 
     def move(self):
         if self.status == 1:
-            self.y = (1 - self.g)*self.py + self.g*(self.py+ 200)
-            self.g += 0.1
-            if self.g >= 1.0:
+            self.y = (1 - self.g)*self.py + self.g*(self.py+ self.jump_power)
+            self.g += (1 - self.g) / 15
+            self.gn += 1
+            if self.gn > 24:
                 self.status = -1
         elif self.status == -1:
-            self.y = (1 - self.g)*self.py + self.g*(self.py+ 200)
-            self.g -= 0.1
-            if self.g <= 0.0:
+            self.y = (1 - self.g)*self.py + self.g*(self.py+ self.jump_power)
+            self.g -= (1 - self.g) / 15
+            self.gn -= 1
+            if self.gn < -2:
+                self.y = self.py
+                self.gn = 0
                 self.status = 0
 
 
 
-        self.x += self.dir * 5
+        self.x += self.dir * 8
 
     pass
 

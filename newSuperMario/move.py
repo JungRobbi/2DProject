@@ -114,14 +114,16 @@ class hero:
 open_canvas(1024, 800)
 
 character = load_image('MarioMove.png')
+map1 = load_image('1-1.png')
 
 running = True
 
-mario = hero(800 // 2, 90)
+mario = hero(800 // 2, 60)
 
 while running:
     clear_canvas()
 
+    map1.clip_draw(0,-0, 4224, 624, 2110*2.5, 120 * 2.5, 4224*2.5, 624*2.5 + 30)
     mario.sprites()
 
     update_canvas()

@@ -174,7 +174,23 @@ class object:
 
 
     pass
+class monster:
+    frame = 0
+    fs = 0
+    framedir = 0
 
+    def __init__(self, x, y, tribe):
+        self.x = x
+        self.y = y
+        self.tribe = tribe
+
+    def sprites(self):
+
+        pass
+
+
+
+    pass
 
 def mapmove():
     global WINx
@@ -245,8 +261,9 @@ while running:
 
     map1.clip_draw(0 ,0, 4222, 624, 2110*2.5 + moveWinx, 120 * 2.5 + moveWiny , 4224*2.5, 624*2.5)
     mario.sprites()
-    coin.sprites()
-    Qblock.sprites()
+
+    # coin.sprites()
+    # Qblock.sprites()
 
     update_canvas()
 

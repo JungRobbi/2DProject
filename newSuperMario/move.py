@@ -5,10 +5,10 @@ class hero:
     herodir = 0
     status = 0
     speed = 0
+    xspeed = 8
     frame = 0
     framedir = 0
     py = 0
-    jump_power = 350
     g = 30.0
     t = 0.0
     ga = 2.0
@@ -102,34 +102,82 @@ class hero:
                 self.y = self.py
                 self.status = 0
                 self.t = 0
+            # 점프 구현
 
+        self.x += self.dir * self.xspeed
 
-
-        self.x += self.dir * 8
 
     pass
 
+def mapmove():
+    global WINx
+    global WINy
+    global moveWinx
+    global moveWiny
+    global mario
+    global space
 
 
-open_canvas(1024, 800)
+    map_turn_s = 10
+
+
+    if moveWinx < -(4222 * 2 + WINx):
+        moveWinx = -(4222 * 2 + WINx)
+    if moveWinx > 0:
+        moveWinx = 0
+
+    if moveWinx != 0 and mario.x < WINx * 3/5and mario.dir == -1:
+        moveWinx += mario.xspeed*3
+        mario.x += mario.xspeed*3
+        if mario.x > WINx * 3/5:
+            mario.x = WINx * 3/5
+
+    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 2/5and mario.dir == 1:
+        moveWinx -= mario.xspeed*3
+        mario.x -= mario.xspeed*3
+        if mario.x < WINx * 2/5:
+            mario.x = WINx * 2/5
+
+
+
+
+
+    if moveWinx > 0:
+        moveWinx = 0
+    if moveWinx < -(4222 * 2 + WINx):
+        moveWinx = -(4222 * 2 + WINx)
+
+
+
+
+
+WINx = 1024
+WINy = 600
+moveWinx = 0
+moveWiny = 0
+xa = 0
+space = 1
+
+open_canvas(WINx, WINy)
 
 character = load_image('MarioMove.png')
 map1 = load_image('1-1.png')
 
 running = True
 
-mario = hero(800 // 2, 60)
+mario = hero(50, 60)
 
 while running:
     clear_canvas()
 
-    map1.clip_draw(0,-0, 4224, 624, 2110*2.5, 120 * 2.5, 4224*2.5, 624*2.5 + 30)
+    map1.clip_draw(0 ,0, 4222, 624, 2110*2.5 + moveWinx, 120 * 2.5 + moveWiny , 4224*2.5, 624*2.5)
     mario.sprites()
 
     update_canvas()
 
     mario.handle_events()
     mario.move()
+    mapmove()
 
     delay(0.025)
 

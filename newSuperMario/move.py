@@ -5,7 +5,9 @@ class hero:
     herodir = 0
     status = 0
     speed = 0
-    xspeed = 8
+    xspeed = 0
+    xMAX = 14
+    xa = 0.5
     frame = 0
     framedir = 0
     py = 0
@@ -28,10 +30,12 @@ class hero:
                     self.dir += 1
                     self.frame = 0
                     self.framedir = 0
+                    self.xspeed = 0
                 elif event.key == SDLK_LEFT:
                     self.dir -= 1
                     self.frame = 0
                     self.framedir = 0
+                    self.xspeed = 0
                 elif event.key == SDLK_UP and self.status == 0:
                     self.py = self.y
                     self.status = 1
@@ -96,7 +100,7 @@ class hero:
 
     def move(self):
         if self.status == 1:
-            self.y = -(self.ga/2)* (self.t ** 2) + self.g * self.t + self.py
+            self.y = -(self.ga/2) * (self.t ** 2) + self.g * self.t + self.py
             self.t += 1
             if self.y < self.py:
                 self.y = self.py
@@ -106,6 +110,15 @@ class hero:
 
         self.x += self.dir * self.xspeed
 
+        if self.dir == 0:
+            self.xspeed -= self.xa*2
+            if self.xspeed < 0:
+                self.xspeed = 0
+            self.x += self.herodir * self.xspeed
+        else:
+            self.xspeed += self.xa
+            if self.xspeed > self.xMAX:
+                self.xspeed = self.xMAX
 
     pass
 
@@ -126,17 +139,23 @@ def mapmove():
     if moveWinx > 0:
         moveWinx = 0
 
-    if moveWinx != 0 and mario.x < WINx * 4/7 and mario.dir == -1:
-        moveWinx += mario.xspeed*3
-        mario.x += mario.xspeed*3
-        if mario.x > WINx * 4/7:
-            mario.x = WINx * 4/7
+    if moveWinx != 0 and mario.x < WINx * 3/5 and mario.dir == -1:
+        if mario.x + mario.xMAX >= WINx * 3 / 5:
+            moveWinx += mario.xspeed
+        else:
+            moveWinx += mario.xspeed*2
+        mario.x += mario.xspeed*2
+        if mario.x > WINx * 3/5:
+            mario.x = WINx * 3/5
 
-    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 3/7 and mario.dir == 1:
-        moveWinx -= mario.xspeed*3
-        mario.x -= mario.xspeed*3
-        if mario.x < WINx * 3/7:
-            mario.x = WINx * 3/7
+    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 2/5 and mario.dir == 1:
+        if mario.x - mario.xMAX <= WINx * 2 / 5:
+            moveWinx -= mario.xspeed
+        else:
+            moveWinx -= mario.xspeed*2
+        mario.x -= mario.xspeed*2
+        if mario.x < WINx * 2/5:
+            mario.x = WINx * 2/5
 
 
 
@@ -158,7 +177,6 @@ WINx = 1024
 WINy = 600
 moveWinx = 0
 moveWiny = 0
-xa = 0
 space = 1
 
 open_canvas(WINx, WINy)

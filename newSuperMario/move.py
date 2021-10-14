@@ -139,6 +139,43 @@ class hero:
 
     pass
 
+class object:
+    frame = 0
+    fs = 0
+    framedir = 0
+
+    def __init__(self,x, y, ability = None):
+        self.x = x
+        self.y = y
+        self.ability = ability
+
+    def sprites(self):
+        if self.ability == 0: # 코인
+            object_image.clip_draw(self.frame * 24 + 5 + 96, 976 + 4, 15, 17, self.x, self.y, 30, 34)
+            self.fs = self.fs + 1
+            if self.fs == 3:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 4
+        elif self.ability == 1: # ?블럭
+            object_image.clip_draw(self.frame * 24 + 4, 976 + 4, 16, 16, self.x, self.y, 32, 32)
+            self.fs = self.fs + 1
+            if self.fs == 5:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 4
+        elif self.ability == 2: # ?블럭 충돌
+            object_image.clip_draw(self.frame * 24 + 4, 944 + 4, 16, 16, self.x, self.y, 32, 32)
+            pass
+        elif self.ability == 3:
+            pass
+        elif self.ability == 4:
+            pass
+        elif self.ability == 5:
+            pass
+
+
+    pass
+
+
 def mapmove():
     global WINx
     global WINy
@@ -174,13 +211,6 @@ def mapmove():
         if mario.x < WINx * 2/5:
             mario.x = WINx * 2/5
 
-
-
-
-
-
-
-
     if moveWinx > 0:
         moveWinx = 0
     if moveWinx < -(4222 * 2 + WINx):
@@ -199,17 +229,24 @@ space = 1
 open_canvas(WINx, WINy)
 
 character = load_image('MarioMove.png')
+object_image = load_image('object.png')
 map1 = load_image('1-1.png')
+
 
 running = True
 
 mario = hero(50, 60)
+coin = object(200, 200, 0)
+Qblock = object(150, 150, 1)
+
 
 while running:
     clear_canvas()
 
     map1.clip_draw(0 ,0, 4222, 624, 2110*2.5 + moveWinx, 120 * 2.5 + moveWiny , 4224*2.5, 624*2.5)
     mario.sprites()
+    coin.sprites()
+    Qblock.sprites()
 
     update_canvas()
 

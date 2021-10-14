@@ -126,17 +126,20 @@ def mapmove():
     if moveWinx > 0:
         moveWinx = 0
 
-    if moveWinx != 0 and mario.x < WINx * 3/5and mario.dir == -1:
+    if moveWinx != 0 and mario.x < WINx * 3/5 and mario.dir == -1:
         moveWinx += mario.xspeed*3
         mario.x += mario.xspeed*3
         if mario.x > WINx * 3/5:
             mario.x = WINx * 3/5
 
-    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 2/5and mario.dir == 1:
+    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 2/5 and mario.dir == 1:
         moveWinx -= mario.xspeed*3
         mario.x -= mario.xspeed*3
         if mario.x < WINx * 2/5:
             mario.x = WINx * 2/5
+
+
+
 
 
 

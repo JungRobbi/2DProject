@@ -9,9 +9,9 @@ class hero:
     frame = 0
     framedir = 0
     py = 0
-    g = 30.0
+    g = 40.0
     t = 0.0
-    ga = 2.0
+    ga = 4.0
 
     def __init__(self,x, y):
         self.x = x
@@ -126,17 +126,17 @@ def mapmove():
     if moveWinx > 0:
         moveWinx = 0
 
-    if moveWinx != 0 and mario.x < WINx * 3/5 and mario.dir == -1:
+    if moveWinx != 0 and mario.x < WINx * 4/7 and mario.dir == -1:
         moveWinx += mario.xspeed*3
         mario.x += mario.xspeed*3
-        if mario.x > WINx * 3/5:
-            mario.x = WINx * 3/5
+        if mario.x > WINx * 4/7:
+            mario.x = WINx * 4/7
 
-    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 2/5 and mario.dir == 1:
+    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 3/7 and mario.dir == 1:
         moveWinx -= mario.xspeed*3
         mario.x -= mario.xspeed*3
-        if mario.x < WINx * 2/5:
-            mario.x = WINx * 2/5
+        if mario.x < WINx * 3/7:
+            mario.x = WINx * 3/7
 
 
 

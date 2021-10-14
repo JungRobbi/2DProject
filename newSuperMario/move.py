@@ -42,7 +42,7 @@ class hero:
                     self.frame = 0
                     self.framedir = 0
                 elif event.key == SDLK_DOWN:
-                    self.status = 0
+                    pass
                 elif event.key == SDLK_ESCAPE:
                     running = False
             elif event.type == SDL_KEYUP:
@@ -84,9 +84,20 @@ class hero:
 
         if self.framedir == 0:
             self.frame = self.frame + self.speed
-            if self.status == 1 or self.status == -1:
-                if self.frame > 4:
-                    self.frame = self.frame - self.speed
+            if self.status == 1:
+                if self.y - self.py > 70:
+                    if self.y - self.py > 170:
+                        self.frame = 3
+                    elif self.y - self.py > 110:
+                        self.frame = 2
+                    else:
+                        self.frame = 1
+                else:
+                    self.frame = 0
+            elif self.status == -1:
+                if self.y - self.py < 50:
+                    self.frame = 4
+
             elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
                 if self.frame >= 4:
                     self.framedir = 1
@@ -102,10 +113,16 @@ class hero:
         if self.status == 1:
             self.y = -(self.ga/2) * (self.t ** 2) + self.g * self.t + self.py
             self.t += 1
+            if (self.ga/2) * (self.t ** 2) > self.g * self.t:
+                self.status = -1
+        elif self.status == -1:
+            self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
+            self.t += 1
             if self.y < self.py:
                 self.y = self.py
                 self.status = 0
                 self.t = 0
+                self.frame = 0
             # 점프 구현
 
         self.x += self.dir * self.xspeed

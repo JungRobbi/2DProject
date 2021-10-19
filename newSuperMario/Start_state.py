@@ -33,7 +33,6 @@ def draw():
     update_canvas()
 
 
-
 def handle_events():
     events = get_events()
     pass

@@ -1,13 +1,19 @@
 from pico2d import *
+import game_framework
+import Title_state
+
+Mario_image = None
+object_image = None
+map1 = None
 
 WINx = 1024
 WINy = 600
 moveWinx = 0
 moveWiny = 0
 
-character = load_image('MarioMove.png')
-object_image = load_image('object.png')
-map1 = load_image('1-1.png')
+mario = None
+coin = None
+Qblock = None
 
 class hero:
     dir = 0
@@ -27,14 +33,11 @@ class hero:
     def __init__(self,x, y):
         self.x = x
         self.y = y
-    def handle_events(self):
-        global running
-
+    def update(self):
+                    # 키 입력
         self.events = get_events()
         for event in self.events:
-            if event.type == SDL_QUIT:
-                running = False
-            elif event.type == SDL_KEYDOWN:
+            if event.type == SDL_KEYDOWN:
                 if event.key == SDLK_RIGHT:
                     self.dir += 1
                     self.frame = 0
@@ -52,8 +55,6 @@ class hero:
                     self.framedir = 0
                 elif event.key == SDLK_DOWN:
                     pass
-                elif event.key == SDLK_ESCAPE:
-                    running = False
             elif event.type == SDL_KEYUP:
                 if event.key == SDLK_RIGHT:
                     self.dir -= 1
@@ -61,36 +62,10 @@ class hero:
                 elif event.key == SDLK_LEFT:
                     self.dir += 1
                     self.herodir = -1
-        pass
-
-    def sprites(self):
-        if self.status != 0: # 점프 등의 특수 상태
-           if self.dir == 0:  # 정지
-               if self.herodir == 1:
-                   character.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, 64, 80)
-               else:
-                   character.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
-           if self.dir == 1:
-               character.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, 64, 80)
-           elif self.dir == -1:
-               character.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
-        else: # 기본 이동 스프라이트
-           if self.dir == 0:  # 정지
-               if self.herodir == 1:
-                   character.clip_draw(self.frame * 32, 960 - 40, 32, 40, self.x, self.y, 64, 80)
-               else:
-                   character.clip_composite_draw(self.frame * 32, 960 - 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
-           elif self.dir == 1:  # 오른쪽 걸음
-               character.clip_draw(self.frame * 32, 960, 32, 40, self.x, self.y, 64, 80)
-           elif self.dir == -1:  # 왼쪽 걸음
-               character.clip_composite_draw(self.frame * 32, 960, 32, 40, 0, 'h', self.x, self.y, 64, 80)
 
 
-
-
+                    # 프레임
         self.speed = (self.speed + 1) % 2
-
-
         if self.framedir == 0:
             self.frame = self.frame + self.speed
             if self.status == 1:
@@ -111,12 +86,40 @@ class hero:
                 if self.frame >= 4:
                     self.framedir = 1
             elif self.dir == 0 and self.status == 0:
-                if self.frame >= 9: # 정지 프레임
+                if self.frame >= 9:  # 정지 프레임
                     self.frame = 0
         else:
             self.frame = self.frame - self.speed
             if self.frame == 0:
                 self.framedir = 0
+
+                # 움직임
+        self.move()
+
+
+
+
+    def draw(self):
+        if self.status != 0: # 점프 등의 특수 상태
+           if self.dir == 0:  # 정지
+               if self.herodir == 1:
+                   Mario_image.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, 64, 80)
+               else:
+                   Mario_image.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
+           if self.dir == 1:
+               Mario_image.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, 64, 80)
+           elif self.dir == -1:
+               Mario_image.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
+        else: # 기본 이동 스프라이트
+           if self.dir == 0:  # 정지
+               if self.herodir == 1:
+                   Mario_image.clip_draw(self.frame * 32, 960 - 40, 32, 40, self.x, self.y, 64, 80)
+               else:
+                   Mario_image.clip_composite_draw(self.frame * 32, 960 - 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
+           elif self.dir == 1:  # 오른쪽 걸음
+               Mario_image.clip_draw(self.frame * 32, 960, 32, 40, self.x, self.y, 64, 80)
+           elif self.dir == -1:  # 왼쪽 걸음
+               Mario_image.clip_composite_draw(self.frame * 32, 960, 32, 40, 0, 'h', self.x, self.y, 64, 80)
 
     def move(self):
         if self.status == 1:
@@ -146,7 +149,7 @@ class hero:
             if self.xspeed > self.xMAX:
                 self.xspeed = self.xMAX
 
-    pass
+
 
 class object:
     frame = 0
@@ -182,7 +185,7 @@ class object:
             pass
 
 
-    pass
+
 class monster:
     frame = 0
     fs = 0
@@ -198,18 +201,12 @@ class monster:
         pass
 
 
-
-    pass
-
 def mapmove():
     global WINx
     global WINy
     global moveWinx
     global moveWiny
     global mario
-
-
-    map_turn_s = 10
 
 
     if moveWinx < -(4222 * 2 + WINx):
@@ -240,30 +237,46 @@ def mapmove():
     if moveWinx < -(4222 * 2 + WINx):
         moveWinx = -(4222 * 2 + WINx)
 
-running = True
 
-mario = hero(50, 60)
-coin = object(200, 200, 0)
-Qblock = object(150, 150, 1)
+def enter(): # 생성
+    global mario, coin, Qblock
+    global Mario_image, object_image, map1
+    mario = hero(50, 60)
+    coin = object(200, 200, 0)
+    Qblock = object(150, 150, 1)
 
+    Mario_image = load_image('MarioMove.png')
+    object_image = load_image('object.png')
+    map1 = load_image('1-1.png')
 
-while running:
-    clear_canvas()
+def exit(): # 종료/제거
+    global mario, coin, Qblock
+    del(mario)
+    del(coin)
+    del(Qblock)
 
-    map1.clip_draw(0 ,0, 4222, 624, 2110*2.5 + moveWinx, 120 * 2.5 + moveWiny , 4224*2.5, 624*2.5)
-    mario.sprites()
+def handle_events():
+    # events = get_events()
+    # for event in events:
+    #     if event.type == SDL_QUIT:
+    #         game_framework.quit()
+    #     elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+    #         game_framework.change_state(Title_state)
+    pass
 
-    # coin.sprites()
-    # Qblock.sprites()
-
-    update_canvas()
-
-    mario.handle_events()
-    mario.move()
+def update():
+    mario.update()
     mapmove()
 
-    delay(0.025)
+def draw():
+    clear_canvas()
+    map1.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
+    mario.draw()
+    update_canvas()
 
-close_canvas()
+def pause():
+    pass
 
 
+def resume():
+    pass

@@ -1,5 +1,14 @@
 from pico2d import *
 
+WINx = 1024
+WINy = 600
+moveWinx = 0
+moveWiny = 0
+
+character = load_image('MarioMove.png')
+object_image = load_image('object.png')
+map1 = load_image('1-1.png')
+
 class hero:
     dir = 0
     herodir = 0
@@ -198,7 +207,6 @@ def mapmove():
     global moveWinx
     global moveWiny
     global mario
-    global space
 
 
     map_turn_s = 10
@@ -231,23 +239,6 @@ def mapmove():
         moveWinx = 0
     if moveWinx < -(4222 * 2 + WINx):
         moveWinx = -(4222 * 2 + WINx)
-
-
-
-
-
-WINx = 1024
-WINy = 600
-moveWinx = 0
-moveWiny = 0
-space = 1
-
-open_canvas(WINx, WINy)
-
-character = load_image('MarioMove.png')
-object_image = load_image('object.png')
-map1 = load_image('1-1.png')
-
 
 running = True
 

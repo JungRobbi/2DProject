@@ -2,14 +2,15 @@ from pico2d import *
 import game_framework
 import Title_state
 
-Mario_image = None
-object_image = None
-map1 = None
 
 WINx = 1024
 WINy = 600
 moveWinx = 0
 moveWiny = 0
+
+Mario_image = None
+object_image = None
+map1 = None
 
 mario = None
 coin = None
@@ -19,55 +20,26 @@ class hero:
     dir = 0
     herodir = 0
     status = 0
-    speed = 0
     xspeed = 0
-    xMAX = 14
-    xa = 0.5
+    xMAX = 3.0
+    xa = 0.02
     frame = 0
+    fs = 0
     framedir = 0
     py = 0
-    g = 40.0
+    g = 7.0
     t = 0.0
-    ga = 4.0
+    ga = 0.1
 
     def __init__(self,x, y):
         self.x = x
         self.y = y
+
     def update(self):
-                    # 키 입력
-        self.events = get_events()
-        for event in self.events:
-            if event.type == SDL_KEYDOWN:
-                if event.key == SDLK_RIGHT:
-                    self.dir += 1
-                    self.frame = 0
-                    self.framedir = 0
-                    self.xspeed = 0
-                elif event.key == SDLK_LEFT:
-                    self.dir -= 1
-                    self.frame = 0
-                    self.framedir = 0
-                    self.xspeed = 0
-                elif event.key == SDLK_UP and self.status == 0:
-                    self.py = self.y
-                    self.status = 1
-                    self.frame = 0
-                    self.framedir = 0
-                elif event.key == SDLK_DOWN:
-                    pass
-            elif event.type == SDL_KEYUP:
-                if event.key == SDLK_RIGHT:
-                    self.dir -= 1
-                    self.herodir = 1
-                elif event.key == SDLK_LEFT:
-                    self.dir += 1
-                    self.herodir = -1
-
-
                     # 프레임
-        self.speed = (self.speed + 1) % 2
         if self.framedir == 0:
-            self.frame = self.frame + self.speed
+            if self.fs == 15:
+                self.frame = self.frame + 1
             if self.status == 1:
                 if self.y - self.py > 70:
                     if self.y - self.py > 170:
@@ -89,15 +61,16 @@ class hero:
                 if self.frame >= 9:  # 정지 프레임
                     self.frame = 0
         else:
-            self.frame = self.frame - self.speed
-            if self.frame == 0:
+            if self.fs == 15:
+                self.frame = self.frame - 1
+            if self.frame <= 0:
+                self.frame = 0
                 self.framedir = 0
-
-                # 움직임
+        self.fs = self.fs + 1
+        if self.fs > 15:
+            self.fs = 0
+                # 이동
         self.move()
-
-
-
 
     def draw(self):
         if self.status != 0: # 점프 등의 특수 상태
@@ -148,6 +121,7 @@ class hero:
             self.xspeed += self.xa
             if self.xspeed > self.xMAX:
                 self.xspeed = self.xMAX
+                # x 이동
 
 
 
@@ -214,23 +188,23 @@ def mapmove():
     if moveWinx > 0:
         moveWinx = 0
 
-    if moveWinx != 0 and mario.x < WINx * 3/5 and mario.dir == -1:
-        if mario.x + mario.xMAX >= WINx * 3 / 5:
+    if moveWinx != 0 and mario.x < WINx * 1 / 2 and mario.dir == -1:
+        if mario.x + mario.xMAX >= WINx * 1 / 2:
             moveWinx += mario.xspeed
         else:
             moveWinx += mario.xspeed*2
         mario.x += mario.xspeed*2
-        if mario.x > WINx * 3/5:
-            mario.x = WINx * 3/5
+        if mario.x > WINx * 1 / 2:
+            mario.x = WINx * 1 / 2
 
-    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 2/5 and mario.dir == 1:
-        if mario.x - mario.xMAX <= WINx * 2 / 5:
+    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 1 / 3 and mario.dir == 1:
+        if mario.x - mario.xMAX <= WINx * 1 / 3:
             moveWinx -= mario.xspeed
         else:
             moveWinx -= mario.xspeed*2
         mario.x -= mario.xspeed*2
-        if mario.x < WINx * 2/5:
-            mario.x = WINx * 2/5
+        if mario.x < WINx * 1 / 3:
+            mario.x = WINx * 1 / 3
 
     if moveWinx > 0:
         moveWinx = 0
@@ -256,17 +230,43 @@ def exit(): # 종료/제거
     del(Qblock)
 
 def handle_events():
-    # events = get_events()
-    # for event in events:
-    #     if event.type == SDL_QUIT:
-    #         game_framework.quit()
-    #     elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-    #         game_framework.change_state(Title_state)
-    pass
+    global mario
+    events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        elif event.type == SDL_KEYDOWN:
+            if event.key == SDLK_RIGHT:
+                mario.dir += 1
+                mario.frame = 0
+                mario.framedir = 0
+                mario.xspeed = 0
+            elif event.key == SDLK_LEFT:
+                mario.dir -= 1
+                mario.frame = 0
+                mario.framedir = 0
+                mario.xspeed = 0
+            elif event.key == SDLK_UP and mario.status == 0:
+                mario.py = mario.y
+                mario.status = 1
+                mario.frame = 0
+                mario.framedir = 0
+            elif event.key == SDLK_DOWN:
+                pass
+            elif event.key == SDLK_ESCAPE:
+                game_framework.change_state(Title_state)
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_RIGHT:
+                mario.dir -= 1
+                mario.herodir = 1
+            elif event.key == SDLK_LEFT:
+                mario.dir += 1
+                mario.herodir = -1
 
 def update():
     mario.update()
     mapmove()
+    delay(0.001)
 
 def draw():
     clear_canvas()

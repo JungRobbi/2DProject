@@ -1,5 +1,6 @@
 import game_framework
 import Title_state
+import Main_state
 from pico2d import *
 
 
@@ -22,8 +23,9 @@ def update():
     global logo_time
     if (logo_time > 1.0):
         logo_time = 0
-        game_framework.change_state(Title_state)
-    delay(0.01)
+        #game_framework.change_state(Title_state)
+        game_framework.change_state(Main_state)
+    #delay(0.01)
     logo_time += 0.01
 
 def draw():

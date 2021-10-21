@@ -135,21 +135,35 @@ class object:
         self.y = y
         self.ability = ability
 
-    def sprites(self):
+    def update(self):
+        if self.fs == 30:
+            self.frame = self.frame + 1
+
+        self.fs = self.fs + 1
+        if self.fs > 30:
+            self.fs = 0
+            # 이동
+
+
+    def draw(self):
         if self.ability == 0: # 코인
-            object_image.clip_draw(self.frame * 24 + 5 + 96, 976 + 4, 15, 17, self.x, self.y, 30, 34)
+            object_image.clip_draw(self.frame * 24 + 5 + 96, 1000 - 24 + 4, 15, 17, self.x, self.y, 30, 34)
             self.fs = self.fs + 1
-            if self.fs == 3:
+            if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability == 1: # ?블럭
-            object_image.clip_draw(self.frame * 24 + 4, 976 + 4, 16, 16, self.x, self.y, 32, 32)
+            object_image.clip_draw(self.frame * 24 + 4, 1000 - 24 + 4, 16, 16, self.x, self.y, 32, 32)
             self.fs = self.fs + 1
-            if self.fs == 5:
+            if self.fs == 30:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability == 2: # ?블럭 충돌
-            object_image.clip_draw(self.frame * 24 + 4, 944 + 4, 16, 16, self.x, self.y, 32, 32)
+            object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x, self.y, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 30:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 7
             pass
         elif self.ability == 3:
             pass
@@ -157,6 +171,8 @@ class object:
             pass
         elif self.ability == 5:
             pass
+
+
 
 
 
@@ -217,7 +233,7 @@ def enter(): # 생성
     global Mario_image, object_image, map1
     mario = hero(50, 60)
     coin = object(200, 200, 0)
-    Qblock = object(150, 150, 1)
+    Qblock = object(150, 150, 2)
 
     Mario_image = load_image('MarioMove.png')
     object_image = load_image('object.png')
@@ -272,6 +288,8 @@ def draw():
     clear_canvas()
     map1.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
     mario.draw()
+    coin.draw()
+    Qblock.draw()
     update_canvas()
 
 def pause():

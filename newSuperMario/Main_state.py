@@ -147,13 +147,13 @@ class object:
 
     def draw(self):
         if self.ability == 0: # 코인
-            object_image.clip_draw(self.frame * 24 + 5 + 96, 1000 - 24 + 4, 15, 17, self.x, self.y, 30, 34)
+            object_image.clip_draw(self.frame * 24 + 5 + 96, 1000 - 24, 15, 17, self.x, self.y, 30, 34)
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability == 1: # ?블럭
-            object_image.clip_draw(self.frame * 24 + 4, 1000 - 24 + 4, 16, 16, self.x, self.y, 32, 32)
+            object_image.clip_draw(self.frame * 24 + 4, 1000 - 24, 16, 16, self.x, self.y, 32, 32)
             self.fs = self.fs + 1
             if self.fs == 30:
                 self.fs = 0
@@ -161,12 +161,14 @@ class object:
         elif self.ability == 2: # ?블럭 충돌
             object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x, self.y, 48, 48)
             self.fs = self.fs + 1
-            if self.fs == 30:
+            if self.fs == 10:
                 self.fs = 0
-                self.frame = (self.frame + 1) % 7
-            pass
-        elif self.ability == 3:
-            pass
+                #self.ability = 3
+                self.frame = (self.frame + 1) % 8
+
+        elif self.ability == 3: # 철 블럭 (아무효과 X)
+            object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
+
         elif self.ability == 4:
             pass
         elif self.ability == 5:
@@ -233,7 +235,7 @@ def enter(): # 생성
     global Mario_image, object_image, map1
     mario = hero(50, 60)
     coin = object(200, 200, 0)
-    Qblock = object(150, 150, 2)
+    Qblock = object(150, 150, 3)
 
     Mario_image = load_image('MarioMove.png')
     object_image = load_image('object.png')

@@ -163,15 +163,21 @@ class object:
             self.fs = self.fs + 1
             if self.fs == 10:
                 self.fs = 0
-                #self.ability = 3
+                #self.ability = 99
                 self.frame = (self.frame + 1) % 8
 
-        elif self.ability == 3: # 철 블럭 (아무효과 X)
-            object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
+        elif self.ability == 3: # 빛나는 벽돌(코인 벽돌)
+            object_image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x, self.y, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 20:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 4
 
         elif self.ability == 4:
             pass
-        elif self.ability == 5:
+        elif self.ability == 99:
+            # 철 블럭 (아무효과 X)
+            object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
             pass
 
 

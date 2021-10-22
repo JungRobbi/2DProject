@@ -143,13 +143,13 @@ class object:
 
     def draw(self):
         if self.ability == 0: # 코인
-            object_image.clip_draw(self.frame * 24 + 5 + 96, 1000 - 24, 15, 17, self.x + moveWinx, self.y + moveWiny , 30, 34)
+            object_image.clip_draw(self.frame * 24 + 96, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny , 48, 48)
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability == 1: # ?블럭
-            object_image.clip_draw(self.frame * 24 + 4, 1000 - 24, 16, 16, self.x + moveWinx, self.y + moveWiny, 32, 32)
+            object_image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 30:
                 self.fs = 0
@@ -162,15 +162,25 @@ class object:
                 #self.ability = 99
                 self.frame = (self.frame + 1) % 8
 
-        elif self.ability == 3: # 빛나는 벽돌(코인 벽돌)
+        elif self.ability == 3: # 일반 벽돌
+            object_image.clip_draw(0, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+
+        elif self.ability == 4: # 빛나는 벽돌(코인 벽돌)
             object_image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
 
-        elif self.ability == 4:
-            pass
+        elif self.ability == 5: # 표정 벽돌 - 1
+            object_image.clip_draw(0 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+
+        elif self.ability == 6:  # 표정 벽돌 - 2
+            object_image.clip_draw(1 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 150:
+                self.fs = 0
+                self.ability = 5
 
         elif self.ability == 98:
             # 철 블럭 (아무효과 X)
@@ -241,8 +251,11 @@ def enter(): # 생성
     global mario, coin, Qblock
     global Mario_image, object_image, map1
     mario = hero(50, 60)
-    coin.append(object(200, 200, 0))
-    Qblock = object(150, 150, 3)
+
+
+    coin.append(object(300, 200, 0))
+
+    Qblock.append(object(248, 362, 6))
 
     Mario_image = load_image('MarioMove.png')
     object_image = load_image('object.png')
@@ -299,7 +312,8 @@ def draw():
     mario.draw()
     for c in coin:
         c.draw()
-    Qblock.draw()
+    for b in Qblock:
+        b.draw()
     update_canvas()
 
 def pause():

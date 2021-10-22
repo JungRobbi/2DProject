@@ -23,7 +23,7 @@ class hero:
     herodir = 0
     status = 0
     xspeed = 0
-    xMAX = 3.0
+    xMAX = 10.0
     xa = 0.02
     frame = 0
     fs = 0
@@ -318,10 +318,34 @@ def mapcreate(map , ground1):
         coin.append(object(48 * 42 + 32 * 2, ground1 + 60 * 2 + 32, 0))
         coin.append(object(48 * 42 + 32 * 3, ground1 + 60 * 2, 0))
 
-        coin.append(object(68 * 43, ground1 + 60 * 2, 0))
-        coin.append(object(68 * 43 + 32, ground1 + 60 * 2 + 32, 0))
-        coin.append(object(68 * 43 + 32 * 2, ground1 + 60 * 2 + 32, 0))
-        coin.append(object(68 * 43 + 32 * 3, ground1 + 60 * 2, 0))
+        coin.append(object(48 * 61, ground1 + 60 * 2, 0))
+        coin.append(object(48 * 61 + 32, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 61 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 61 + 32 * 3, ground1 + 60 * 2, 0))
+
+        brick.append(object(48 * 75, ground1 + 60 * 2, 2))
+        Qblock.append(object(48 * 75 + 32, ground1 + 60 * 2, 100))
+        brick.append(object(48 * 75 + 32 * 2, ground1 + 60 * 2, 2))
+
+        Qblock.append(object(48 * 81, ground1 + 60 * 2, 100))
+        Qblock.append(object(48 * 81 + 32, ground1 + 60 * 2, 100))
+
+        coin.append(object(48 * 86, ground1 + 60 * 2, 0))
+        coin.append(object(48 * 86 + 32, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 86 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 86 + 32 * 3, ground1 + 60 * 2, 0))
+
+        coin.append(object(48 * 94, ground1 + 60 * 4, 0))
+        coin.append(object(48 * 94 + 32, ground1 + 60 * 4 + 32, 0))
+        coin.append(object(48 * 94 + 32 * 2, ground1 + 60 * 4 + 32, 0))
+        Qblock.append(object(48 * 94 + 32 * 2, ground1 + 60 * 3, 100))
+        Qblock.append(object(48 * 94 + 32 * 3, ground1 + 60 * 3, 101))
+        Qblock.append(object(48 * 94 + 32 * 4, ground1 + 60 * 3, 100))
+        brick.append(object(48 * 94 + 32 * 5, ground1 + 60 * 3, 2))
+        brick.append(object(48 * 94 + 32 * 6, ground1 + 60 * 3, 2))
+
+
+
 
 
 def mapmove():

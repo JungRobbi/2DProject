@@ -13,8 +13,8 @@ object_image = None
 map1 = None
 
 mario = None
-coin = None
-Qblock = None
+coin = []
+Qblock = []
 
 class hero:
     dir = 0
@@ -126,6 +126,8 @@ class hero:
 
 
 class object:
+    global moveWinx; global moveWiny
+
     frame = 0
     fs = 0
     framedir = 0
@@ -136,13 +138,9 @@ class object:
         self.ability = ability
 
     def update(self):
-        if self.fs == 30:
-            self.frame = self.frame + 1
+        self.x = moveWinx
+        self.x = moveWiny
 
-        self.fs = self.fs + 1
-        if self.fs > 30:
-            self.fs = 0
-            # 이동
 
 
     def draw(self):
@@ -175,6 +173,7 @@ class object:
 
         elif self.ability == 4:
             pass
+
         elif self.ability == 98:
             # 철 블럭 (아무효과 X)
             object_image.clip_draw(9 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
@@ -197,7 +196,7 @@ class monster:
         self.y = y
         self.tribe = tribe
 
-    def sprites(self):
+    def draw(self):
 
         pass
 
@@ -244,7 +243,7 @@ def enter(): # 생성
     global mario, coin, Qblock
     global Mario_image, object_image, map1
     mario = hero(50, 60)
-    coin = object(200, 200, 0)
+    coin.append(object(200, 200, 0))
     Qblock = object(150, 150, 3)
 
     Mario_image = load_image('MarioMove.png')
@@ -300,7 +299,8 @@ def draw():
     clear_canvas()
     map1.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
     mario.draw()
-    coin.draw()
+    for c in coin:
+        c.draw()
     Qblock.draw()
     update_canvas()
 

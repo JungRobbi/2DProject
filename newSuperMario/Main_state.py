@@ -138,26 +138,24 @@ class object:
         self.ability = ability
 
     def update(self):
-        self.x = moveWinx
-        self.x = moveWiny
-
+      pass
 
 
     def draw(self):
         if self.ability == 0: # 코인
-            object_image.clip_draw(self.frame * 24 + 5 + 96, 1000 - 24, 15, 17, self.x, self.y, 30, 34)
+            object_image.clip_draw(self.frame * 24 + 5 + 96, 1000 - 24, 15, 17, self.x + moveWinx, self.y + moveWiny , 30, 34)
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability == 1: # ?블럭
-            object_image.clip_draw(self.frame * 24 + 4, 1000 - 24, 16, 16, self.x, self.y, 32, 32)
+            object_image.clip_draw(self.frame * 24 + 4, 1000 - 24, 16, 16, self.x + moveWinx, self.y + moveWiny, 32, 32)
             self.fs = self.fs + 1
             if self.fs == 30:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability == 2: # ?블럭 충돌
-            object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x, self.y, 48, 48)
+            object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 10:
                 self.fs = 0
@@ -165,7 +163,7 @@ class object:
                 self.frame = (self.frame + 1) % 8
 
         elif self.ability == 3: # 빛나는 벽돌(코인 벽돌)
-            object_image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x, self.y, 48, 48)
+            object_image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
@@ -176,11 +174,11 @@ class object:
 
         elif self.ability == 98:
             # 철 블럭 (아무효과 X)
-            object_image.clip_draw(9 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
+            object_image.clip_draw(9 * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
 
         elif self.ability == 99:
             # 아이템 블럭 사용 후 블럭 (아무효과 X)
-            object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
+            object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
 
 
 
@@ -291,8 +289,8 @@ def handle_events():
                 mario.herodir = -1
 
 def update():
-    mario.update()
     mapmove()
+    mario.update()
     delay(0.001)
 
 def draw():

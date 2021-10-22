@@ -29,7 +29,7 @@ class hero:
     fs = 0
     framedir = 0
     py = 0
-    g = 5.5
+    g = 6.0
     t = 0.0
     ga = 0.1
     size = [48, 60]
@@ -211,74 +211,15 @@ class monster:
 
         pass
 
-
-def mapmove():
-    global WINx
-    global WINy
-    global moveWinx
-    global moveWiny
-    global mario
-
-    mapmax = -(4222 * 2 + WINx - 15)
-
-    if moveWinx < mapmax:
-        moveWinx = mapmax
-    if moveWinx > 0:
-        moveWinx = 0
-
-    if moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.dir == -1:
-        if mario.x + mario.xMAX >= WINx * 3 / 5:
-            moveWinx += mario.xspeed
-        else:
-            moveWinx += mario.xspeed*2
-        mario.x += mario.xspeed*2
-        if mario.x > WINx * 3 / 5:
-            mario.x = WINx * 3 / 5
-
-    if moveWinx > mapmax and mario.x > WINx * 2 / 5 and mario.dir == 1:
-        if mario.x - mario.xMAX <= WINx * 2 / 5:
-            moveWinx -= mario.xspeed
-        else:
-            moveWinx -= mario.xspeed*2
-        mario.x -= mario.xspeed*2
-        if mario.x < WINx * 2 / 5:
-            mario.x = WINx * 2 / 5
-
-    if moveWinx > 0:
-        moveWinx = 0
-    if moveWinx < mapmax:
-        moveWinx = mapmax
-
-
 def enter(): # 생성
-    global mario, coin, Qblock, brick, skbrick
     global Mario_image, object_image, map1
-
     ground1 = 65
 
-    mario = hero(50, ground1)
-
-    Qblock.append(object(48 * 12, ground1 + 60 * 2, 100))
-    Qblock.append(object(48 * 15, ground1 + 60 * 2, 100))
-    Qblock.append(object(48 * 15 + 32, ground1 + 60 * 2, 100))
-
-    coin.append(object(48 * 22, ground1 + 60 * 1, 0))
-    coin.append(object(48 * 22 + 32, ground1 + 60 * 1 + 32, 0))
-    coin.append(object(48 * 22 + 32 * 2, ground1 + 60 * 1 + 32, 0))
-
-    coin.append(object(48 * 26, ground1 + 60 * 2, 0))
-    coin.append(object(48 * 26 + 32, ground1 + 60 * 2 + 32, 0))
-    coin.append(object(48 * 26 + 32 * 2, ground1 + 60 * 2 + 32, 0))
-
-    skbrick.append(object(48 * 29, ground1 + 60 * 4, 3))
-
-    brick.append(object(48 * 29, ground1 + 60 * 4, 3))
-
+    mapcreate(1, ground1)
 
     Mario_image = load_image('MarioMove.png')
     object_image = load_image('object.png')
     map1 = load_image('1-1.png')
-
 def exit(): # 종료/제거
     global mario, coin, Qblock, brick, skbrick
     del (mario)
@@ -346,3 +287,78 @@ def pause():
 
 def resume():
     pass
+
+
+def mapcreate(map , ground1):
+    global mario, coin, Qblock, brick, skbrick
+
+    if map == 1:
+        mario = hero(50, ground1)
+        Qblock.append(object(48 * 12, ground1 + 60 * 2, 100))
+        Qblock.append(object(48 * 15, ground1 + 60 * 2, 100))
+        Qblock.append(object(48 * 15 + 32, ground1 + 60 * 2, 100))
+
+        coin.append(object(48 * 22, ground1 + 60 * 1, 0))
+        coin.append(object(48 * 22 + 32, ground1 + 60 * 1 + 32, 0))
+        coin.append(object(48 * 22 + 32 * 2, ground1 + 60 * 1 + 32, 0))
+
+        coin.append(object(48 * 26, ground1 + 60 * 2, 0))
+        coin.append(object(48 * 26 + 32, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 26 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+
+        skbrick.append(object(48 * 29, ground1 + 60 * 4, 3))
+
+        brick.append(object(48 * 35, ground1 + 60 * 2, 2))
+        skbrick.append(object(48 * 35 + 32, ground1 + 60 * 2, 3))
+        brick.append(object(48 * 35 + 32 * 2, ground1 + 60 * 2, 2))
+        Qblock.append(object(48 * 35 + 32, ground1 + 60 * 5, 100))
+
+        coin.append(object(48 * 42, ground1 + 60 * 2, 0))
+        coin.append(object(48 * 42 + 32, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 42 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 42 + 32 * 3, ground1 + 60 * 2, 0))
+
+        coin.append(object(68 * 43, ground1 + 60 * 2, 0))
+        coin.append(object(68 * 43 + 32, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(68 * 43 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(68 * 43 + 32 * 3, ground1 + 60 * 2, 0))
+
+
+def mapmove():
+    global WINx
+    global WINy
+    global moveWinx
+    global moveWiny
+    global mario
+
+    mapmax = -(4222 * 2 + WINx - 15)
+
+    if moveWinx < mapmax:
+        moveWinx = mapmax
+    if moveWinx > 0:
+        moveWinx = 0
+
+    if moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.dir == -1:
+        if mario.x + mario.xMAX >= WINx * 3 / 5:
+            moveWinx += mario.xspeed
+        else:
+            moveWinx += mario.xspeed*2
+        mario.x += mario.xspeed*2
+        if mario.x > WINx * 3 / 5:
+            mario.x = WINx * 3 / 5
+
+    if moveWinx > mapmax and mario.x > WINx * 2 / 5 and mario.dir == 1:
+        if mario.x - mario.xMAX <= WINx * 2 / 5:
+            moveWinx -= mario.xspeed
+        else:
+            moveWinx -= mario.xspeed*2
+        mario.x -= mario.xspeed*2
+        if mario.x < WINx * 2 / 5:
+            mario.x = WINx * 2 / 5
+
+    if moveWinx > 0:
+        moveWinx = 0
+    if moveWinx < mapmax:
+        moveWinx = mapmax
+
+

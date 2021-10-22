@@ -175,10 +175,13 @@ class object:
 
         elif self.ability == 4:
             pass
-        elif self.ability == 99:
+        elif self.ability == 98:
             # 철 블럭 (아무효과 X)
+            object_image.clip_draw(9 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
+
+        elif self.ability == 99:
+            # 아이템 블럭 사용 후 블럭 (아무효과 X)
             object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x, self.y, 48, 48)
-            pass
 
 
 

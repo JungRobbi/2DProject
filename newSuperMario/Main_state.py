@@ -206,34 +206,35 @@ def mapmove():
     global moveWiny
     global mario
 
+    mapmax = -(4222 * 2 + WINx - 15)
 
-    if moveWinx < -(4222 * 2 + WINx):
-        moveWinx = -(4222 * 2 + WINx)
+    if moveWinx < mapmax:
+        moveWinx = mapmax
     if moveWinx > 0:
         moveWinx = 0
 
-    if moveWinx != 0 and mario.x < WINx * 1 / 2 and mario.dir == -1:
-        if mario.x + mario.xMAX >= WINx * 1 / 2:
+    if moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.dir == -1:
+        if mario.x + mario.xMAX >= WINx * 3 / 5:
             moveWinx += mario.xspeed
         else:
             moveWinx += mario.xspeed*2
         mario.x += mario.xspeed*2
-        if mario.x > WINx * 1 / 2:
-            mario.x = WINx * 1 / 2
+        if mario.x > WINx * 3 / 5:
+            mario.x = WINx * 3 / 5
 
-    if moveWinx != -(4222 * 2 + WINx) and mario.x > WINx * 1 / 3 and mario.dir == 1:
-        if mario.x - mario.xMAX <= WINx * 1 / 3:
+    if moveWinx > mapmax and mario.x > WINx * 2 / 5 and mario.dir == 1:
+        if mario.x - mario.xMAX <= WINx * 2 / 5:
             moveWinx -= mario.xspeed
         else:
             moveWinx -= mario.xspeed*2
         mario.x -= mario.xspeed*2
-        if mario.x < WINx * 1 / 3:
-            mario.x = WINx * 1 / 3
+        if mario.x < WINx * 2 / 5:
+            mario.x = WINx * 2 / 5
 
     if moveWinx > 0:
         moveWinx = 0
-    if moveWinx < -(4222 * 2 + WINx):
-        moveWinx = -(4222 * 2 + WINx)
+    if moveWinx < mapmax:
+        moveWinx = mapmax
 
 
 def enter(): # 생성

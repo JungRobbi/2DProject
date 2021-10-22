@@ -15,6 +15,8 @@ map1 = None
 mario = None
 coin = []
 Qblock = []
+brick = []
+skbrick = []
 
 class hero:
     dir = 0
@@ -27,9 +29,10 @@ class hero:
     fs = 0
     framedir = 0
     py = 0
-    g = 7.0
+    g = 5.5
     t = 0.0
     ga = 0.1
+    size = [48, 60]
 
     def __init__(self,x, y):
         self.x = x
@@ -76,31 +79,31 @@ class hero:
         if self.status != 0: # 점프 등의 특수 상태
            if self.dir == 0:  # 정지
                if self.herodir == 1:
-                   Mario_image.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, 64, 80)
+                   Mario_image.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1] )
                else:
-                   Mario_image.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
+                   Mario_image.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
            if self.dir == 1:
-               Mario_image.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, 64, 80)
+               Mario_image.clip_draw(self.frame * 32, 960 - 2 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1])
            elif self.dir == -1:
-               Mario_image.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
+               Mario_image.clip_composite_draw(self.frame * 32, 960 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
         else: # 기본 이동 스프라이트
            if self.dir == 0:  # 정지
                if self.herodir == 1:
-                   Mario_image.clip_draw(self.frame * 32, 960 - 40, 32, 40, self.x, self.y, 64, 80)
+                   Mario_image.clip_draw(self.frame * 32, 960 - 40, 32, 40, self.x, self.y, self.size[0],self.size[1])
                else:
-                   Mario_image.clip_composite_draw(self.frame * 32, 960 - 40, 32, 40, 0, 'h', self.x, self.y, 64, 80)
+                   Mario_image.clip_composite_draw(self.frame * 32, 960 - 40, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
            elif self.dir == 1:  # 오른쪽 걸음
-               Mario_image.clip_draw(self.frame * 32, 960, 32, 40, self.x, self.y, 64, 80)
+               Mario_image.clip_draw(self.frame * 32, 960, 32, 40, self.x, self.y, self.size[0],self.size[1])
            elif self.dir == -1:  # 왼쪽 걸음
-               Mario_image.clip_composite_draw(self.frame * 32, 960, 32, 40, 0, 'h', self.x, self.y, 64, 80)
+               Mario_image.clip_composite_draw(self.frame * 32, 960, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
 
     def move(self):
-        if self.status == 1:
+        if self.status == 1: # 상승
             self.y = -(self.ga/2) * (self.t ** 2) + self.g * self.t + self.py
             self.t += 1
             if (self.ga/2) * (self.t ** 2) > self.g * self.t:
                 self.status = -1
-        elif self.status == -1:
+        elif self.status == -1: # 하강
             self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
             self.t += 1
             if self.y < self.py:
@@ -148,13 +151,13 @@ class object:
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
-        elif self.ability == 1: # ?블럭
+        elif self.ability >= 100 and self.ability <= 110: # ?블럭
             object_image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 30:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
-        elif self.ability == 2: # ?블럭 충돌
+        elif self.ability >= 111 and self.ability <= 120: # ?블럭 충돌
             object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 10:
@@ -162,20 +165,20 @@ class object:
                 #self.ability = 99
                 self.frame = (self.frame + 1) % 8
 
-        elif self.ability == 3: # 일반 벽돌
+        elif self.ability == 2: # 일반 벽돌
             object_image.clip_draw(0, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
 
-        elif self.ability == 4: # 빛나는 벽돌(코인 벽돌)
+        elif self.ability == 3: # 빛나는 벽돌(코인 벽돌)
             object_image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
 
-        elif self.ability == 5: # 표정 벽돌 - 1
+        elif self.ability == 4: # 표정 벽돌 - 1
             object_image.clip_draw(0 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
 
-        elif self.ability == 6:  # 표정 벽돌 - 2
+        elif self.ability == 5:  # 표정 벽돌 - 2
             object_image.clip_draw(1 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
             self.fs = self.fs + 1
             if self.fs == 150:
@@ -248,24 +251,41 @@ def mapmove():
 
 
 def enter(): # 생성
-    global mario, coin, Qblock
+    global mario, coin, Qblock, brick, skbrick
     global Mario_image, object_image, map1
-    mario = hero(50, 60)
 
+    ground1 = 65
 
-    coin.append(object(300, 200, 0))
+    mario = hero(50, ground1)
 
-    Qblock.append(object(248, 362, 6))
+    Qblock.append(object(48 * 12, ground1 + 60 * 2, 100))
+    Qblock.append(object(48 * 15, ground1 + 60 * 2, 100))
+    Qblock.append(object(48 * 15 + 32, ground1 + 60 * 2, 100))
+
+    coin.append(object(48 * 22, ground1 + 60 * 1, 0))
+    coin.append(object(48 * 22 + 32, ground1 + 60 * 1 + 32, 0))
+    coin.append(object(48 * 22 + 32 * 2, ground1 + 60 * 1 + 32, 0))
+
+    coin.append(object(48 * 26, ground1 + 60 * 2, 0))
+    coin.append(object(48 * 26 + 32, ground1 + 60 * 2 + 32, 0))
+    coin.append(object(48 * 26 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+
+    skbrick.append(object(48 * 29, ground1 + 60 * 4, 3))
+
+    brick.append(object(48 * 29, ground1 + 60 * 4, 3))
+
 
     Mario_image = load_image('MarioMove.png')
     object_image = load_image('object.png')
     map1 = load_image('1-1.png')
 
 def exit(): # 종료/제거
-    global mario, coin, Qblock
-    del(mario)
-    del(coin)
-    del(Qblock)
+    global mario, coin, Qblock, brick, skbrick
+    del (mario)
+    del (coin)
+    del (Qblock)
+    del (brick)
+    del (skbrick)
 
 def handle_events():
     global mario
@@ -313,6 +333,10 @@ def draw():
     for c in coin:
         c.draw()
     for b in Qblock:
+        b.draw()
+    for b in brick:
+        b.draw()
+    for b in skbrick:
         b.draw()
     update_canvas()
 

@@ -344,8 +344,15 @@ def mapcreate(map , ground1):
         brick.append(object(48 * 94 + 32 * 5, ground1 + 60 * 3, 2))
         brick.append(object(48 * 94 + 32 * 6, ground1 + 60 * 3, 2))
 
-
-
+        brick.append(object(48 * 108 , ground1 + 60 * 2, 2))
+        brick.append(object(48 * 108 + 32, ground1 + 60 * 2, 2))
+        skbrick.append(object(48 * 108 + 32 * 2, ground1 + 60 * 2, 2))
+        Qblock.append(object(48 * 108 + 32 * 3, ground1 + 60 * 2, 100))
+        Qblock.append(object(48 * 108 + 32 * 4, ground1 + 60 * 2, 100))
+        Qblock.append(object(48 * 108 + 32 * 5, ground1 + 60 * 2, 100))
+        Qblock.append(object(48 * 108 + 32 * 6, ground1 + 60 * 2, 100))
+        brick.append(object(48 * 108 + 32 * 7, ground1 + 60 * 2, 2))
+        brick.append(object(48 * 108 + 32 * 8, ground1 + 60 * 2, 2))
 
 
 def mapmove():

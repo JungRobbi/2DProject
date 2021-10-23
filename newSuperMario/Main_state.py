@@ -7,7 +7,6 @@ WINx = 1024
 WINy = 600
 moveWinx = 0
 moveWiny = 0
-maptype = 0
 
 Mario_image = None
 object_image = None
@@ -24,16 +23,16 @@ class hero:
     dir = 0
     herodir = 1
     status = 0
-    xspeed = 0.1
-    xMAX = 3.0
-    xa = 0.01
+    xspeed = 0
+    xMAX = 20.0
+    xa = 0.02
     frame = 0
     fs = 0
     framedir = 0
     py = 0
-    g = 5.0
+    g = 6.0
     t = 0.0
-    ga = 0.06
+    ga = 0.1
     size = [48, 60]
 
     def __init__(self,x, y):
@@ -214,10 +213,10 @@ class monster:
         pass
 
 def enter(): # 생성
-    global Mario_image, object_image, map1, maptype
+    global Mario_image, object_image, map1
+    ground1 = 65
 
-    maptype = 0
-    mapcreate()
+    mapcreate(1, ground1)
 
     Mario_image = load_image('MarioMove.png')
     object_image = load_image('object.png')
@@ -242,12 +241,12 @@ def handle_events():
                 mario.dir += 1
                 mario.frame = 0
                 mario.framedir = 0
-                mario.xspeed = 0.15
+                mario.xspeed = 0
             elif event.key == SDLK_LEFT:
                 mario.dir -= 1
                 mario.frame = 0
                 mario.framedir = 0
-                mario.xspeed = 0.15
+                mario.xspeed = 0
             elif event.key == SDLK_UP and mario.status == 0:
                 mario.py = mario.y
                 mario.status = 1
@@ -288,14 +287,16 @@ def draw():
 
 def pause():
     pass
+
+
 def resume():
     pass
 
-def mapcreate():
-    global mario, coin, Qblock, brick, skbrick, Steelblock, maptype
-    ground1 = 65
 
-    if maptype == 1:
+def mapcreate(map , ground1):
+    global mario, coin, Qblock, brick, skbrick, Steelblock
+
+    if map == 1:
         mario = hero(50, ground1)
         Qblock.append(object(48 * 12, ground1 + 60 * 2, 100))
         Qblock.append(object(48 * 15, ground1 + 60 * 2, 100))
@@ -396,8 +397,10 @@ def mapcreate():
         for k in range(8, 1, -1):
             for i in range(0,k):
                 Steelblock.append(object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
-    elif maptype == 2:
-        pass
+
+
+
+
 
 
 

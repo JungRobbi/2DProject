@@ -217,7 +217,7 @@ class monster:
 def enter(): # 생성
     global Mario_image, object_image, map1, map2, stage
 
-    #stage = 2
+    stage = 2
     mapcreate(stage)
 
     Mario_image = load_image('MarioMove.png')
@@ -277,7 +277,7 @@ def draw():
     if stage == 1:
         map1.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
     elif stage == 2:
-        map2.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
+        map2.clip_draw(0, 0, 4222, 762, 2110 * 2.5 + moveWinx, 378 * 2.5 + moveWiny, 4224 * 2.5, 762 * 2.5)
     for c in coin:
         c.draw()
     for b in Qblock:
@@ -405,7 +405,7 @@ def mapcreate(map):
             for i in range(0,k):
                 Steelblock.append(object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
     elif map == 2:
-        pass
+        mario = hero(50, 60)
 
 
 def mapmove():

@@ -7,10 +7,12 @@ WINx = 1024
 WINy = 600
 moveWinx = 0
 moveWiny = 0
+stage = 1
 
 Mario_image = None
 object_image = None
 map1 = None
+map2 = None
 
 mario = None
 coin = []
@@ -213,14 +215,15 @@ class monster:
         pass
 
 def enter(): # 생성
-    global Mario_image, object_image, map1
-    ground1 = 65
+    global Mario_image, object_image, map1, map2, stage
 
-    mapcreate(1, ground1)
+    #stage = 2
+    mapcreate(stage)
 
     Mario_image = load_image('MarioMove.png')
     object_image = load_image('object.png')
     map1 = load_image('1-1.png')
+    map2 = load_image('1-3.png')
 def exit(): # 종료/제거
     global mario, coin, Qblock, brick, skbrick, Steelblock
     del (mario)
@@ -271,7 +274,10 @@ def update():
 
 def draw():
     clear_canvas()
-    map1.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
+    if stage == 1:
+        map1.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
+    elif stage == 2:
+        map2.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
     for c in coin:
         c.draw()
     for b in Qblock:
@@ -293,10 +299,11 @@ def resume():
     pass
 
 
-def mapcreate(map , ground1):
+def mapcreate(map):
     global mario, coin, Qblock, brick, skbrick, Steelblock
 
     if map == 1:
+        ground1 = 65
         mario = hero(50, ground1)
         Qblock.append(object(48 * 12, ground1 + 60 * 2, 100))
         Qblock.append(object(48 * 15, ground1 + 60 * 2, 100))
@@ -397,11 +404,8 @@ def mapcreate(map , ground1):
         for k in range(8, 1, -1):
             for i in range(0,k):
                 Steelblock.append(object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
-
-
-
-
-
+    elif map == 2:
+        pass
 
 
 def mapmove():

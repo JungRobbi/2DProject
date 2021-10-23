@@ -17,13 +17,14 @@ coin = []
 Qblock = []
 brick = []
 skbrick = []
+Steelblock = []
 
 class hero:
     dir = 0
-    herodir = 0
+    herodir = 1
     status = 0
     xspeed = 0
-    xMAX = 10.0
+    xMAX = 20.0
     xa = 0.02
     frame = 0
     fs = 0
@@ -221,12 +222,13 @@ def enter(): # 생성
     object_image = load_image('object.png')
     map1 = load_image('1-1.png')
 def exit(): # 종료/제거
-    global mario, coin, Qblock, brick, skbrick
+    global mario, coin, Qblock, brick, skbrick, Steelblock
     del (mario)
     del (coin)
     del (Qblock)
     del (brick)
     del (skbrick)
+    del (Steelblock)
 
 def handle_events():
     global mario
@@ -270,7 +272,6 @@ def update():
 def draw():
     clear_canvas()
     map1.clip_draw(0, 0, 4222, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
-    mario.draw()
     for c in coin:
         c.draw()
     for b in Qblock:
@@ -279,6 +280,9 @@ def draw():
         b.draw()
     for b in skbrick:
         b.draw()
+    for b in Steelblock:
+        b.draw()
+    mario.draw()
     update_canvas()
 
 def pause():
@@ -290,7 +294,7 @@ def resume():
 
 
 def mapcreate(map , ground1):
-    global mario, coin, Qblock, brick, skbrick
+    global mario, coin, Qblock, brick, skbrick, Steelblock
 
     if map == 1:
         mario = hero(50, ground1)
@@ -353,6 +357,51 @@ def mapcreate(map , ground1):
         Qblock.append(object(48 * 108 + 32 * 6, ground1 + 60 * 2, 100))
         brick.append(object(48 * 108 + 32 * 7, ground1 + 60 * 2, 2))
         brick.append(object(48 * 108 + 32 * 8, ground1 + 60 * 2, 2))
+
+        Qblock.append(object(48 * 108 + 32 * 3, ground1 + 60 * 4 + 32, 100))
+        Qblock.append(object(48 * 108 + 32 * 4, ground1 + 60 * 4 + 32, 100))
+        Qblock.append(object(48 * 108 + 32 * 5, ground1 + 60 * 4 + 32, 100))
+
+        skbrick.append(object(48 * 125, ground1 + 60 * 2, 2))
+        skbrick.append(object(48 * 127, ground1 + 60 * 2, 2))
+        skbrick.append(object(48 * 129, ground1 + 60 * 2, 2))
+
+        coin.append(object(48 * 136, ground1 + 60 * 2, 0))
+        coin.append(object(48 * 136 + 32, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 136 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 136 + 32 * 3, ground1 + 60 * 2, 0))
+
+        Qblock.append(object(48 * 142, ground1 + 60 * 2, 102))
+
+        brick.append(object(48 * 151 - 37, ground1 + 60 + 20 , 2))
+        brick.append(object(48 * 151 - 5, ground1 + 60 + 20, 2))
+        brick.append(object(48 * 151 + 27, ground1 + 60 + 20 , 2))
+        brick.append(object(48 * 151 + 32 * 2 - 5, ground1 + 60 + 20 , 2))
+
+        Qblock.append(object(48 * 156, ground1 + 60 * 4, 100))
+
+        coin.append(object(48 * 162 + 32, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 162 + 32 * 2, ground1 + 60 * 2 + 32, 0))
+        coin.append(object(48 * 162 + 32 * 3, ground1 + 60 * 2, 0))
+
+        brick.append(object(48 * 175, ground1 + 60 * 2, 2))
+        brick.append(object(48 * 175 + 32, ground1 + 60 * 2, 2))
+        brick.append(object(48 * 175 + 32 * 2, ground1 + 60 * 2, 2))
+        brick.append(object(48 * 175 + 32 * 3, ground1 + 60 * 2, 2))
+
+        brick.append(object(48 * 189, ground1 + 60 * 2, 2))
+        brick.append(object(48 * 189 + 32, ground1 + 60 * 2, 2))
+        brick.append(object(48 * 189 + 32 * 2, ground1 + 60 * 2, 2))
+
+
+        for k in range(8, 1, -1):
+            for i in range(0,k):
+                Steelblock.append(object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
+
+
+
+
+
 
 
 def mapmove():

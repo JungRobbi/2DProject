@@ -63,15 +63,17 @@ class hero:
         if self.framedir == 0:
             if self.fs == fs_deel:
                 self.frame = self.frame + 1
-
+            if self.status != 0:
+                if self.frame > 19:
+                    self.frame = 19
 
             elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
                 if self.frame > 10 and self.xspeed == 3.0:
                     self.frame = 0
                     self.framedir = 0
 
-                if self.frame > 23:
-                    self.frame = 0
+                if self.frame > 27:
+                    self.frame = 4
                     self.framedir = 0
             elif self.dir == 0 and self.status == 0:
                 if self.frame > 22:  # 정지 프레임
@@ -91,6 +93,8 @@ class hero:
 
     def draw(self):
         if self.status != 0: # 점프 등의 특수 상태
+
+
            if self.dir == 0:  # 정지
                if self.herodir == 1:
                    Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1] )
@@ -120,12 +124,12 @@ class hero:
     def move(self):
         if self.status == 1: # 상승
             self.y = -(self.ga/2) * (self.t ** 2) + self.g * self.t + self.py
-            self.t += 1
+            self.t += 0.7
             if (self.ga/2) * (self.t ** 2) > self.g * self.t:
                 self.status = -1
         elif self.status == -1: # 하강
             self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
-            self.t += 1
+            self.t += 0.7
             if self.y < self.py:
                 self.y = self.py
                 self.status = 0
@@ -260,14 +264,21 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_RIGHT:
                 mario.dir += 1
-                mario.frame = 0
                 mario.framedir = 0
                 mario.xspeed = 0
+                if mario.herodir == 1:
+                    mario.frame = 4
+                else:
+                    mario.frame = 0
             elif event.key == SDLK_LEFT:
                 mario.dir -= 1
-                mario.frame = 0
                 mario.framedir = 0
                 mario.xspeed = 0
+                mario.frame = 0
+                if mario.herodir == -1:
+                    mario.frame = 4
+                else:
+                    mario.frame = 0
             elif event.key == SDLK_UP and mario.status == 0:
                 mario.py = mario.y
                 mario.status = 1

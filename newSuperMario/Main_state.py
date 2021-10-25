@@ -100,12 +100,12 @@ class hero:
                         self.frame = 19
 
                 elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
-                    if self.frame > 10 and self.xspeed == 3.0:
-                        self.frame = 0
-                        self.framedir = 0
+                    # if self.frame > 10 and self.xspeed == 3.0:
+                    #     self.frame = 0
+                    #     self.framedir = 0
 
-                    if self.frame > 27:
-                        self.frame = 4
+                    if self.frame > 22:
+                        self.frame = 0
                         self.framedir = 0
                 elif self.dir == 0 and self.status == 0:
                     if self.frame > 20:  # 정지 프레임
@@ -191,17 +191,17 @@ class hero:
                                                         self.size[0], self.size[1])
                 elif self.dir == 1:  # 오른쪽 걸음
                     if self.xspeed == 3.0:
-                        Mario_image.clip_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, self.x, self.y, self.size[0],
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 9 * 40, 32, 40, self.x, self.y, self.size[0],
                                               self.size[1])
                     else:
-                        Mario_image.clip_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, self.x, self.y, self.size[0],
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 9 * 40, 32, 40, self.x, self.y, self.size[0],
                                               self.size[1])
                 elif self.dir == -1:  # 왼쪽 걸음
                     if self.xspeed == 3.0:
-                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, 0, 'h', self.x, self.y,
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 9 * 40, 32, 40, 0, 'h', self.x, self.y,
                                                         self.size[0], self.size[1])
                     else:
-                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, 0, 'h', self.x, self.y,
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 9 * 40, 32, 40, 0, 'h', self.x, self.y,
                                                         self.size[0], self.size[1])
 
     def move(self):

@@ -44,6 +44,8 @@ class hero:
     t = 0.0
     ga = 0.1
     size = [64, 80]
+    grow = 0
+
 
     def __init__(self,x, y):
         self.x = x
@@ -63,31 +65,62 @@ class hero:
 
 
                     # 프레임
-        if self.framedir == 0:
-            if self.fs == fs_deel:
-                self.frame = self.frame + 1
-            if self.status != 0:
-                if self.frame > 19:
-                    self.frame = 19
+        if self.grow == 1:
+            if self.framedir == 0:
+                if self.fs == fs_deel:
+                    self.frame = self.frame + 1
+                if self.status != 0:
+                    if self.frame > 19:
+                        self.frame = 19
 
-            elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
-                if self.frame > 10 and self.xspeed == 3.0:
+                elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
+                    if self.frame > 10 and self.xspeed == 3.0:
+                        self.frame = 0
+                        self.framedir = 0
+
+                    if self.frame > 27:
+                        self.frame = 4
+                        self.framedir = 0
+                elif self.dir == 0 and self.status == 0:
+                    if self.frame > 22:  # 정지 프레임
+                        self.frame = 22
+                        self.framedir = 1
+            else:
+                if self.fs == fs_deel:
+                    self.frame = self.frame - 1
+                if self.frame <= 0:
+                    self.frame = 0
+                    self.framedir = 0
+        elif self.grow == 0:
+            if self.framedir == 0:
+                if self.fs == fs_deel:
+                    self.frame = self.frame + 1
+                if self.status != 0:
+                    if self.frame > 19:
+                        self.frame = 19
+
+                elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
+                    if self.frame > 10 and self.xspeed == 3.0:
+                        self.frame = 0
+                        self.framedir = 0
+
+                    if self.frame > 27:
+                        self.frame = 4
+                        self.framedir = 0
+                elif self.dir == 0 and self.status == 0:
+                    if self.frame > 20:  # 정지 프레임
+                        self.frame = 0
+                        self.framedir = 0
+            else:
+                if self.fs == fs_deel:
+                    self.frame = self.frame - 1
+                if self.frame <= 0:
                     self.frame = 0
                     self.framedir = 0
 
-                if self.frame > 27:
-                    self.frame = 4
-                    self.framedir = 0
-            elif self.dir == 0 and self.status == 0:
-                if self.frame > 22:  # 정지 프레임
-                    self.frame = 22
-                    self.framedir = 1
-        else:
-            if self.fs == fs_deel:
-                self.frame = self.frame - 1
-            if self.frame <= 0:
-                self.frame = 0
-                self.framedir = 0
+
+
+
         self.fs = self.fs + 1
         if self.fs > fs_deel:
             self.fs = 0
@@ -95,34 +128,81 @@ class hero:
         self.move()
 
     def draw(self):
-        if self.status != 0: # 점프 등의 특수 상태
 
-
-           if self.dir == 0:  # 정지
-               if self.herodir == 1:
-                   Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1] )
-               else:
-                   Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
-           if self.dir == 1:
-               Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1])
-           elif self.dir == -1:
-               Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
-        else: # 기본 이동 스프라이트
-           if self.dir == 0:  # 정지
-               if self.herodir == 1:
-                   Mario_image.clip_draw(self.frame * 32, 1000 - 1 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1])
-               else:
-                   Mario_image.clip_composite_draw(self.frame * 32, 1000 - 1 * 40, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
-           elif self.dir == 1:  # 오른쪽 걸음
-               if self.xspeed == 3.0:
-                   Mario_image.clip_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1])
-               else:
-                   Mario_image.clip_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, self.x, self.y, self.size[0],self.size[1])
-           elif self.dir == -1:  # 왼쪽 걸음
-               if self.xspeed == 3.0:
-                   Mario_image.clip_composite_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, 0, 'h', self.x, self.y,self.size[0], self.size[1])
-               else:
-                   Mario_image.clip_composite_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, 0, 'h', self.x, self.y, self.size[0],self.size[1])
+        if self.grow == 1: # 성장 후
+            if self.status != 0:  # 점프 등의 특수 상태
+                if self.dir == 0:  # 정지
+                    if self.herodir == 1:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+                if self.dir == 1:
+                    Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],
+                                          self.size[1])
+                elif self.dir == -1:
+                    Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                    self.size[0], self.size[1])
+            else:  # 기본 이동 스프라이트
+                if self.dir == 0:  # 정지
+                    if self.herodir == 1:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 1 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 1 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+                elif self.dir == 1:  # 오른쪽 걸음
+                    if self.xspeed == 3.0:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                    else:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                elif self.dir == -1:  # 왼쪽 걸음
+                    if self.xspeed == 3.0:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+        elif self.grow == 0: # 성장 전
+            if self.status != 0:  # 점프 등의 특수 상태
+                if self.dir == 0:  # 정지
+                    if self.herodir == 1:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+                if self.dir == 1:
+                    Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],
+                                          self.size[1])
+                elif self.dir == -1:
+                    Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                    self.size[0], self.size[1])
+            else:  # 기본 이동 스프라이트
+                if self.dir == 0:  # 정지
+                    if self.herodir == 1:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 8 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 8 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+                elif self.dir == 1:  # 오른쪽 걸음
+                    if self.xspeed == 3.0:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                    else:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, self.x, self.y, self.size[0],
+                                              self.size[1])
+                elif self.dir == -1:  # 왼쪽 걸음
+                    if self.xspeed == 3.0:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 3 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
 
     def move(self):
         if self.status == 1: # 상승

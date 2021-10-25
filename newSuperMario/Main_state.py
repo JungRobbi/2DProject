@@ -23,6 +23,9 @@ brick = []
 skbrick = []
 Steelblock = []
 
+#item
+item = []
+
 #monster
 goomba = []
 
@@ -162,10 +165,6 @@ class object:
         self.y = y
         self.ability = ability
 
-    def update(self):
-      pass
-
-
     def draw(self):
         if self.ability == 0: # 코인
             object_image.clip_draw(self.frame * 24 + 96, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny , 48, 48)
@@ -215,6 +214,49 @@ class object:
             # 아이템 블럭 사용 후 블럭 (아무효과 X)
             object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
 
+class object_item:
+    dir = 1
+
+    def __init__(self, x, y, ability=None):
+        self.x = x
+        self.y = y
+        self.ability = ability
+        if self.ability == 3:
+            self.status = 1
+            self.ga = 0.1
+            self.g = 6.0
+            self.t = 0
+            self.py = self.y
+
+    def draw(self):
+        if self.ability == 0:  # 일반 버섯
+            object_image.clip_draw(0, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+        elif self.ability == 1:  # 특수 버섯
+            object_image.clip_draw(40 * 1, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+        elif self.ability == 2:  # 꽃
+            object_image.clip_draw(40 * 2, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+        elif self.ability == 3:  # 별
+            object_image.clip_draw(40 * 3, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+
+    def move(self):
+        if self.ability == 3:
+            if self.status == 1:  # 상승
+                self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
+                self.t += 0.5
+                if (self.ga / 2) * (self.t ** 2) > self.g * self.t:
+                    self.status = -1
+            elif self.status == -1:  # 하강
+                self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
+                self.t += 0.5
+                if self.y < self.py:
+                    self.y = self.py
+                    self.status = 1
+                    self.t = 0
+
+        if self.ability != 2:
+            self.x += self.dir * 0.9
+
+
 class monster:
     frame = 0
     fs = 0
@@ -246,6 +288,7 @@ def enter(): # 생성
     Monster_image = load_image('Monster.png')
     map1 = load_image('1-1.png')
     map2 = load_image('1-3.png')
+
 def exit(): # 종료/제거
     global mario, coin, Qblock, brick, skbrick, Steelblock
     del (mario)
@@ -299,6 +342,10 @@ def handle_events():
 def update():
     mapmove()
     mario.update()
+
+    for i in item:
+        i.move()
+
     delay(0.001)
 
 def draw():
@@ -317,15 +364,17 @@ def draw():
         b.draw()
     for b in Steelblock:
         b.draw()
+    for i in item:
+        i.draw()
     for m in goomba:
         m.draw()
 
     mario.draw()
     update_canvas()
 
+
 def pause():
     pass
-
 
 def resume():
     pass
@@ -439,7 +488,11 @@ def mapcreate(map):
                 Steelblock.append(object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
 
 
-        goomba.append(monster(48 * 10, ground1, 0))
+        goomba.append(monster(48 * 10, ground1 - 10, 0))
+        item.append(object_item(48 * 3, ground1 - 15, 0))
+        item.append(object_item(48 * 4, ground1 - 15, 1))
+        item.append(object_item(48 * 5, ground1 - 15, 2))
+        item.append(object_item(48 * 6, ground1 - 15, 3))
 
     elif map == 2:
         mario = hero(50, 60)
@@ -481,5 +534,6 @@ def mapmove():
         moveWinx = 0
     if moveWinx < mapmax:
         moveWinx = mapmax
+        # 완료
 
 

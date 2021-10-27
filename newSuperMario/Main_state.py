@@ -45,6 +45,7 @@ class hero:
     ga = 0.1
     size = [64, 80]
     grow = 0
+    sit = 0
 
 
     def __init__(self,x, y):
@@ -65,13 +66,16 @@ class hero:
 
 
                     # 프레임
-        if self.grow == 1:
+        if self.grow == 1: # 성장 후
             if self.framedir == 0:
                 if self.fs == fs_deel:
                     self.frame = self.frame + 1
-                if self.status != 0:
+                if self.status == 1 or self.status == -1:
                     if self.frame > 19:
                         self.frame = 19
+                elif self.status == 2:
+                    if self.frame > 3:
+                        self.frame = 3
 
                 elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
                     if self.frame > 10 and self.xspeed == 3.0:
@@ -91,13 +95,21 @@ class hero:
                 if self.frame <= 0:
                     self.frame = 0
                     self.framedir = 0
-        elif self.grow == 0:
+
+        elif self.grow == 0: # 성장 전
             if self.framedir == 0:
                 if self.fs == fs_deel:
                     self.frame = self.frame + 1
-                if self.status != 0:
+                    if self.sit == 1 and self.status == -1:
+                        if self.status + 1 == 0:
+                            self.frame = 0
+
+                if self.status == 1 or self.status == -1:
                     if self.frame > 20:
                         self.frame = 20
+                elif self.sit == 1 and self.status == 0:
+                    if self.frame > 2:
+                        self.frame = 2
 
                 elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
                     if self.frame > 9 and self.xspeed == 3.0:
@@ -131,6 +143,8 @@ class hero:
 
         if self.grow == 1: # 성장 후
             if self.status != 0:  # 점프 등의 특수 상태
+
+
                 if self.dir == 0:  # 정지
                     if self.herodir == 1:
                         Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],
@@ -138,7 +152,7 @@ class hero:
                     else:
                         Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y,
                                                         self.size[0], self.size[1])
-                if self.dir == 1:
+                elif self.dir == 1:
                     Mario_image.clip_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, self.x, self.y, self.size[0],
                                           self.size[1])
                 elif self.dir == -1:
@@ -175,14 +189,22 @@ class hero:
                     else:
                         Mario_image.clip_composite_draw(self.frame * 32, 1000 - 11 * 40, 32, 40, 0, 'h', self.x, self.y,
                                                         self.size[0], self.size[1])
-                if self.dir == 1:
+                elif self.dir == 1:
                     Mario_image.clip_draw(self.frame * 32, 1000 - 11 * 40, 32, 40, self.x, self.y, self.size[0],
                                           self.size[1])
                 elif self.dir == -1:
                     Mario_image.clip_composite_draw(self.frame * 32, 1000 - 11 * 40, 32, 40, 0, 'h', self.x, self.y,
                                                     self.size[0], self.size[1])
             else:  # 기본 이동 스프라이트
-                if self.dir == 0:  # 정지
+                if self.sit == 1:
+                    if self.herodir == 1:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 12 * 40, 32, 40, self.x, self.y, self.size[0],
+                                          self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 12 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+
+                elif self.dir == 0:  # 정지
                     if self.herodir == 1:
                         Mario_image.clip_draw(self.frame * 32, 1000 - 8 * 40, 32, 40, self.x, self.y, self.size[0],
                                               self.size[1])
@@ -220,20 +242,22 @@ class hero:
                 self.frame = 0
             # 점프 구현
 
-        self.x += self.dir * self.xspeed
+        if self.sit != 1: # 앉기 제외
+            self.x += self.dir * self.xspeed
 
-        if self.dir == 0:
-            self.xspeed -= self.xa*2
-            if self.xspeed < 0:
-                self.xspeed = 0
-            self.x += self.herodir * self.xspeed
-        else:
-            if self.xspeed < self.xMAX:
-                self.xspeed += self.xa
-            elif self.xspeed > self.xMAX:
-                self.xspeed = self.xMAX
-                self.frame = 0
-                # x 이동
+            if self.dir == 0:
+                self.xspeed -= self.xa * 2
+                if self.xspeed < 0:
+                    self.xspeed = 0
+                self.x += self.herodir * self.xspeed
+            else:
+                if self.xspeed < self.xMAX:
+                    self.xspeed += self.xa
+                elif self.xspeed > self.xMAX:
+                    self.xspeed = self.xMAX
+                    self.frame = 0
+                    # x 이동
+
 
 class object:
     global moveWinx; global moveWiny
@@ -395,6 +419,7 @@ def handle_events():
                     mario.frame = 4
                 else:
                     mario.frame = 0
+                mario.herodir = 1
             elif event.key == SDLK_LEFT:
                 mario.dir -= 1
                 mario.framedir = 0
@@ -404,22 +429,27 @@ def handle_events():
                     mario.frame = 4
                 else:
                     mario.frame = 0
-            elif event.key == SDLK_UP and mario.status == 0:
+                mario.herodir = -1
+
+            elif event.key == SDLK_UP and (mario.status == 0 or mario.status == -2):
                 mario.py = mario.y
                 mario.status = 1
                 mario.frame = 0
                 mario.framedir = 0
             elif event.key == SDLK_DOWN:
-                pass
+                mario.sit = 1
+                mario.frame = 0
+                mario.xspeed = 0
             elif event.key == SDLK_ESCAPE:
                 game_framework.change_state(Title_state)
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 mario.dir -= 1
-                mario.herodir = 1
             elif event.key == SDLK_LEFT:
                 mario.dir += 1
-                mario.herodir = -1
+            if event.key == SDLK_DOWN:
+                mario.sit = 0
+                mario.frame = 0
 
 def update():
     mapmove()

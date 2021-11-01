@@ -44,7 +44,7 @@ class hero:
     t = 0.0
     ga = 0.1
     size = [64, 80]
-    grow = 0
+    grow = 1
     sit = 0
 
 
@@ -54,8 +54,12 @@ class hero:
 
     def update(self):
 
-        if self.status != 0:
+        if self.status == 1 or self.status == -1:
             fs_deel = 7
+        elif self.status >= 99:
+            fs_deel = 8
+        elif self.sit == 1:
+            fs_deel = 15
         elif self.dir == -1 or self.dir == 1:
             if self.xspeed == 3.0:
                 fs_deel = 6
@@ -70,12 +74,21 @@ class hero:
             if self.framedir == 0:
                 if self.fs == fs_deel:
                     self.frame = self.frame + 1
+                    if self.sit == 1 and self.status == -1:
+                        if self.status + 1 == 0:
+                            self.frame = 0
+
                 if self.status == 1 or self.status == -1:
                     if self.frame > 19:
                         self.frame = 19
-                elif self.status == 2:
-                    if self.frame > 3:
-                        self.frame = 3
+                elif self.status >= 99:
+                    if self.status == 199:
+                        self.status = 0
+                    elif self.frame > 12:
+                        self.frame = 0
+                elif self.sit == 1 and self.status == 0:
+                    if self.frame >= 3:
+                        self.frame = 2
 
                 elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
                     if self.frame > 10 and self.xspeed == 3.0:
@@ -108,7 +121,7 @@ class hero:
                     if self.frame > 20:
                         self.frame = 20
                 elif self.sit == 1 and self.status == 0:
-                    if self.frame > 2:
+                    if self.frame >= 3:
                         self.frame = 2
 
                 elif self.dir == -1 or self.dir == 1:  # 나머지 프레임
@@ -142,8 +155,7 @@ class hero:
     def draw(self):
 
         if self.grow == 1: # 성장 후
-            if self.status != 0:  # 점프 등의 특수 상태
-
+            if self.status == 1 or self.status == -1:  # 점프
 
                 if self.dir == 0:  # 정지
                     if self.herodir == 1:
@@ -158,8 +170,20 @@ class hero:
                 elif self.dir == -1:
                     Mario_image.clip_composite_draw(self.frame * 32, 1000 - 4 * 40, 32, 40, 0, 'h', self.x, self.y,
                                                     self.size[0], self.size[1])
+            elif self.status == 99: # 죽음
+                Mario_image.clip_draw(self.frame * 32, 1000 - 7 * 40, 32, 40, self.x, self.y, self.size[0],
+                                      self.size[1])
+
             else:  # 기본 이동 스프라이트
-                if self.dir == 0:  # 정지
+                if self.sit == 1:
+                    if self.herodir == 1:
+                        Mario_image.clip_draw(self.frame * 32, 1000 - 5 * 40, 32, 40, self.x, self.y, self.size[0],
+                                          self.size[1])
+                    else:
+                        Mario_image.clip_composite_draw(self.frame * 32, 1000 - 5 * 40, 32, 40, 0, 'h', self.x, self.y,
+                                                        self.size[0], self.size[1])
+
+                elif self.dir == 0:  # 정지
                     if self.herodir == 1:
                         Mario_image.clip_draw(self.frame * 32, 1000 - 1 * 40, 32, 40, self.x, self.y, self.size[0],
                                               self.size[1])
@@ -181,7 +205,7 @@ class hero:
                         Mario_image.clip_composite_draw(self.frame * 32, 1000 - 2 * 40, 32, 40, 0, 'h', self.x, self.y,
                                                         self.size[0], self.size[1])
         elif self.grow == 0: # 성장 전
-            if self.status != 0:  # 점프 등의 특수 상태
+            if self.status == 1 or self.status == -1:  # 점프
                 if self.dir == 0:  # 정지
                     if self.herodir == 1:
                         Mario_image.clip_draw(self.frame * 32, 1000 - 11 * 40, 32, 40, self.x, self.y, self.size[0],
@@ -410,7 +434,7 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN:
+        elif event.type == SDL_KEYDOWN and mario.status != 99:
             if event.key == SDLK_RIGHT:
                 mario.dir += 1
                 mario.framedir = 0
@@ -419,6 +443,7 @@ def handle_events():
                     mario.frame = 4
                 else:
                     mario.frame = 0
+
                 mario.herodir = 1
             elif event.key == SDLK_LEFT:
                 mario.dir -= 1
@@ -429,11 +454,12 @@ def handle_events():
                     mario.frame = 4
                 else:
                     mario.frame = 0
-                mario.herodir = -1
 
-            elif event.key == SDLK_UP and (mario.status == 0 or mario.status == -2):
+                mario.herodir = -1
+            elif event.key == SDLK_UP and mario.status == 0:
                 mario.py = mario.y
                 mario.status = 1
+                mario.sit = 0
                 mario.frame = 0
                 mario.framedir = 0
             elif event.key == SDLK_DOWN:
@@ -442,14 +468,13 @@ def handle_events():
                 mario.xspeed = 0
             elif event.key == SDLK_ESCAPE:
                 game_framework.change_state(Title_state)
-        elif event.type == SDL_KEYUP:
+        elif event.type == SDL_KEYUP and mario.status != 99:
             if event.key == SDLK_RIGHT:
                 mario.dir -= 1
             elif event.key == SDLK_LEFT:
                 mario.dir += 1
             if event.key == SDLK_DOWN:
                 mario.sit = 0
-                mario.frame = 0
 
 def update():
     mapmove()

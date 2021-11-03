@@ -1,4 +1,23 @@
 from pico2d import *
+from Map_def import *
+
+#hero
+mario = None
+#block
+coin = []
+Qblock = []
+brick = []
+skbrick = []
+Steelblock = []
+
+#item
+item = []
+
+#monster
+goomba = []
+
+moveWinx = 0
+moveWiny = 0
 
 class hero:
     image = None
@@ -258,3 +277,140 @@ class hero:
                     self.xspeed = self.xMAX
                     self.frame = 0
                     # x 이동
+
+
+class object:
+    global moveWinx, moveWiny
+    image = None
+    frame = 0
+    fs = 0
+    framedir = 0
+
+    def __init__(self, x, y, ability=None):
+        self.x = x
+        self.y = y
+        self.ability = ability
+        if object.image == None:
+            object.image = load_image('object.png')
+
+    def draw(self):
+        if self.ability == 0:  # 코인
+            self.image.clip_draw(self.frame * 24 + 96, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny, 48,
+                                   48)
+            self.fs = self.fs + 1
+            if self.fs == 20:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 4
+        elif self.ability >= 100 and self.ability <= 110:  # ?블럭
+            self.image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 30:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 4
+        elif self.ability >= 111 and self.ability <= 120:  # ?블럭 충돌
+            self.image.clip_draw(self.frame * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 10:
+                self.fs = 0
+                # self.ability = 99
+                self.frame = (self.frame + 1) % 8
+
+        elif self.ability == 2:  # 일반 벽돌
+            self.image.clip_draw(0, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+
+        elif self.ability == 3:  # 빛나는 벽돌(코인 벽돌)
+            self.image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 20:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 4
+
+        elif self.ability == 4:  # 표정 벽돌 - 1
+            self.image.clip_draw(0 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+
+        elif self.ability == 5:  # 표정 벽돌 - 2
+            self.image.clip_draw(1 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 150:
+                self.fs = 0
+                self.ability = 5
+
+        elif self.ability == 98:
+            # 철 블럭 (아무효과 X)
+            self.image.clip_draw(9 * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+
+        elif self.ability == 99:
+            # 아이템 블럭 사용 후 블럭 (아무효과 X)
+            self.image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+
+
+class object_item:
+    global moveWinx, moveWiny
+    image = None
+    dir = 1
+
+    def __init__(self, x, y, ability=None):
+        self.x = x
+        self.y = y
+        self.ability = ability
+        if object_item.image == None:
+            object_item.image = load_image('object.png')
+
+        if self.ability == 3:
+            self.status = 1
+            self.ga = 0.1
+            self.g = 6.0
+            self.t = 0
+            self.py = self.y
+
+    def draw(self):
+        if self.ability == 0:  # 일반 버섯
+            self.image.clip_draw(0, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+        elif self.ability == 1:  # 특수 버섯
+            self.image.clip_draw(40 * 1, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+        elif self.ability == 2:  # 꽃
+            self.image.clip_draw(40 * 2, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+        elif self.ability == 3:  # 별
+            self.image.clip_draw(40 * 3, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+
+    def move(self):
+        if self.ability == 3:
+            if self.status == 1:  # 상승
+                self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
+                self.t += 0.5
+                if (self.ga / 2) * (self.t ** 2) > self.g * self.t:
+                    self.status = -1
+            elif self.status == -1:  # 하강
+                self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
+                self.t += 0.5
+                if self.y < self.py:
+                    self.y = self.py
+                    self.status = 1
+                    self.t = 0
+
+        if self.ability != 2:
+            self.x += self.dir * 0.9
+
+
+class monster:
+    global moveWinx, moveWiny
+    image = None
+    frame = 0
+    fs = 0
+    framedir = 0
+
+    def __init__(self, x, y, tribe):
+        self.x = x
+        self.y = y
+        self.tribe = tribe
+        if monster.image == None:
+            monster.image = load_image('Monster.png')
+
+    def draw(self):
+        if self.tribe == 0:  # 굼바
+            self.image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            self.fs = self.fs + 1
+            if self.fs == 18:
+                self.fs = 0
+                self.frame = (self.frame + 1) % 9
+

@@ -86,6 +86,7 @@ class hero:
                         self.status = 0
                     elif self.frame > 12:
                         self.frame = 0
+
                 elif self.sit == 1 and self.status == 0:
                     if self.frame >= 3:
                         self.frame = 2
@@ -434,7 +435,7 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN and mario.status != 99:
+        elif event.type == SDL_KEYDOWN and mario.status < 99:
             if event.key == SDLK_RIGHT:
                 mario.dir += 1
                 mario.framedir = 0
@@ -663,14 +664,11 @@ def mapmove():
             moveWinx -= mario.xspeed
         else:
             moveWinx -= mario.xspeed*2
+
         mario.x -= mario.xspeed*2
         if mario.x < WINx * 2 / 5:
             mario.x = WINx * 2 / 5
 
-    if moveWinx > 0:
-        moveWinx = 0
-    if moveWinx < mapmax:
-        moveWinx = mapmax
         # 완료
 
 

@@ -198,6 +198,7 @@ class hero:
                                                     self.size[0], self.size[1])
             else:  # 기본 이동 스프라이트
                 if self.sit == 1:
+
                     if self.herodir == 1:
                         self.image.clip_draw(self.frame * 32, 1000 - 19 * 40, 32, 40, self.x, self.y, self.size[0],
                                           self.size[1])
@@ -262,18 +263,24 @@ class hero:
 
     def contact_check(self, obj):
         Qblock_sizex = 16
-        Qblock_sizey = 20
+        Qblock_sizey = 16
+        if self.grow == 0:
+            if (self.x - 16 <= obj.x + (Qblock_sizex)) and (
+                    self.x + 16 >= obj.x - (Qblock_sizex)) and (
+                    self.y - 32 <= obj.y + (Qblock_sizey)) and (
+                    self.y + 8 >= obj.y - (Qblock_sizey)):
 
-        if (self.x - (Qblock_sizex) <= obj.x + (Qblock_sizex)) and (
-                self.x + (Qblock_sizex) >= obj.x - (Qblock_sizex)) and (
-                (self.y - 20) - (Qblock_sizey) <= obj.y + (Qblock_sizey)) and (
-                (self.y - 20) + (Qblock_sizey) >= obj.y - (Qblock_sizey)):
+                self.x -= self.dir * self.xspeed
+                if self.dir == 0:
+                    self.x -= self.herodir * self.xspeed
 
-            self.x -= self.dir * self.xspeed
-            if self.dir == 0:
-                self.x -= self.herodir * self.xspeed
-
-            if self.status == 1:
-                self.status = -1
+                if self.status == 1:
+                    self.status = -1
+                elif self.status == -1:
+                    self.py = obj.y + (Qblock_sizey) + 33
+                    self.y = self.py
+                    self.status = 0
+                    self.t = 0
+                    self.frame = 0
 
 

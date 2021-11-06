@@ -253,6 +253,7 @@ def update():
 
     for i in item:
         i.move()
+    debug_print('t :' + str(mario.t))
 
     delay(0.001)
 

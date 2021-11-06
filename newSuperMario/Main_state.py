@@ -248,7 +248,7 @@ def update():
     mapmove()
 
     mario.update()
-    for i in grounds:
+    for i in Qblock:
         mario.contact_check(i)
 
     for i in item:
@@ -299,8 +299,8 @@ def mapcreate(map):
 
         grounds.append(Ground(0, 0, 2000, 65))
 
-        Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
-        Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))
+        # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
+        # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))
         Qblock.append(object(48 * 8, ground1, 100))
 
         Qblock.append(object(48 * 12, ground1 + 60 * 2, 100))

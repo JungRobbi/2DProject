@@ -16,7 +16,10 @@ Monster_image = None
 map1 = None
 map2 = None
 
+#hero
 mario = None
+#ground
+grounds = []
 #block
 coin = []
 Qblock = []
@@ -38,25 +41,29 @@ class object:
     framedir = 0
 
     def __init__(self,x, y, ability = None):
-        self.x = x
-        self.y = y
+        self.crex = x
+        self.crey = y
+        self.x = self.crex
+        self.y = self.crey
         self.ability = ability
+        if ability >= 0:
+            self.size = [48, 48]
 
     def draw(self):
         if self.ability == 0: # 코인
-            object_image.clip_draw(self.frame * 24 + 96, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny , 48, 48)
+            object_image.clip_draw(self.frame * 24 + 96, 1000 - 24, 24, 24, self.x, self.y , self.size[0], self.size[1])
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability >= 100 and self.ability <= 110: # ?블럭
-            object_image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
             self.fs = self.fs + 1
             if self.fs == 30:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
         elif self.ability >= 111 and self.ability <= 120: # ?블럭 충돌
-            object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x, self.y , self.size[0], self.size[1])
             self.fs = self.fs + 1
             if self.fs == 10:
                 self.fs = 0
@@ -64,20 +71,20 @@ class object:
                 self.frame = (self.frame + 1) % 8
 
         elif self.ability == 2: # 일반 벽돌
-            object_image.clip_draw(0, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(0, 1000 - 24 * 3, 24, 24, self.x, self.y, self.size[0], self.size[1])
 
         elif self.ability == 3: # 빛나는 벽돌(코인 벽돌)
-            object_image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(self.frame * 24, 1000 - 24 * 3, 24, 24, self.x, self.y , self.size[0], self.size[1])
             self.fs = self.fs + 1
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
 
         elif self.ability == 4: # 표정 벽돌 - 1
-            object_image.clip_draw(0 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(0 * 24, 1000 - 24 * 4, 24, 24, self.x, self.y , self.size[0], self.size[1])
 
         elif self.ability == 5:  # 표정 벽돌 - 2
-            object_image.clip_draw(1 * 24, 1000 - 24 * 4, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(1 * 24, 1000 - 24 * 4, 24, 24, self.x, self.y , self.size[0], self.size[1])
             self.fs = self.fs + 1
             if self.fs == 150:
                 self.fs = 0
@@ -85,11 +92,14 @@ class object:
 
         elif self.ability == 98:
             # 철 블럭 (아무효과 X)
-            object_image.clip_draw(9 * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(9 * 24, 1000 - 24 * 2, 24, 24, self.x , self.y, self.size[0], self.size[1])
 
         elif self.ability == 99:
             # 아이템 블럭 사용 후 블럭 (아무효과 X)
-            object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x + moveWinx, self.y + moveWiny, 48, 48)
+            object_image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x , self.y, self.size[0], self.size[1])
+
+        self.x = self.crex + moveWinx
+        self.y = self.crey + moveWiny
 
 class object_item:
     dir = 1
@@ -105,15 +115,18 @@ class object_item:
             self.t = 0
             self.py = self.y
 
+        if ability >= 0:
+            self.size = [32, 32]
+
     def draw(self):
         if self.ability == 0:  # 일반 버섯
-            object_image.clip_draw(0, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+            object_image.clip_draw(0, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
         elif self.ability == 1:  # 특수 버섯
-            object_image.clip_draw(40 * 1, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+            object_image.clip_draw(40 * 1, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
         elif self.ability == 2:  # 꽃
-            object_image.clip_draw(40 * 2, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+            object_image.clip_draw(40 * 2, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
         elif self.ability == 3:  # 별
-            object_image.clip_draw(40 * 3, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, 32, 32)
+            object_image.clip_draw(40 * 3, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
 
     def move(self):
         if self.ability == 3:
@@ -153,6 +166,15 @@ class monster:
                 self.frame = (self.frame + 1) % 9
 
         pass
+
+class Ground:
+
+    def __init__(self, leftx, lefty, rightx, righty):
+        self.x = rightx - leftx
+        self.y = righty - lefty
+
+        self.size = [self.x - leftx, self.y - lefty]
+
 
 def enter(): # 생성
     global Mario_image, object_image, Monster_image, map1, map2, stage
@@ -224,7 +246,10 @@ def handle_events():
 
 def update():
     mapmove()
+
     mario.update()
+    for i in grounds:
+        mario.contact_check(i)
 
     for i in item:
         i.move()
@@ -270,6 +295,14 @@ def mapcreate(map):
     if map == 1:
         ground1 = 65
         mario = Mario_class.hero(50, ground1)
+
+
+        grounds.append(Ground(0, 0, 2000, 65))
+
+        Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
+        Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))
+        Qblock.append(object(48 * 8, ground1, 100))
+
         Qblock.append(object(48 * 12, ground1 + 60 * 2, 100))
         Qblock.append(object(48 * 15, ground1 + 60 * 2, 100))
         Qblock.append(object(48 * 15 + 32, ground1 + 60 * 2, 100))

@@ -258,3 +258,21 @@ class hero:
                     self.xspeed = self.xMAX
                     self.frame = 0
                     # x 이동
+
+
+    def contact_check(self, obj):
+        Qblock_sizex = 16
+        Qblock_sizey = 20
+        if (self.x - (Qblock_sizex) <= obj.x + (Qblock_sizex)) and (
+                self.x + (Qblock_sizex) >= obj.x - (Qblock_sizex)) and (
+                (self.y + 20) - (Qblock_sizey) <= obj.y + (Qblock_sizey)) and (
+                (self.y + 20) + (Qblock_sizey) >= obj.y - (Qblock_sizey)):
+
+            self.x -= self.dir * self.xspeed
+            if self.dir == 0:
+                self.x -= self.herodir * self.xspeed
+
+            if self.status == 1:
+                self.status = -1
+
+

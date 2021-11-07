@@ -170,9 +170,9 @@ class monster:
 class Ground:
 
     def __init__(self, leftx, lefty, rightx, righty):
-        self.x = rightx - leftx
-        self.y = righty - lefty
-
+        self.x = (rightx + leftx) / 2
+        self.y = (righty + lefty) / 2
+        self.ability = 999
         self.size = [self.x - leftx, self.y - lefty]
 
 
@@ -248,7 +248,7 @@ def update():
     mapmove()
 
     mario.update()
-    for i in Qblock:
+    for i in grounds + Qblock:
         mario.contact_check(i)
 
     for i in item:
@@ -295,10 +295,10 @@ def mapcreate(map):
 
     if map == 1:
         ground1 = 65
-        mario = Mario_class.hero(50, ground1)
+        mario = Mario_class.hero(50, 65)
 
 
-        grounds.append(Ground(0, 0, 2000, 65))
+        grounds.append(Ground(0, 0, 2000, 40))
 
         # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
         # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))

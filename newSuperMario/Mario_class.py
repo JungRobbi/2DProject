@@ -12,7 +12,7 @@ class hero:
     fs = 0
     framedir = 0
     py = 0
-    g = 6.0
+    g = 5.0
     t = 0.0
     ga = 0.1
     size = [64, 80]
@@ -230,17 +230,17 @@ class hero:
 
     def move(self):
         if self.status == 1: # 상승
-            self.y = -(self.ga/2) * (self.t ** 2) + self.g * self.t + self.py
-            self.t += 0.7
-            if (self.ga/2) * (self.t ** 2) > self.g * self.t:
+            self.y += self.g
+            self.g = self.g - self.ga
+            if self.g <= 0:
                 self.status = -1
         elif self.status == -1: # 하강
-            self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
-            self.t += 0.7
+            self.y -= self.g
+            self.g = self.g + self.ga
             if self.y < self.py:
                 self.y = self.py
                 self.status = 0
-                self.t = 0
+                self.g = 5.0
                 self.frame = 0
             # 점프 구현
 
@@ -268,7 +268,9 @@ class hero:
             if (self.x - 16 <= obj.x + (Qblock_sizex)) and (
                     self.x + 16 >= obj.x - (Qblock_sizex)) and (
                     self.y - 32 <= obj.y + (Qblock_sizey)) and (
-                    self.y + 8 >= obj.y - (Qblock_sizey)):
+                    self.y + 8 >= obj.y - (Qblock_sizey) and(
+                obj.ability < 999
+            )):
 
                 self.x -= self.dir * self.xspeed
                 if self.dir == 0:
@@ -282,5 +284,24 @@ class hero:
                     self.status = 0
                     self.t = 0
                     self.frame = 0
+            elif (self.x - 16 <= obj.x + (obj.size[0])) and (
+                    self.x + 16 >= obj.x - (obj.size[0])) and (
+                    self.y - 32 <= obj.y + (obj.size[1])) and (
+                    self.y + 8 >= obj.y - (obj.size[1]) and(
+                obj.ability == 999  # ground
+            )):
+                self.x -= self.dir * self.xspeed
+                if self.dir == 0:
+                    self.x -= self.herodir * self.xspeed
+
+                if self.status == 1:
+                    self.status = -1
+                elif self.status == -1:
+                    self.py = obj.y + (obj.size[1]) + 33
+                    self.y = self.py
+                    self.status = 0
+                    self.t = 0
+                    self.frame = 0
+
 
 

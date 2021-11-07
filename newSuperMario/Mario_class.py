@@ -13,7 +13,6 @@ class hero:
     framedir = 0
     py = 0
     g = 4.5
-    t = 0.0
     ga = 0.05
     size = [64, 80]
     grow = 0
@@ -308,6 +307,8 @@ class hero:
                     self.g = 4.5
                     self.t = 0
                     self.frame = 0
+
+
 
 
 

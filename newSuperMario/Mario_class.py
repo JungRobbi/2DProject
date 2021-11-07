@@ -12,9 +12,9 @@ class hero:
     fs = 0
     framedir = 0
     py = 0
-    g = 5.0
+    g = 4.5
     t = 0.0
-    ga = 0.1
+    ga = 0.05
     size = [64, 80]
     grow = 0
     sit = 0
@@ -240,7 +240,7 @@ class hero:
             if self.y < self.py:
                 self.y = self.py
                 self.status = 0
-                self.g = 5.0
+                self.g = 4.5
                 self.frame = 0
             # 점프 구현
 
@@ -277,13 +277,18 @@ class hero:
                     self.x -= self.herodir * self.xspeed
 
                 if self.status == 1:
+                    self.y -= self.g
+                    self.g = self.g + self.ga
                     self.status = -1
                 elif self.status == -1:
                     self.py = obj.y + (Qblock_sizey) + 33
                     self.y = self.py
                     self.status = 0
+                    self.g = 4.5
                     self.t = 0
                     self.frame = 0
+
+
             elif (self.x - 16 <= obj.x + (obj.size[0])) and (
                     self.x + 16 >= obj.x - (obj.size[0])) and (
                     self.y - 32 <= obj.y + (obj.size[1])) and (
@@ -300,8 +305,11 @@ class hero:
                     self.py = obj.y + (obj.size[1]) + 33
                     self.y = self.py
                     self.status = 0
+                    self.g = 4.5
                     self.t = 0
                     self.frame = 0
+
+
 
 
 

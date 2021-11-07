@@ -295,7 +295,7 @@ def mapcreate(map):
 
     if map == 1:
         ground1 = 65
-        mario = Mario_class.hero(50, 65)
+        mario = Mario_class.hero(50, 70)
 
 
         grounds.append(Ground(0, 0, 2000, 40))

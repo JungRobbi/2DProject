@@ -279,7 +279,7 @@ class hero:
                     self.x + 16 >= obj.x - (Qblock_sizex)) and (
                     self.y - 32 <= obj.y + (Qblock_sizey)) and (
                     self.y + 8 >= obj.y - (Qblock_sizey) and(
-                obj.ability < 200
+                obj.ability < 110 and obj.ability >= 100
             )):
 
                 self.x -= self.dir * self.xspeed
@@ -287,6 +287,10 @@ class hero:
                     self.x -= self.herodir * self.xspeed
 
                 if self.status == 1:
+                    obj.ability = 111
+                    obj.frame = 0
+                    obj.fs = 0
+
                     self.y -= self.g
                     self.g = self.g + self.ga
                     self.status = -1

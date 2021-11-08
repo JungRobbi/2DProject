@@ -36,11 +36,10 @@ goomba = []
 class object:
     global moveWinx; global moveWiny
 
-    frame = 0
-    fs = 0
-    framedir = 0
-
     def __init__(self,x, y, ability = None):
+        self.frame = 0
+        self.fs = 0
+        self.framedir = 0
         self.crex = x
         self.crey = y
         self.x = self.crex
@@ -65,10 +64,12 @@ class object:
         elif self.ability >= 111 and self.ability <= 120: # ?블럭 충돌
             object_image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x, self.y , self.size[0], self.size[1])
             self.fs = self.fs + 1
-            if self.fs == 10:
+            if self.fs == 6:
                 self.fs = 0
-                #self.ability = 99
-                self.frame = (self.frame + 1) % 8
+                self.frame = self.frame + 1
+                if self.frame == 7:
+                    self.ability = 99
+                    self.frame = 0
 
         elif self.ability == 2: # 일반 벽돌
             object_image.clip_draw(0, 1000 - 24 * 3, 24, 24, self.x, self.y, self.size[0], self.size[1])

@@ -263,12 +263,23 @@ class hero:
     def contact_check(self, obj):
         Qblock_sizex = 16
         Qblock_sizey = 16
+
         if self.grow == 0:
-            if (self.x - 16 <= obj.x + (Qblock_sizex)) and (
+            if (self.x - 16 <= obj.x + (14.4)) and (
+                    self.x + 16 >= obj.x - (14.4)) and (
+                    self.y - 32 <= obj.y + (12.8)) and (
+                    self.y + 8 >= obj.y - (16) and (
+                    obj.ability >= 300 and obj.ability < 400
+            )):
+                if obj.ability == 300:
+                    self.grow = 1
+                    obj.ability = -1
+
+            elif (self.x - 16 <= obj.x + (Qblock_sizex)) and (
                     self.x + 16 >= obj.x - (Qblock_sizex)) and (
                     self.y - 32 <= obj.y + (Qblock_sizey)) and (
                     self.y + 8 >= obj.y - (Qblock_sizey) and(
-                obj.ability < 999
+                obj.ability < 200
             )):
 
                 self.x -= self.dir * self.xspeed

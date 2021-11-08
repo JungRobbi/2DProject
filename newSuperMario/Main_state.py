@@ -107,29 +107,33 @@ class object_item:
     def __init__(self, x, y, ability=None):
         self.x = x
         self.y = y
+        self.movex = 0
+        self.movey = 0
+        self.crex = x
+        self.crey = y
         self.ability = ability
-        if self.ability == 3:
+        if self.ability == 303:
             self.status = 1
             self.ga = 0.1
             self.g = 6.0
             self.t = 0
             self.py = self.y
 
-        if ability >= 0:
+        if ability >= 300:
             self.size = [32, 32]
 
     def draw(self):
-        if self.ability == 0:  # 일반 버섯
-            object_image.clip_draw(0, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
-        elif self.ability == 1:  # 특수 버섯
-            object_image.clip_draw(40 * 1, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
-        elif self.ability == 2:  # 꽃
-            object_image.clip_draw(40 * 2, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
-        elif self.ability == 3:  # 별
-            object_image.clip_draw(40 * 3, 0, 40, 40, self.x + moveWinx, self.y + moveWiny, self.size[0], self.size[1])
+        if self.ability == 300:  # 일반 버섯
+            object_image.clip_draw(0, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 301:  # 특수 버섯
+            object_image.clip_draw(40 * 1, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 302:  # 꽃
+            object_image.clip_draw(40 * 2, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 303:  # 별
+            object_image.clip_draw(40 * 3, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
 
     def move(self):
-        if self.ability == 3:
+        if self.ability == 303:
             if self.status == 1:  # 상승
                 self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
                 self.t += 0.5
@@ -143,8 +147,11 @@ class object_item:
                     self.status = 1
                     self.t = 0
 
-        if self.ability != 2:
-            self.x += self.dir * 0.9
+        if self.ability != 302:
+            self.movex += self.dir * 0.9
+
+        self.x = self.crex + moveWinx + self.movex
+        self.y = self.crey + moveWiny + self.movey
 
 
 class monster:
@@ -152,13 +159,13 @@ class monster:
     fs = 0
     framedir = 0
 
-    def __init__(self, x, y, tribe):
+    def __init__(self, x, y, ability):
         self.x = x
         self.y = y
-        self.tribe = tribe
+        self.ability = ability
 
     def draw(self):
-        if self.tribe == 0: # 굼바
+        if self.ability == 0: # 굼바
             Monster_image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny , 48, 48)
             self.fs = self.fs + 1
             if self.fs == 18:
@@ -248,7 +255,7 @@ def update():
     mapmove()
 
     mario.update()
-    for i in grounds + Qblock:
+    for i in grounds + Qblock + item:
         mario.contact_check(i)
 
     for i in item:
@@ -405,10 +412,10 @@ def mapcreate(map):
 
 
         goomba.append(monster(48 * 10, ground1 - 10, 0))
-        item.append(object_item(48 * 3, ground1 - 15, 0))
-        item.append(object_item(48 * 4, ground1 - 15, 1))
-        item.append(object_item(48 * 5, ground1 - 15, 2))
-        item.append(object_item(48 * 6, ground1 - 15, 3))
+        item.append(object_item(48 * 3, ground1 - 15, 300))
+        item.append(object_item(48 * 4, ground1 - 15, 301))
+        item.append(object_item(48 * 5, ground1 - 15, 302))
+        item.append(object_item(48 * 6, ground1 - 15, 303))
 
     elif map == 2:
         mario = Mario_class.hero(50, 60)

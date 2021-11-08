@@ -302,10 +302,10 @@ def mapcreate(map):
 
     if map == 1:
         ground1 = 65
-        mario = Mario_class.hero(50, 70)
+        mario = Mario_class.hero(50, 75)
 
 
-        grounds.append(Ground(0, 0, 2000, 40))
+        grounds.append(Ground(0, 0, 1168 * 2, 40))
 
         # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
         # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))

@@ -18,7 +18,6 @@ class hero:
     grow = 0
     sit = 0
 
-
     def __init__(self,x, y):
         self.x = x
         self.y = y
@@ -118,7 +117,6 @@ class hero:
                 if self.frame <= 0:
                     self.frame = 0
                     self.framedir = 0
-
 
 
 
@@ -233,9 +231,12 @@ class hero:
             self.g = self.g - self.ga
             if self.g <= 0:
                 self.status = -1
+                self.frame = 10
         elif self.status == -1: # 하강
             self.y -= self.g
             self.g = self.g + self.ga
+            if self.g > 4.5:
+                self.g = 4.5
             if self.y < self.py:
                 self.y = self.py
                 self.status = 0
@@ -263,7 +264,7 @@ class hero:
     def contact_check(self, obj):
         Qblock_sizex = 16
         Qblock_sizey = 16
-
+        self.py = -100
         if self.grow == 0:
             if (self.x - 16 <= obj.x + (14.4)) and (
                     self.x + 16 >= obj.x - (14.4)) and (
@@ -279,7 +280,7 @@ class hero:
                     self.x + 16 >= obj.x - (Qblock_sizex)) and (
                     self.y - 32 <= obj.y + (Qblock_sizey)) and (
                     self.y + 8 >= obj.y - (Qblock_sizey) and(
-                obj.ability < 110 and obj.ability >= 100
+                    obj.ability < 110 and obj.ability >= 100
             )):
 
                 self.x -= self.dir * self.xspeed
@@ -299,15 +300,15 @@ class hero:
                     self.y = self.py
                     self.status = 0
                     self.g = 4.5
-                    self.t = 0
                     self.frame = 0
+
 
 
             elif (self.x - 16 <= obj.x + (obj.size[0])) and (
                     self.x + 16 >= obj.x - (obj.size[0])) and (
                     self.y - 32 <= obj.y + (obj.size[1])) and (
                     self.y + 8 >= obj.y - (obj.size[1]) and(
-                obj.ability == 999  # ground
+                    obj.ability == 999  # ground
             )):
                 self.x -= self.dir * self.xspeed
                 if self.dir == 0:
@@ -320,7 +321,6 @@ class hero:
                     self.y = self.py
                     self.status = 0
                     self.g = 4.5
-                    self.t = 0
                     self.frame = 0
 
 

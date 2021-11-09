@@ -3,6 +3,7 @@ import game_framework
 import Title_state
 
 import Mario_class
+import Monster_class
 
 
 WINx = 1024
@@ -31,7 +32,7 @@ Steelblock = []
 item = []
 
 #monster
-goomba = []
+monsters = []
 
 class object:
     global moveWinx; global moveWiny
@@ -154,27 +155,6 @@ class object_item:
         self.x = self.crex + moveWinx + self.movex
         self.y = self.crey + moveWiny + self.movey
 
-
-class monster:
-    frame = 0
-    fs = 0
-    framedir = 0
-
-    def __init__(self, x, y, ability):
-        self.x = x
-        self.y = y
-        self.ability = ability
-
-    def draw(self):
-        if self.ability == 0: # 굼바
-            Monster_image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x + moveWinx, self.y + moveWiny , 48, 48)
-            self.fs = self.fs + 1
-            if self.fs == 18:
-                self.fs = 0
-                self.frame = (self.frame + 1) % 9
-
-        pass
-
 class Ground:
 
     def __init__(self, leftx, lefty, rightx, righty):
@@ -191,7 +171,7 @@ def enter(): # 생성
     mapcreate(stage)
 
     object_image = load_image('object.png')
-    Monster_image = load_image('Monster.png')
+
     map1 = load_image('1-1.png')
     map2 = load_image('1-3.png')
 
@@ -282,7 +262,7 @@ def draw():
         b.draw()
     for i in item:
         i.draw()
-    for m in goomba:
+    for m in monsters:
         m.draw()
 
     mario.draw()
@@ -298,7 +278,7 @@ def resume():
 
 def mapcreate(map):
     global mario, coin, Qblock, brick, skbrick, Steelblock
-    global goomba
+    global monsters
 
     if map == 1:
         ground1 = 65
@@ -412,7 +392,7 @@ def mapcreate(map):
                 Steelblock.append(object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
 
 
-        goomba.append(monster(48 * 10, ground1 - 10, 0))
+        monsters.append(Monster_class.monster(48 * 10, ground1 - 10, 1000))
         item.append(object_item(48 * 3, ground1 - 15, 300))
         item.append(object_item(48 * 4, ground1 - 15, 301))
         item.append(object_item(48 * 5, ground1 - 15, 302))

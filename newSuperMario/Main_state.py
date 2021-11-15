@@ -1,161 +1,118 @@
 from pico2d import *
 import game_framework
-import Title_state
+import game_world
 
-import Mario_class
-import Monster_class
+from Mario_class import hero
+from Map import map
 import object_class
 
+name = "MainState"
 
-WINx = 1024
-WINy = 600
-moveWinx = 0
-moveWiny = 0
-stage = 1
-
-object_image = None
-Monster_image = None
-map1 = None
-map2 = None
-
-#hero
 mario = None
-#ground
-grounds = []
-#block
-coin = []
-Qblock = []
-brick = []
-skbrick = []
-Steelblock = []
-
-#item
-item = []
-
-#monster
-monsters = []
-
-
-
-def enter(): # 생성
-    global Mario_image, object_image, Monster_image, map1, map2, stage
-
-    stage = 1
+map1_1 = None
+def enter():
+    global mario
+    global map1_1
+    mario = hero(40, 60)
+    stage = 0
+    map1_1 = map(stage)
+    game_world.add_object(map1_1, 0)
     mapcreate(stage)
 
-    map1 = load_image('1-1.png')
-    map2 = load_image('1-3.png')
 
-def exit(): # 종료/제거
-    global mario, coin, Qblock, brick, skbrick, Steelblock
-    del (mario)
-    del (coin)
-    del (Qblock)
-    del (brick)
-    del (skbrick)
-    del (Steelblock)
+    game_world.add_object(mario, 1)
 
-def handle_events():
-    global mario
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            game_framework.quit()
-        elif event.type == SDL_KEYDOWN and mario.status < 99:
-            if event.key == SDLK_RIGHT:
-                mario.dir += 1
-                mario.framedir = 0
-                mario.xspeed = 0
-                if mario.herodir == 1:
-                    mario.frame = 4
-                else:
-                    mario.frame = 0
 
-                mario.herodir = 1
-            elif event.key == SDLK_LEFT:
-                mario.dir -= 1
-                mario.framedir = 0
-                mario.xspeed = 0
-                mario.frame = 0
-                if mario.herodir == -1:
-                    mario.frame = 4
-                else:
-                    mario.frame = 0
-
-                mario.herodir = -1
-            elif event.key == SDLK_UP and mario.status == 0:
-                mario.py = mario.y
-                mario.status = 1
-                mario.sit = 0
-                mario.frame = 0
-                mario.framedir = 0
-            elif event.key == SDLK_DOWN:
-                mario.sit = 1
-                mario.frame = 0
-                mario.xspeed = 0
-            elif event.key == SDLK_ESCAPE:
-                game_framework.change_state(Title_state)
-        elif event.type == SDL_KEYUP and mario.status != 99:
-            if event.key == SDLK_RIGHT:
-                mario.dir -= 1
-            elif event.key == SDLK_LEFT:
-                mario.dir += 1
-            if event.key == SDLK_DOWN:
-                mario.sit = 0
-
-def update():
-    mapmove()
-
-    mario.update()
-    for i in grounds + Qblock + item:
-        mario.contact_check(i)
-
-    for i in item:
-        i.move()
-
-    delay(0.001)
-
-def draw():
-    clear_canvas()
-    if stage == 1:
-        map1.clip_draw(0, 0, 4224, 624, 2110 * 2.5 + moveWinx, 120 * 2.5 + moveWiny, 4224 * 2.5, 624 * 2.5)
-    elif stage == 2:
-        map2.clip_draw(0, 0, 4224, 762, 2110 * 2.5 + moveWinx, 378 * 2.5 + moveWiny, 4224 * 2.5, 762 * 2.5)
-    for c in coin:
-        c.draw()
-    for b in Qblock:
-        b.draw()
-    for b in brick:
-        b.draw()
-    for b in skbrick:
-        b.draw()
-    for b in Steelblock:
-        b.draw()
-    for i in item:
-        i.draw()
-    for m in monsters:
-        m.draw()
-
-    mario.draw()
-    update_canvas()
-
+def exit():
+    game_world.clear()
 
 def pause():
     pass
+
 
 def resume():
     pass
 
 
-def mapcreate(map):
-    global mario, coin, Qblock, brick, skbrick, Steelblock
-    global monsters
+def handle_events():
+    events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            game_framework.quit()
+        else:
+            mario.handle_event(event)
 
-    if map == 1:
+
+def update():
+    mapmove(map1_1, mario)
+    for game_object in game_world.all_objects():
+        game_object.update()
+    delay(0.001)
+
+
+def draw():
+    clear_canvas()
+    for game_object in game_world.all_objects():
+        game_object.draw()
+    update_canvas()
+
+
+
+def mapmove(map, mario):
+    WINx = 1024
+    WINy = 600
+    if map.stage == 0:
+        map.mapmax = -(4222 * 2 + WINx - 15)
+
+        if map.moveWinx < map.mapmax:
+            map.moveWinx = map.mapmax
+        if map.moveWinx > 0:
+            map.moveWinx = 0
+
+        if map.moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.velocity == -1:
+            if mario.x + mario.xMAX >= WINx * 3 / 5:
+                map.moveWinx += mario.xspeed * game_framework.frame_time
+            else:
+                map.moveWinx += mario.xspeed * 2 * game_framework.frame_time
+            mario.x += mario.xspeed * 2 * game_framework.frame_time
+            if mario.x > WINx * 3 / 5:
+                mario.x = WINx * 3 / 5
+
+        if map.moveWinx > map.mapmax and mario.x > WINx * 2 / 5 and mario.velocity == 1:
+            if mario.x - mario.xMAX <= WINx * 2 / 5:
+                map.moveWinx -= mario.xspeed * game_framework.frame_time
+            else:
+                map.moveWinx -= mario.xspeed * 2 * game_framework.frame_time
+            mario.x -= mario.xspeed * 2 * game_framework.frame_time
+            if mario.x < WINx * 2 / 5:
+                mario.x = WINx * 2 / 5
+
+    for game_object in game_world.all_objects():
+        game_object.movex = map.moveWinx
+        game_object.movey = map.moveWiny
+
+        # 완료
+
+def mapcreate(stage):
+    if stage == 0:
+        # ground
+        grounds = []
+        # block
+        coin = []
+        Qblock = []
+        brick = []
+        skbrick = []
+        Steelblock = []
+
+        # item
+        item = []
+
+        # monster
+        monsters = []
+
         ground1 = 65
-        mario = Mario_class.hero(50, 75)
-
-
         grounds.append(object_class.Ground(0, 0, 1168 * 2, 40))
 
         # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
@@ -212,7 +169,7 @@ def mapcreate(map):
         brick.append(object_class.object(48 * 94 + 32 * 5, ground1 + 60 * 3, 2))
         brick.append(object_class.object(48 * 94 + 32 * 6, ground1 + 60 * 3, 2))
 
-        brick.append(object_class.object(48 * 108 , ground1 + 60 * 2, 2))
+        brick.append(object_class.object(48 * 108, ground1 + 60 * 2, 2))
         brick.append(object_class.object(48 * 108 + 32, ground1 + 60 * 2, 2))
         skbrick.append(object_class.object(48 * 108 + 32 * 2, ground1 + 60 * 2, 2))
         Qblock.append(object_class.object(48 * 108 + 32 * 3, ground1 + 60 * 2, 100))
@@ -237,10 +194,10 @@ def mapcreate(map):
 
         Qblock.append(object_class.object(48 * 142, ground1 + 60 * 2, 102))
 
-        brick.append(object_class.object(48 * 151 - 37, ground1 + 60 + 20 , 2))
+        brick.append(object_class.object(48 * 151 - 37, ground1 + 60 + 20, 2))
         brick.append(object_class.object(48 * 151 - 5, ground1 + 60 + 20, 2))
-        brick.append(object_class.object(48 * 151 + 27, ground1 + 60 + 20 , 2))
-        brick.append(object_class.object(48 * 151 + 32 * 2 - 5, ground1 + 60 + 20 , 2))
+        brick.append(object_class.object(48 * 151 + 27, ground1 + 60 + 20, 2))
+        brick.append(object_class.object(48 * 151 + 32 * 2 - 5, ground1 + 60 + 20, 2))
 
         Qblock.append(object_class.object(48 * 156, ground1 + 60 * 4, 100))
 
@@ -257,55 +214,26 @@ def mapcreate(map):
         brick.append(object_class.object(48 * 189 + 32, ground1 + 60 * 2, 2))
         brick.append(object_class.object(48 * 189 + 32 * 2, ground1 + 60 * 2, 2))
 
-
         for k in range(8, 1, -1):
-            for i in range(0,k):
+            for i in range(0, k):
                 Steelblock.append(object_class.object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
 
-
-        monsters.append(Monster_class.monster(48 * 10, ground1 - 10, 1000))
         item.append(object_class.object_item(48 * 3, ground1 - 15, 300))
         item.append(object_class.object_item(48 * 4, ground1 - 15, 301))
         item.append(object_class.object_item(48 * 5, ground1 - 15, 302))
         item.append(object_class.object_item(48 * 6, ground1 - 15, 303))
 
-    elif map == 2:
-        mario = Mario_class.hero(50, 60)
-
-
-def mapmove():
-    global WINx
-    global WINy
-    global moveWinx
-    global moveWiny
-    global mario
-
-    mapmax = -(4222 * 2 + WINx - 15)
-
-    if moveWinx < mapmax:
-        moveWinx = mapmax
-    if moveWinx > 0:
-        moveWinx = 0
-
-    if moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.dir == -1:
-        if mario.x + mario.xMAX >= WINx * 3 / 5:
-            moveWinx += mario.xspeed
-        else:
-            moveWinx += mario.xspeed*2
-        mario.x += mario.xspeed*2
-        if mario.x > WINx * 3 / 5:
-            mario.x = WINx * 3 / 5
-
-    if moveWinx > mapmax and mario.x > WINx * 2 / 5 and mario.dir == 1:
-        if mario.x - mario.xMAX <= WINx * 2 / 5:
-            moveWinx -= mario.xspeed
-        else:
-            moveWinx -= mario.xspeed*2
-
-        mario.x -= mario.xspeed*2
-        if mario.x < WINx * 2 / 5:
-            mario.x = WINx * 2 / 5
-
-        # 완료
-
-
+        for i in grounds:
+            game_world.add_object(i, 0)
+        for i in coin:
+            game_world.add_object(i, 0)
+        for i in Qblock:
+            game_world.add_object(i, 0)
+        for i in brick:
+            game_world.add_object(i, 0)
+        for i in skbrick:
+            game_world.add_object(i, 0)
+        for i in Steelblock:
+            game_world.add_object(i, 0)
+        for i in item:
+            game_world.add_object(i, 0)

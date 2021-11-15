@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4dccc993-dae1-4b19-bec9-990ad0a6fc6f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main_state.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mario_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/Mario_class.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_framework.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_framework.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/object_class.py" beforeDir="false" afterPath="$PROJECT_DIR$/object_class.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +43,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../ProfessorRepo/Labs/Lecture11_Character_Controller" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager" selected="Python.SuperMario">
     <configuration name="Main_state" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">

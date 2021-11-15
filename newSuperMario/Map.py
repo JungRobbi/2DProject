@@ -8,6 +8,8 @@ class map:
             self.image = load_image('1-1.png')
 
         self.stage = stage
+        self.x = 0
+        self.y = 0
         self.moveWinx = 0
         self.moveWiny = 0
         self.mapmax = 0

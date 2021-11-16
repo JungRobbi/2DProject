@@ -85,6 +85,11 @@ class object:
             # 아이템 블럭 사용 후 블럭 (아무효과 X)
             self.image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x , self.y, self.size[0], self.size[1])
 
+        draw_rectangle(*self.get_bb())
+
+    def get_bb(self):
+            return self.x - 16, self.y - 24, self.x + 16, self.y + 10
+
 class object_item:
     image = None
 
@@ -140,6 +145,11 @@ class object_item:
         elif self.ability == 303:  # 별
             self.image.clip_draw(40 * 3, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
 
+        draw_rectangle(*self.get_bb())
+
+    def get_bb(self):
+        return self.x - 16, self.y - 16, self.x + 16, self.y + 14
+
 class Ground:
 
     def __init__(self, leftx, lefty, rightx, righty):
@@ -157,3 +167,6 @@ class Ground:
 
     def draw(self):
         pass
+
+    def get_bb(self):
+        return self.x - 50, self.y - 50, self.x + 50, self.y + 50

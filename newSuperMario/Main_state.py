@@ -47,7 +47,6 @@ def handle_events():
 
 def update():
     mapmove(map1_1, mario)
-    contact_ALLcheck(mario)
     for game_object in game_world.all_objects():
         game_object.update()
     delay(0.001)
@@ -60,68 +59,14 @@ def draw():
     update_canvas()
 
 
-def contact_ALLcheck(mario):
-    Qblock_sizex = 16
-    Qblock_sizey = 16
-    mario.py = -100
-    for game_object in game_world.all_objects():
-        if mario.grow == 0 and game_object:
-            if (mario.x - 16 <= game_object.x + (14.4)) and (
-                    mario.x + 16 >= game_object.x - (14.4)) and (
-                    mario.y - 32 <= game_object.y + (12.8)) and (
-                    mario.y + 8 >= game_object.y - (16) and (
-                    game_object.ability >= 300 and game_object.ability < 400
-            )):
-                if game_object.ability == 300:
-                    mario.grow = 1
-                    game_object.ability = -1
-
-            elif (mario.x - 16 <= game_object.x + (Qblock_sizex)) and (
-                    mario.x + 16 >= game_object.x - (Qblock_sizex)) and (
-                    mario.y - 32 <= game_object.y + (Qblock_sizey)) and (
-                    mario.y + 8 >= game_object.y - (Qblock_sizey) and (
-                    game_object.ability < 110 and game_object.ability >= 100
-            )):
-
-                mario.x -= mario.dir * mario.xspeed
-                if mario.dir == 0:
-                    mario.x -= mario.herodir * mario.xspeed
-
-                if mario.status == 1:
-                    game_object.ability = 111
-                    game_object.frame = 0
-                    game_object.fs = 0
-
-                    mario.y -= mario.g
-                    mario.g = mario.g + mario.ga
-                    mario.status = -1
-                elif mario.status == -1:
-                    mario.py = game_object.y + (Qblock_sizey) + 33
-                    mario.y = mario.py
-                    mario.status = 0
-                    mario.g = 4.5
-                    mario.frame = 0
-
-
-
-            elif (mario.x - 16 <= game_object.x + (game_object.size[0])) and (
-                    mario.x + 16 >= game_object.x - (game_object.size[0])) and (
-                    mario.y - 32 <= game_object.y + (game_object.size[1])) and (
-                    mario.y + 8 >= game_object.y - (game_object.size[1]) and (
-                    game_object.ability == 999  # ground
-            )):
-                mario.x -= mario.dir * mario.xspeed
-                if mario.dir == 0:
-                    mario.x -= mario.herodir * mario.xspeed
-
-                if mario.status == 1:
-                    mario.status = -1
-                elif mario.status == -1:
-                    mario.py = game_object.y + (game_object.size[1]) + 33
-                    mario.y = mario.py
-                    mario.status = 0
-                    mario.g = 4.5
-                    mario.frame = 0
+def contact_aAndb(a, b):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
+    return True
 
 
 def mapmove(map, mario):

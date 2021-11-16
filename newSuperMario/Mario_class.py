@@ -318,4 +318,11 @@ class hero:
 
     def draw(self):
         self.cur_state.draw(self)
+        draw_rectangle(*self.get_bb())
+
         # debug_print('Velocity :' + str(self.velocity) + '  Dir:' + str(self.dir))
+
+    def get_bb(self):
+        if self.grow == 0:
+            return self.x - 16, self.y - 40, self.x + 16, self.y + 8
+        return self.x - 16, self.y - 40, self.x + 16, self.y + 28

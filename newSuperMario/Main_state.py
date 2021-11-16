@@ -122,7 +122,7 @@ def mapcreate(stage):
         monsters = []
 
         ground1 = 65
-        grounds.append(object_class.Ground(0, 0, 1168 * 2, 40))
+        grounds.append(object_class.Ground(0, 0, 2914, 34))
 
         # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
         # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))

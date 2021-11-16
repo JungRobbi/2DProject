@@ -163,10 +163,12 @@ class Ground:
         self.size = [self.x - leftx, self.y - lefty]
 
     def update(self):
-        pass
+        self.x = self.crex + self.movex
+        self.y = self.crey + self.movey
 
     def draw(self):
+        draw_rectangle(*self.get_bb())
         pass
 
     def get_bb(self):
-        return self.x - 50, self.y - 50, self.x + 50, self.y + 50
+        return self.x - self.size[0], self.y - self.size[1], self.x + self.size[0], self.y + self.size[1]

@@ -10,6 +10,20 @@ name = "MainState"
 
 mario = None
 map1_1 = None
+
+# ground
+grounds = []
+# block
+coin = []
+Qblock = []
+brick = []
+skbrick = []
+Steelblock = []
+# item
+item = []
+# monster
+monsters = []
+
 def enter():
     global mario
     global map1_1
@@ -49,6 +63,21 @@ def update():
     mapmove(map1_1, mario)
     for game_object in game_world.all_objects():
         game_object.update()
+
+    for eat in coin + item: # 먹으면 사라지는 객체
+        if contact_aAndb(mario, eat):
+            if eat.ability == 0:
+                coin.remove(eat)
+            elif eat.ability == 300 and eat.ability <= 304:
+                item.remove(eat)
+            game_world.remove_object(eat)
+
+    for block in Qblock + brick + skbrick + Steelblock: # 블럭
+        if contact_aAndb(mario, block):
+            if block.ability >= 1 and block.ability <= 150:
+                pass # 벽돌 충돌체크
+
+
     delay(0.001)
 
 
@@ -106,20 +135,6 @@ def mapmove(map, mario):
 
 def mapcreate(stage):
     if stage == 0:
-        # ground
-        grounds = []
-        # block
-        coin = []
-        Qblock = []
-        brick = []
-        skbrick = []
-        Steelblock = []
-
-        # item
-        item = []
-
-        # monster
-        monsters = []
 
         ground1 = 65
         grounds.append(object_class.Ground(0, 0, 2914, 34))

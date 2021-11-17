@@ -49,6 +49,7 @@ class IdleState:
         elif event == UP_DOWN and hero.y == hero.py:
             hero.JUMP = True
             hero.frame = 0
+
         hero.fs_deel = 8
 
 
@@ -96,10 +97,10 @@ class IdleState:
         if hero.grow == 1:  # 성장 후
             if hero.y > hero.py:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             else:
                 if hero.dir == 1:
@@ -210,10 +211,10 @@ class RunState:
         if hero.grow == 1:  # 성장 후
             if hero.y > hero.py:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             else:
                 if hero.dir == 1:  # 오른쪽 걸음

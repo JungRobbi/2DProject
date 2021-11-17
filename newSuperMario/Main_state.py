@@ -24,14 +24,19 @@ item = []
 # monster
 monsters = []
 
+SET_BLOCK = None
+SET_CHECK = 0
+
 def enter():
     global mario
     global map1_1
+    global SET_BLOCK
     mario = hero(40, 60)
     stage = 0
     map1_1 = map(stage)
     game_world.add_object(map1_1, 0)
     mapcreate(stage)
+    SET_BLOCK = grounds[0]
 
 
     game_world.add_object(mario, 1)
@@ -60,6 +65,9 @@ def handle_events():
 
 
 def update():
+    global SET_BLOCK
+    global SET_CHECK
+
     mapmove(map1_1, mario)
     for game_object in game_world.all_objects():
         game_object.update()
@@ -69,17 +77,28 @@ def update():
             if eat.ability == 0:
                 coin.remove(eat)
             elif eat.ability == 300 and eat.ability <= 304:
+                if eat.ability == 300: # 버섯
+                    mario.grow = 1
+
                 item.remove(eat)
             game_world.remove_object(eat)
 
     for block in Qblock + brick + skbrick + Steelblock: # 블럭
         if contact_aAndb(mario, block):
-            if block.ability >= 1 and block.ability <= 150:
-                pass # 벽돌 충돌체크
+            if (block.ability >= 1 and block.ability <= 150) or block.ability == 999:
+                # mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
+                if mario.y <= block.y: # 블럭이 위에 있다
+                    mario.JUMP = False
+
+                elif mario.y > block.y: # 블럭이 아래에 있다
+                    mario.py = block.y + block.size[1] + 3
+                    mario.g = 900
+                    SET_BLOCK = block
+        if not contact_aAndb(mario, block, 3):
+            mario.py = 0
 
 
     delay(0.001)
-
 
 def draw():
     clear_canvas()
@@ -88,13 +107,19 @@ def draw():
     update_canvas()
 
 
-def contact_aAndb(a, b):
+def contact_aAndb(a, b, case=None):
     left_a, bottom_a, right_a, top_a = a.get_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
-    if left_a > right_b: return False
-    if right_a < left_b: return False
-    if top_a < bottom_b: return False
-    if bottom_a > top_b: return False
+    if case == None:
+        if left_a > right_b: return False
+        if right_a < left_b: return False
+        if top_a < bottom_b: return False
+        if bottom_a > top_b: return False
+    else:
+        if left_a > right_b: return False
+        if right_a < left_b: return False
+        if top_a < bottom_b: return False
+        if bottom_a + case > top_b: return False
     return True
 
 

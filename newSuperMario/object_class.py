@@ -35,7 +35,7 @@ class object:
             if self.fs == 6:
                 self.fs = 0
                 self.frame = self.frame + 1
-                if self.frame == 7:
+                if self.frame >= 7:
                     self.ability = 99
                     self.frame = 0
         elif self.ability == 3:  # 빛나는 벽돌(코인 벽돌)

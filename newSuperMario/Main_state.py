@@ -89,6 +89,10 @@ def update():
                 # mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
                 if mario.y <= block.y: # 블럭이 위에 있다
                     mario.JUMP = False
+                    if block.ability >= 100 and block.ability <= 109:
+                        block.ability = block.ability + 10
+                        block.frame = 0
+                        block.fs = 0
 
                 elif mario.y > block.y: # 블럭이 아래에 있다
                     mario.py = block.y + block.size[1] + 3
@@ -100,8 +104,7 @@ def update():
                 mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
                 if mario.y <= block.y: # 블럭이 위에 있다
                     mario.JUMP = False
-                    if block.ability >= 100 and block.ability <= 109:
-                        block.ability = block.ability + 10
+
 
                 elif mario.y > block.y: # 블럭이 아래에 있다
                     mario.py = block.righty + mario.size[1] - 39

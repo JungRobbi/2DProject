@@ -49,6 +49,7 @@ class IdleState:
         elif event == UP_DOWN and hero.y == hero.py:
             hero.JUMP = True
             hero.frame = 0
+            hero.g = 900
 
         hero.fs_deel = 8
 
@@ -153,6 +154,7 @@ class RunState:
         elif event == UP_DOWN and hero.y == hero.py:
             hero.JUMP = True
             hero.frame = 0
+            hero.g = 900
         hero.velocity = clamp(-1, hero.velocity, 1)
 
     def exit(hero, event):
@@ -206,6 +208,7 @@ class RunState:
                     hero.g = 900
             elif hero.y <= hero.py:
                 hero.y = hero.py
+                hero.g = 0
 
     def draw(hero):
         if hero.grow == 1:  # 성장 후

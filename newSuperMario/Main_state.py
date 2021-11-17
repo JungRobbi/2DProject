@@ -92,10 +92,24 @@ def update():
 
                 elif mario.y > block.y: # 블럭이 아래에 있다
                     mario.py = block.y + block.size[1] + 3
-                    mario.g = 900
                     SET_BLOCK = block
-        if not contact_aAndb(mario, block, 3):
-            mario.py = 0
+
+    for block in grounds: # 블럭
+        if contact_aAndb(mario, block):
+            if (block.ability >= 1 and block.ability <= 150) or block.ability == 999:
+                mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
+                if mario.y <= block.y: # 블럭이 위에 있다
+                    mario.JUMP = False
+                    if block.ability >= 100 and block.ability <= 109:
+                        block.ability = block.ability + 10
+
+                elif mario.y > block.y: # 블럭이 아래에 있다
+                    mario.py = block.righty + mario.size[1] - 39
+                    SET_BLOCK = block
+
+    if not contact_aAndb(mario, SET_BLOCK, 3):
+        mario.py = 0
+
 
 
     delay(0.001)
@@ -107,19 +121,17 @@ def draw():
     update_canvas()
 
 
-def contact_aAndb(a, b, case=None):
+def contact_aAndb(a, b, case=0):
     left_a, bottom_a, right_a, top_a = a.get_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
-    if case == None:
+    if case == 3:
         if left_a > right_b: return False
         if right_a < left_b: return False
-        if top_a < bottom_b: return False
-        if bottom_a > top_b: return False
     else:
         if left_a > right_b: return False
         if right_a < left_b: return False
         if top_a < bottom_b: return False
-        if bottom_a + case > top_b: return False
+        if bottom_a > top_b: return False
     return True
 
 

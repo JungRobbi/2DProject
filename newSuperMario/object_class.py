@@ -56,10 +56,10 @@ class object:
         if self.ability == 0: # 코인
             self.image.clip_draw(self.frame * 24 + 96, 1000 - 24, 24, 24, self.x, self.y , self.size[0], self.size[1])
 
-        elif self.ability >= 100 and self.ability <= 110: # ?블럭
+        elif self.ability >= 100 and self.ability <= 109: # ?블럭
             self.image.clip_draw(self.frame * 24, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
 
-        elif self.ability >= 111 and self.ability <= 120: # ?블럭 충돌
+        elif self.ability >= 110 and self.ability <= 120: # ?블럭 충돌
             self.image.clip_draw(self.frame * 24, 1000 - 24*2, 24, 24, self.x, self.y , self.size[0], self.size[1])
 
 
@@ -153,6 +153,10 @@ class object_item:
 class Ground:
 
     def __init__(self, leftx, lefty, rightx, righty):
+        self.rightx = rightx
+        self.righty = righty
+        self.leftx = leftx
+        self.lefty = lefty
         self.x = (rightx + leftx) / 2
         self.y = (righty + lefty) / 2
         self.movex = 0

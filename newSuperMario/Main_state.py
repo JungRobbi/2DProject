@@ -2,7 +2,7 @@ from pico2d import *
 import game_framework
 import game_world
 
-from Mario_class import hero
+from Mario_class import *
 from Map import map
 import object_class
 
@@ -86,8 +86,10 @@ def update():
     for block in Qblock + brick + skbrick + Steelblock: # 블럭
         if contact_aAndb(mario, block):
             if (block.ability >= 1 and block.ability <= 150) or block.ability == 999:
-                # mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
-                if mario.y <= block.y: # 블럭이 위에 있다
+                mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
+                if mario.cur_state == IdleState and mario.velocity == 0:
+                    mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
+                if mario.y  <= block.y and mario.JUMP == True: # 블럭이 위에 있다
                     mario.JUMP = False
                     if block.ability >= 100 and block.ability <= 109:
                         block.ability = block.ability + 10
@@ -95,20 +97,28 @@ def update():
                         block.fs = 0
 
                 elif mario.y > block.y: # 블럭이 아래에 있다
-                    mario.py = block.y + block.size[1] + 3
+                    if mario.py < block.y + block.size[1] + 3:
+                        mario.py = block.y + block.size[1] + 3
+                    if block.ability == 99:
+                        mario.py = block.y + block.size[1]
                     SET_BLOCK = block
 
     for block in grounds: # 블럭
         if contact_aAndb(mario, block):
+
+
             if (block.ability >= 1 and block.ability <= 150) or block.ability == 999:
                 mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
-                if mario.y <= block.y: # 블럭이 위에 있다
+                if mario.cur_state == IdleState and mario.velocity == 0:
+                    mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
+
+                if mario.y <= block.y and mario.JUMP == True: # 블럭이 위에 있다
                     mario.JUMP = False
-
-
-                elif mario.y > block.y: # 블럭이 아래에 있다
-                    mario.py = block.righty + mario.size[1] - 39
+                elif mario.y  > block.y: # 블럭이 아래에 있다
+                    if mario.py < block.y + block.size[1] + mario.size[1] / 2 + 1:
+                        mario.py = block.y + block.size[1] + mario.size[1] / 2 + 1
                     SET_BLOCK = block
+                    print('check')
 
     if not contact_aAndb(mario, SET_BLOCK, 3):
         mario.py = 0
@@ -154,7 +164,7 @@ def mapmove(map, mario):
                 map.moveWinx += mario.xspeed * game_framework.frame_time
             else:
                 map.moveWinx += mario.xspeed * 2 * game_framework.frame_time
-            mario.x += mario.xspeed * 2 * game_framework.frame_time
+            mario.x += mario.xspeed * 1.3 * game_framework.frame_time
             if mario.x > WINx * 3 / 5:
                 mario.x = WINx * 3 / 5
 
@@ -163,7 +173,25 @@ def mapmove(map, mario):
                 map.moveWinx -= mario.xspeed * game_framework.frame_time
             else:
                 map.moveWinx -= mario.xspeed * 2 * game_framework.frame_time
-            mario.x -= mario.xspeed * 2 * game_framework.frame_time
+            mario.x -= mario.xspeed * 1.3 * game_framework.frame_time
+            if mario.x < WINx * 2 / 5:
+                mario.x = WINx * 2 / 5
+
+        if map.moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.velocity == 0 and mario.dir == -1:
+            if mario.x + mario.xMAX >= WINx * 3 / 5:
+                map.moveWinx += mario.xspeed * game_framework.frame_time
+            else:
+                map.moveWinx += mario.xspeed * 2 * game_framework.frame_time
+            mario.x += mario.xspeed * 1.3 * game_framework.frame_time
+            if mario.x > WINx * 3 / 5:
+                mario.x = WINx * 3 / 5
+
+        if map.moveWinx > map.mapmax and mario.x > WINx * 2 / 5 and mario.velocity == 0 and mario.dir == 1:
+            if mario.x - mario.xMAX <= WINx * 2 / 5:
+                map.moveWinx -= mario.xspeed * game_framework.frame_time
+            else:
+                map.moveWinx -= mario.xspeed * 2 * game_framework.frame_time
+            mario.x -= mario.xspeed * 1.3 * game_framework.frame_time
             if mario.x < WINx * 2 / 5:
                 mario.x = WINx * 2 / 5
 
@@ -177,7 +205,21 @@ def mapcreate(stage):
     if stage == 0:
 
         ground1 = 65
-        grounds.append(object_class.Ground(0, 0, 2914, 34))
+        grounds.append(object_class.Ground(0, 0, 2914, 35))
+        grounds.append(object_class.Ground(434 * 2.5, 0, 514 * 2.5, 30 * 2.5))
+        grounds.append(object_class.Ground(512 * 2.5, 0, (514+92) * 2.5, 62 * 2.5))
+        grounds.append(object_class.Ground(2914 + 36 * 2.5, 0, 2914 + (36+444) * 2.5, 14 * 2.5))
+        grounds.append(object_class.Ground(2914 + (36 * 2 + 444) * 2.5, 0, 2914 + (36*2 + 444 + 924) * 2.5, 14 * 2.5))
+        grounds.append(object_class.Ground(2914 + (36*3 + 1366) * 2.5, 0, 2914 + (36 * 3 + 1842) * 2.5, 14 * 2.5))
+
+        # 큰 언덕
+        grounds.append(object_class.Ground(2914 + (36 * 3 + 1366 + 112) * 2.5, 0, 2914 + (36 * 3 + 1366 + 236) * 2.5, 30 * 2.5))
+        grounds.append(object_class.Ground(2914 + (36 * 3 + 1366 + 288) * 2.5, 0, 2914 + (36 * 3 + 1366 + 288 + 188) * 2.5, 30 * 2.5))
+        grounds.append(object_class.Ground(2914 + (36 * 3 + 1366 + 176) * 2.5, 0, 2914 + (36 * 3 + 1366 + 236) * 2.5, 62 * 2.5))
+        grounds.append(object_class.Ground(2914 + (36 * 3 + 1366 + 288) * 2.5, 0, 2914 + (36 * 3 + 1366 + 396) * 2.5, 62 * 2.5))
+
+        grounds.append(object_class.Ground(2914 + (36 * 3 + 1878) * 2.5, 0, 2914 + (36 * 3 + 1878 + 364) * 2.5, 14 * 2.5))
+        grounds.append(object_class.Ground(2914 + (36 * 3 + 2294) * 2.5, 0, 2914 + (36 * 3 + 2294 + 52 + 652) * 2.5, 14 * 2.5))
 
         # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
         # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))

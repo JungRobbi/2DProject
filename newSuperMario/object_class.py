@@ -25,12 +25,12 @@ class object:
             if self.fs == 20:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
-        elif self.ability >= 100 and self.ability <= 110:  # ?블럭
+        elif self.ability >= 100 and self.ability <= 109:  # ?블럭
             self.fs = self.fs + 1
             if self.fs == 30:
                 self.fs = 0
                 self.frame = (self.frame + 1) % 4
-        elif self.ability >= 111 and self.ability <= 120:  # ?블럭 충돌
+        elif self.ability >= 110 and self.ability <= 120:  # ?블럭 충돌
             self.fs = self.fs + 1
             if self.fs == 6:
                 self.fs = 0
@@ -88,7 +88,7 @@ class object:
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
-            return self.x - 16, self.y - 24, self.x + 16, self.y + 10
+        return self.x - 16, self.y - 24, self.x + 16, self.y + 6
 
 class object_item:
     image = None

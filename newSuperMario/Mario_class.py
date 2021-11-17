@@ -281,7 +281,7 @@ class hero:
         self.velocity = 0
         self.collect = 0
         self.xspeed = 0
-        self.xMAX = 600.0
+        self.xMAX = 500.0
         self.xa = 4.0
         self.frame = 0
         self.fs = 0
@@ -328,5 +328,7 @@ class hero:
 
     def get_bb(self):
         if self.grow == 0:
+            self.heady = 8
             return self.x - 16, self.y - 40, self.x + 16, self.y + 8
+        self.heady = 28
         return self.x - 16, self.y - 40, self.x + 16, self.y + 28

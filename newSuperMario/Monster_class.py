@@ -1,4 +1,5 @@
 from pico2d import *
+import object_class
 
 class monster:
     frame = 0

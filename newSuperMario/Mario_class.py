@@ -4,7 +4,7 @@ import game_framework
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP,\
 UP_DOWN, UP_UP, DOWN_DOWN, DOWN_UP,\
-STOP_RUN, STOP_UP, STOP_DOWN = range(11)
+STOP_RUN, STOP_UP, STOP_DOWN, DIE = range(12)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -26,6 +26,8 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 TIME_PER_ACTION = 0.7
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 21
+
+DEL_TIME = 0
 
 # Boy States
 
@@ -58,6 +60,7 @@ class IdleState:
         pass
 
     def do(hero):
+        global DEL_TIME
         hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if hero.grow == 0:
             if hero.y > hero.py:
@@ -93,6 +96,13 @@ class IdleState:
                     hero.g = 900
             elif hero.y <= hero.py:
                 hero.y = hero.py
+
+        if hero.y <= 0:
+            hero.add_event(DIE)
+            hero.g = 900.0
+            DEL_TIME = 0
+            hero.JUMP = True
+            hero.frame = 0
 
     def draw(hero):
         if hero.grow == 1:  # 성장 후
@@ -155,12 +165,14 @@ class RunState:
             hero.JUMP = True
             hero.frame = 0
             hero.g = 900
+
         hero.velocity = clamp(-1, hero.velocity, 1)
 
     def exit(hero, event):
         pass
 
     def do(hero):
+        global DEL_TIME
         hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
         if hero.grow == 0:
             if hero.y > hero.py:
@@ -209,6 +221,13 @@ class RunState:
             elif hero.y <= hero.py:
                 hero.y = hero.py
                 hero.g = 0
+
+        if hero.y <= 0:
+            hero.add_event(DIE)
+            hero.g = 900.0
+            DEL_TIME = 0
+            hero.JUMP = True
+            hero.frame = 0
 
     def draw(hero):
         if hero.grow == 1:  # 성장 후
@@ -259,15 +278,67 @@ class RunState:
                         hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 16 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                        hero.size[0], hero.size[1])
 
+class DieState:
+    def enter(hero, event):
+        global TIME_PER_ACTION, ACTION_PER_TIME, FRAMES_PER_ACTION, DEL_TIME
+        if hero.grow == 0:
+            TIME_PER_ACTION = 0.7
+            ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+            FRAMES_PER_ACTION = 3
+        elif hero.grow == 1:
+            TIME_PER_ACTION = 0.7
+            ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+            FRAMES_PER_ACTION = 13
 
+
+    def exit(hero, event):
+        pass
+
+    def do(hero):
+        global DEL_TIME
+
+        DEL_TIME += FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
+        if DEL_TIME <= FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 20:
+            hero.y += hero.g * game_framework.frame_time
+        elif DEL_TIME >= FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 140:
+            hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+            if hero.frame > 13 and hero.grow == 1:
+                hero.frame = 0
+            elif hero.frame > 3 and hero.grow == 0:
+                hero.frame = 0
+
+            if hero.JUMP:
+                hero.y += hero.g * game_framework.frame_time
+                hero.g = hero.g - hero.ga
+                if hero.g <= 0:
+                    hero.JUMP = False
+            else:
+                hero.y -= hero.g * game_framework.frame_time
+                hero.g = hero.g + hero.ga
+                if hero.g > 900:
+                    hero.g = 900
+                if hero.y <= -100:
+                    print('end')
+
+    def draw(hero):
+        if hero.grow == 1:  # 성장 후
+            hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 7 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                                           hero.size[0], hero.size[1])
+
+        elif hero.grow == 0:  # 성장 전
+            hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 21 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                                           hero.size[0], hero.size[1])
 
 next_state_table = {
 IdleState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: IdleState, LEFT_UP: IdleState,
            UP_DOWN: IdleState, UP_UP: IdleState, DOWN_DOWN: IdleState, DOWN_UP: IdleState,
-           STOP_RUN: IdleState},
+           STOP_RUN: IdleState, DIE: DieState},
 RunState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: RunState, LEFT_UP: RunState,
           UP_DOWN: RunState, UP_UP: RunState, DOWN_DOWN: RunState, DOWN_UP: RunState,
-          STOP_RUN: IdleState},
+          STOP_RUN: IdleState, DIE: DieState},
+DieState:{RIGHT_DOWN: DieState, LEFT_DOWN: DieState, RIGHT_UP: DieState, LEFT_UP: DieState,
+          UP_DOWN: DieState, UP_UP: DieState, DOWN_DOWN: DieState, DOWN_UP: DieState,
+          STOP_RUN: IdleState, DIE: DieState}
 }
 
 class hero:
@@ -292,6 +363,7 @@ class hero:
         self.size = [64, 80]
         self.grow = 0
         self.sit = 0
+        self.SET_BLOCK = None
 
         self.event_que = []
         self.cur_state = IdleState

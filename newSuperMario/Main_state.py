@@ -31,7 +31,7 @@ def enter():
     global mario
     global map1_1
     global SET_BLOCK
-    mario = hero(40, 60)
+    mario = hero(40, 100)
     stage = 0
     map1_1 = map(stage)
     game_world.add_object(map1_1, 0)
@@ -66,11 +66,11 @@ def handle_events():
 
 def update():
     global SET_BLOCK
-    global SET_CHECK
 
     mapmove(map1_1, mario)
     for game_object in game_world.all_objects():
         game_object.update()
+
 
     for eat in coin + item: # 먹으면 사라지는 객체
         if contact_aAndb(mario, eat) > 0:
@@ -115,6 +115,7 @@ def update():
 
     if not contact_aAndb(mario, SET_BLOCK, 3) > 0:
         mario.py = 0
+
 
     delay(0.001)
 

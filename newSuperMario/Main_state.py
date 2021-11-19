@@ -73,7 +73,7 @@ def update():
         game_object.update()
 
     for eat in coin + item: # 먹으면 사라지는 객체
-        if contact_aAndb(mario, eat):
+        if contact_aAndb(mario, eat) > 0:
             if eat.ability == 0:
                 coin.remove(eat)
             elif eat.ability == 300 and eat.ability <= 304:
@@ -84,46 +84,37 @@ def update():
             game_world.remove_object(eat)
 
     for block in Qblock + brick + skbrick + Steelblock: # 블럭
-        if contact_aAndb(mario, block):
-            if (block.ability >= 1 and block.ability <= 150) or block.ability == 999:
-                mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
-                if mario.cur_state == IdleState and mario.velocity == 0:
-                    mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
-                if mario.y  <= block.y and mario.JUMP == True: # 블럭이 위에 있다
-                    mario.JUMP = False
-                    if block.ability >= 100 and block.ability <= 109:
-                        block.ability = block.ability + 10
-                        block.frame = 0
-                        block.fs = 0
-
-                elif mario.y > block.y: # 블럭이 아래에 있다
-                    if mario.py < block.y + block.size[1] + 3:
-                        mario.py = block.y + block.size[1] + 3
-                    if block.ability == 99:
-                        mario.py = block.y + block.size[1]
-                    SET_BLOCK = block
+        if contact_aAndb(mario, block) == 1: # 아래서 위로
+            mario.JUMP = False
+            if block.ability >= 100 and block.ability <= 109:
+                block.ability = block.ability + 10
+                block.frame = 0
+                block.fs = 0
+        elif contact_aAndb(mario, block) == 2:  # 위서 아래로
+            if mario.py < block.y + block.size[1] + 3:
+                mario.py = block.y + block.size[1] + 3
+            if block.ability == 99:
+                mario.py = block.y + block.size[1]
+            SET_BLOCK = block
+        elif contact_aAndb(mario, block) == 3: # 좌우
+            mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
+            if mario.cur_state == IdleState and mario.velocity == 0:
+                mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
 
     for block in grounds: # 블럭
-        if contact_aAndb(mario, block):
+        if contact_aAndb(mario, block) == 1: # 아래서 위로
+            mario.JUMP = False
+        elif contact_aAndb(mario, block) == 2:  # 위서 아래로
+            if mario.py < block.y + block.size[1] + mario.size[1] / 2 + 1:
+                mario.py = block.y + block.size[1] + mario.size[1] / 2 + 1
+            SET_BLOCK = block
+        elif contact_aAndb(mario, block) == 3: # 좌우
+            mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
+            if mario.cur_state == IdleState and mario.velocity == 0:
+                mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
 
-
-            if (block.ability >= 1 and block.ability <= 150) or block.ability == 999:
-                mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
-                if mario.cur_state == IdleState and mario.velocity == 0:
-                    mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
-
-                if mario.y <= block.y and mario.JUMP == True: # 블럭이 위에 있다
-                    mario.JUMP = False
-                elif mario.y  > block.y: # 블럭이 아래에 있다
-                    if mario.py < block.y + block.size[1] + mario.size[1] / 2 + 1:
-                        mario.py = block.y + block.size[1] + mario.size[1] / 2 + 1
-                    SET_BLOCK = block
-                    print('check')
-
-    if not contact_aAndb(mario, SET_BLOCK, 3):
+    if not contact_aAndb(mario, SET_BLOCK, 3) > 0:
         mario.py = 0
-
-
 
     delay(0.001)
 
@@ -134,18 +125,23 @@ def draw():
     update_canvas()
 
 
-def contact_aAndb(a, b, case=0):
+def contact_aAndb(a, b, p = 0):
     left_a, bottom_a, right_a, top_a = a.get_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
-    if case == 3:
-        if left_a > right_b: return False
-        if right_a < left_b: return False
+    if p == 3:
+        if left_a > right_b: return 0
+        if right_a < left_b: return 0
     else:
-        if left_a > right_b: return False
-        if right_a < left_b: return False
-        if top_a < bottom_b: return False
-        if bottom_a > top_b: return False
-    return True
+        if left_a > right_b: return 0
+        if right_a < left_b: return 0
+        if top_a < bottom_b: return 0
+        if bottom_a > top_b: return 0
+
+    if top_a - 900.0 * game_framework.frame_time < bottom_b: return 1 # 아래에서 위로
+    if bottom_a + 900.0 * game_framework.frame_time > top_b: return 2 # 위에서 아래로
+
+    return 3 # 좌,우
+
 
 
 def mapmove(map, mario):

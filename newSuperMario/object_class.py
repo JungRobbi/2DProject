@@ -1,4 +1,5 @@
 from pico2d import *
+import game_framework
 
 class object:
     image = None
@@ -176,3 +177,5 @@ class Ground:
 
     def get_bb(self):
         return self.x - self.size[0], self.y - self.size[1], self.x + self.size[0], self.y + self.size[1]
+
+

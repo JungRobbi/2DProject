@@ -153,7 +153,7 @@ class object_item:
 
 class Ground:
 
-    def __init__(self, leftx, lefty, rightx, righty):
+    def __init__(self, leftx, lefty, rightx, righty, ability=999):
         self.rightx = rightx
         self.righty = righty
         self.leftx = leftx
@@ -164,7 +164,7 @@ class Ground:
         self.movey = 0
         self.crex = self.x
         self.crey = self.y
-        self.ability = 999
+        self.ability = ability
         self.size = [self.x - leftx, self.y - lefty]
 
     def update(self):

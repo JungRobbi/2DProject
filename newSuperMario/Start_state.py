@@ -23,9 +23,6 @@ def update():
     global logo_time
     if (logo_time > 1.0):
         logo_time = 0
-        close_canvas()
-        open_canvas(800, 600)
-        #game_framework.change_state(Title_state)
         game_framework.change_state(Main_state)
     delay(0.01)
     logo_time += 0.01
@@ -33,7 +30,7 @@ def update():
 def draw():
     global image
     clear_canvas()
-    image.draw(550, 308, 1100, 616)
+    image.clip_composite_draw(0, 0, 300, 168, 0, '', 512, 300,1024, 600)
     update_canvas()
 
 

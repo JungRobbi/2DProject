@@ -28,18 +28,13 @@ SET_BLOCK = None
 SET_CHECK = 0
 
 def enter():
-    global mario
     global map1_1
     global SET_BLOCK
-    mario = hero(40, 100)
     stage = 0
     map1_1 = map(stage)
     game_world.add_object(map1_1, 0)
     mapcreate(stage)
     SET_BLOCK = grounds[0]
-
-
-    game_world.add_object(mario, 1)
 
 
 def exit():
@@ -138,8 +133,8 @@ def contact_aAndb(a, b, p = 0):
         if top_a < bottom_b: return 0
         if bottom_a > top_b: return 0
 
-    if top_a - 900.0 * game_framework.frame_time < bottom_b: return 1 # 아래에서 위로
-    if bottom_a + 900.0 * game_framework.frame_time > top_b: return 2 # 위에서 아래로
+    if top_a - (a.g + 1.0) * game_framework.frame_time < bottom_b: return 1 # 아래에서 위로
+    if bottom_a + (a.g + 1.0) * game_framework.frame_time > top_b: return 2 # 위에서 아래로
 
     return 3 # 좌,우
 
@@ -199,7 +194,10 @@ def mapmove(map, mario):
         # 완료
 
 def mapcreate(stage):
+    global mario
     if stage == 0:
+        mario = hero(40, 1000)
+        game_world.add_object(mario, 1)
 
         ground1 = 65
         grounds.append(object_class.Ground(0, 0, 2914, 35))
@@ -217,6 +215,13 @@ def mapcreate(stage):
 
         grounds.append(object_class.Ground(2914 + (36 * 3 + 1878) * 2.5, 0, 2914 + (36 * 3 + 1878 + 364) * 2.5, 14 * 2.5))
         grounds.append(object_class.Ground(2914 + (36 * 3 + 2294) * 2.5, 0, 2914 + (36 * 3 + 2294 + 52 + 652) * 2.5, 14 * 2.5))
+
+        grounds.append(object_class.Ground(2914 - (191) * 2.5, 0, 2914 - (159) * 2.5, 46 * 2.5, 900))
+        grounds.append(object_class.Ground(2914 - (191 - 784) * 2.5, 0, 2914 - (159 - 784) * 2.5, 62 * 2.5, 900))
+        grounds.append(object_class.Ground(2914 - (191 - 784 - 544) * 2.5, 0, 2914 - (159 - 784 - 544) * 2.5, 46 * 2.5, 900))
+        grounds.append(object_class.Ground(2914 - (191 - 784 - 544 - 944) * 2.5, 0, 2914 - (159 - 784 - 544 - 944) * 2.5, 46 * 2.5,900))
+
+        grounds.append(object_class.Ground(3980 * 2.5, 14 * 2.5, (3980 + 4) * 2.5, 174 * 2.5,950))
 
         # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
         # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))

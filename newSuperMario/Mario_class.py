@@ -329,6 +329,19 @@ class DieState:
             hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 21 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                            hero.size[0], hero.size[1])
 
+class ClearState:
+    def enter(hero, event):
+        pass
+
+    def exit(hero, event):
+        pass
+
+    def do(hero):
+        pass
+
+    def draw(hero):
+        pass
+
 next_state_table = {
 IdleState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: IdleState, LEFT_UP: IdleState,
            UP_DOWN: IdleState, UP_UP: IdleState, DOWN_DOWN: IdleState, DOWN_UP: IdleState,

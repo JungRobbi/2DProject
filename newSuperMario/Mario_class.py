@@ -142,11 +142,15 @@ class RunState:
 
     def enter(hero, event):
         if event == RIGHT_DOWN:
+            if hero.dir == -1:
+                hero.x += hero.xMAX * game_framework.frame_time
             hero.velocity += 1
             hero.dir = 1
             hero.collect += 1
             hero.xspeed = 0
         elif event == LEFT_DOWN:
+            if hero.dir == 1:
+                hero.x -= hero.xMAX * game_framework.frame_time
             hero.velocity -= 1
             hero.dir = -1
             hero.collect += 1
@@ -167,6 +171,7 @@ class RunState:
             hero.g = 900
 
         hero.velocity = clamp(-1, hero.velocity, 1)
+
 
     def exit(hero, event):
         pass

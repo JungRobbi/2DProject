@@ -15,5 +15,4 @@ item = []
 monsters = []
 
 SET_BLOCK = None
-SET_CHECK = 0
 

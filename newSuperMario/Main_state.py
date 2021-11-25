@@ -49,59 +49,7 @@ def update():
         game_object.update()
 
 
-    for eat in coin + item: # 먹으면 사라지는 객체
-        if contact_aAndb(mario, eat) > 0:
-            if eat.ability == 0:
-                coin.remove(eat)
-            elif eat.ability == 300 and eat.ability <= 304:
-                if eat.ability == 300: # 버섯
-                    mario.grow = 1
-
-                item.remove(eat)
-            game_world.remove_object(eat)
-
-    for block in Qblock + brick + skbrick + Steelblock: # 블럭
-        if contact_aAndb(mario, block) == 1: # 아래서 위로
-            mario.JUMP = False
-            if block.ability >= 100 and block.ability <= 109:
-                if block.ability >= 101:
-                    t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
-                    t.movex = block.movex
-                    t.movey = block.movey
-
-                    t.frame = 0
-                    item.append(t)
-                    game_world.add_object(t, 1)
-
-                block.ability = block.ability + 10
-                block.frame = 0
-                block.fs = 0
-
-        elif contact_aAndb(mario, block) == 2:  # 위서 아래로
-            if mario.py < block.y + block.size[1] + 3:
-                mario.py = block.y + block.size[1] + 3
-            if block.ability == 99:
-                mario.py = block.y + block.size[1]
-            SET_BLOCK = block
-        elif contact_aAndb(mario, block) == 3: # 좌우
-            mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
-            if mario.cur_state == IdleState and mario.velocity == 0:
-                mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
-
-    for block in grounds: # 블럭
-        if contact_aAndb(mario, block) == 1: # 아래서 위로
-            mario.JUMP = False
-        elif contact_aAndb(mario, block) == 2:  # 위서 아래로
-            if mario.py < block.y + block.size[1] + mario.size[1] / 2 + 1:
-                mario.py = block.y + block.size[1] + mario.size[1] / 2 + 1
-            SET_BLOCK = block
-        elif contact_aAndb(mario, block) == 3: # 좌우
-            mario.x -= mario.velocity * mario.xspeed * game_framework.frame_time
-            if mario.cur_state == IdleState and mario.velocity == 0:
-                mario.x -= mario.dir * mario.xspeed * game_framework.frame_time
-
-    if not contact_aAndb(mario, SET_BLOCK, 3) > 0:
-        mario.py = 0
+    mario.check()
 
 
     delay(0.001)
@@ -224,6 +172,8 @@ def mapcreate(stage):
         Qblock.append(object_class.object(48 * 5, ground1 + 60 * 2, 103))
         Qblock.append(object_class.object(48 * 6, ground1 + 60 * 2, 104))
 
+        Qblock.append(object_class.object(48 * 9, ground1 + 60 * 2 + 20, 101))
+
         Qblock.append(object_class.object(48 * 12, ground1 + 60 * 2, 101))
         Qblock.append(object_class.object(48 * 15, ground1 + 60 * 2, 101))
         Qblock.append(object_class.object(48 * 15 + 32, ground1 + 60 * 2, 101))
@@ -324,9 +274,9 @@ def mapcreate(stage):
                 Steelblock.append(object_class.object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
 
         item.append(object_class.object_item(48 * 3, ground1 - 15, 300))
-        item.append(object_class.object_item(48 * 4, ground1 - 15, 301))
-        item.append(object_class.object_item(48 * 5, ground1 - 15, 302))
-        item.append(object_class.object_item(48 * 6, ground1 - 15, 303))
+        item.append(object_class.object_item(48 * 4, ground1 - 5, 301))
+        item.append(object_class.object_item(48 * 5, ground1 - 5, 302))
+        item.append(object_class.object_item(48 * 6, ground1 - 5, 303))
 
         for i in grounds:
             game_world.add_object(i, 1)

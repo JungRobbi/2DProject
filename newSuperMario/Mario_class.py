@@ -1,5 +1,8 @@
 from pico2d import *
 import game_framework
+from object_variable import *
+import game_world
+import object_class
 
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP,\
@@ -28,6 +31,23 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 21
 
 DEL_TIME = 0
+
+def contact_aAndb(a, b, p = 0):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+    if p == 3:
+        if left_a > right_b: return 0
+        if right_a < left_b: return 0
+    else:
+        if left_a > right_b: return 0
+        if right_a < left_b: return 0
+        if top_a < bottom_b: return 0
+        if bottom_a > top_b: return 0
+
+    if top_a - (a.g + 1.0) * game_framework.frame_time < bottom_b: return 1 # 아래에서 위로
+    if bottom_a + (a.g + 1.0) * game_framework.frame_time > top_b: return 2 # 위에서 아래로
+
+    return 3 # 좌,우
 
 # Boy States
 
@@ -422,3 +442,60 @@ class hero:
             return self.x - 16, self.y - 40, self.x + 16, self.y + 8
         self.heady = 28
         return self.x - 16, self.y - 40, self.x + 16, self.y + 28
+
+    def check(self):
+        global SET_BLOCK
+
+        for eat in coin + item:  # 먹으면 사라지는 객체
+            if contact_aAndb(self, eat) > 0:
+                if eat.ability == 0:
+                    coin.remove(eat)
+                elif eat.ability == 300 and eat.ability <= 304:
+                    if eat.ability == 300:  # 버섯
+                        self.grow = 1
+
+                    item.remove(eat)
+                game_world.remove_object(eat)
+
+        for block in Qblock + brick + skbrick + Steelblock:  # 블럭
+            if contact_aAndb(self, block) == 1:  # 아래서 위로
+                self.JUMP = False
+                if block.ability >= 100 and block.ability <= 109:
+                    if block.ability >= 101:
+                        t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
+                        t.movex = block.movex
+                        t.movey = block.movey
+                        t.set_block = block
+                        t.frame = 0
+                        item.append(t)
+                        game_world.add_object(t, 1)
+
+                    block.ability = block.ability + 10
+                    block.frame = 0
+                    block.fs = 0
+
+            elif contact_aAndb(self, block) == 2:  # 위서 아래로
+                if self.py < block.y + block.size[1] + 3:
+                    self.py = block.y + block.size[1] + 3
+                if block.ability == 99:
+                    self.py = block.y + block.size[1]
+                SET_BLOCK = block
+            elif contact_aAndb(self, block) == 3:  # 좌우
+                self.x -= self.velocity * self.xspeed * game_framework.frame_time
+                if self.cur_state == IdleState and self.velocity == 0:
+                    self.x -= self.dir * self.xspeed * game_framework.frame_time
+
+        for block in grounds:  # 블럭
+            if contact_aAndb(self, block) == 1:  # 아래서 위로
+                self.JUMP = False
+            elif contact_aAndb(self, block) == 2:  # 위서 아래로
+                if self.py < block.y + block.size[1] + self.size[1] / 2 + 1:
+                    self.py = block.y + block.size[1] + self.size[1] / 2 + 1
+                SET_BLOCK = block
+            elif contact_aAndb(self, block) == 3:  # 좌우
+                self.x -= self.velocity * self.xspeed * game_framework.frame_time
+                if self.cur_state == IdleState and self.velocity == 0:
+                    self.x -= self.dir * self.xspeed * game_framework.frame_time
+        if not SET_BLOCK == None:
+            if not contact_aAndb(self, SET_BLOCK, 3) > 0:
+                self.py = 0

@@ -1,10 +1,28 @@
 from pico2d import *
 import game_framework
+import game_world
 from object_variable import *
 
 TIME_PER_ACTION = 0.7
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 15
+
+def contact_aAndb(a, b, p = 0):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+    if p == 3:
+        if left_a > right_b: return 0
+        if right_a < left_b: return 0
+    else:
+        if left_a > right_b: return 0
+        if right_a < left_b: return 0
+        if top_a < bottom_b: return 0
+        if bottom_a > top_b: return 0
+
+    if top_a - (a.g + 1.0) * game_framework.frame_time < bottom_b: return 1 # 아래에서 위로
+    if bottom_a + (a.g + 1.0) * game_framework.frame_time > top_b: return 2 # 위에서 아래로
+
+    return 3 # 좌,우
 
 class object:
     image = None
@@ -105,23 +123,27 @@ class object_item:
         self.movex = 0
         self.move2x = 0
         self.movey = 0
+        self.move2y = 0
         self.crex = x
         self.crey = y
         self.ability = ability
         self.dir = 1
         self.frame = 0
-        if self.ability == 303 or self.ability == 1303:
-            self.status = 1
-            self.ga = 0.1
-            self.g = 6.0
-            self.t = 0
-            self.py = self.y
+        self.JUMP = False
+        self.g = 200
+
+        self.status = 1
+        self.t = 0
+        self.py = self.y
+
+        self.set_block = grounds[0]
 
         if ability >= 300:
             self.size = [32, 32]
         if object_item.image == None:
             object_item.image = load_image('object.png')
     def update(self):
+
         if self.ability >= 1000: # 생성
             if self.ability >= 1300:
                 self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
@@ -131,25 +153,19 @@ class object_item:
 
 
         else:
-            if self.ability == 303:
-                if self.status == 1:  # 상승
-                    self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
-                    self.t += 0.5
-                    if (self.ga / 2) * (self.t ** 2) > self.g * self.t:
-                        self.status = -1
-                elif self.status == -1:  # 하강
-                    self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
-                    self.t += 0.5
-                    if self.y < self.py:
-                        self.y = self.py
-                        self.status = 1
-                        self.t = 0
+            if self.JUMP:
+                self.move2y += self.g * game_framework.frame_time
+            else:
+                self.move2y -= self.g * game_framework.frame_time
+
 
             if self.ability != 302:
-                self.move2x += self.dir * 0.9
+                self.move2x += self.dir * 0.9 * 200 * game_framework.frame_time
 
         self.x = self.crex + self.movex + self.move2x
-        self.y = self.crey + self.movey
+        self.y = self.crey + self.movey + self.move2y
+
+        self.check()
 
 
     def draw(self):
@@ -174,6 +190,32 @@ class object_item:
 
     def get_bb(self):
         return self.x - 16, self.y - 16, self.x + 16, self.y + 14
+
+    def check(self):
+        for block in Qblock + brick + skbrick + Steelblock:  # 블럭
+            if contact_aAndb(self, block) == 2:  # 위서 아래로
+                self.move2y += self.g * game_framework.frame_time
+                self.set_block = block
+            elif contact_aAndb(self, block) == 3:  # 좌우
+                if self.dir == 1:
+                    self.dir = -1
+                else:
+                    self.dir = 1
+
+        for block in grounds:  # 블럭
+            if contact_aAndb(self, block) == 2:  # 위서 아래로
+                self.move2y += self.g * game_framework.frame_time
+                self.set_block = block
+            elif contact_aAndb(self, block) == 3:  # 좌우
+                if self.dir == 1:
+                    self.dir = -1
+                else:
+                    self.dir = 1
+
+        if not self.set_block == None:
+            if not contact_aAndb(self, self.set_block, 3) > 0:
+                self.py = -50
+
 
 class Ground:
 
@@ -201,5 +243,3 @@ class Ground:
 
     def get_bb(self):
         return self.x - self.size[0], self.y - self.size[1], self.x + self.size[0], self.y + self.size[1]
-
-

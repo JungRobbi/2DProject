@@ -11,7 +11,7 @@ logo_time = 0.0
 
 def enter():
     global image; global life
-    image = load_image('')
+    # image = load_image('')
 
 def exit():
     global image
@@ -24,13 +24,12 @@ def update():
     if (logo_time > 1.0):
         logo_time = 0
         game_framework.change_state(Main_state)
-    delay(0.01)
-    logo_time += 0.01
+    logo_time += game_framework.frame_time
 
 def draw():
     global image
     clear_canvas()
-    image.clip_composite_draw(0, 0, 300, 168, 0, '', 512, 300,1024, 600)
+    # image.clip_composite_draw(0, 0, 300, 168, 0, '', 512, 300,1024, 600)
     update_canvas()
 
 

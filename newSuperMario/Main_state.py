@@ -9,14 +9,21 @@ import object_class
 
 name = "MainState"
 
+CHANGE_TIME = None
+CHANGE_image = None
+
 def enter():
     global map1_1
     global SET_BLOCK
+    global CHANGE_TIME; global CHANGE_image
     stage = 0
     map1_1 = map(stage)
     game_world.add_object(map1_1, 0)
     mapcreate(stage)
     SET_BLOCK = grounds[0]
+
+    CHANGE_TIME = 2.0
+    CHANGE_image = load_image('change_effect_1.png')
 
 
 def exit():
@@ -42,7 +49,9 @@ def handle_events():
 
 
 def update():
-    global SET_BLOCK
+    global CHANGE_TIME
+    if CHANGE_TIME >= 0:
+        CHANGE_TIME -= game_framework.frame_time*2
 
     mapmove(map1_1, mario)
     for game_object in game_world.all_objects():
@@ -55,9 +64,14 @@ def update():
     delay(0.001)
 
 def draw():
+    global CHANGE_TIME; global CHANGE_image
+
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
+    if CHANGE_TIME >= 0:
+        CHANGE_image.clip_draw(0,0,1024,800, 512, 300 * (3 - CHANGE_TIME))
+
     update_canvas()
 
 
@@ -163,16 +177,12 @@ def mapcreate(stage):
 
         grounds.append(object_class.Ground(3980 * 2.5, 14 * 2.5, (3980 + 4) * 2.5, 174 * 2.5,950))
 
-        # Qblock.append(object(48 * 8, ground1 + 32 * 2, 100))
-        # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))
-        Qblock.append(object_class.object(48 * 8, ground1, 100))
+
 
         Qblock.append(object_class.object(48 * 3, ground1 + 60 * 2, 101))
         Qblock.append(object_class.object(48 * 4, ground1 + 60 * 2, 102))
         Qblock.append(object_class.object(48 * 5, ground1 + 60 * 2, 103))
         Qblock.append(object_class.object(48 * 6, ground1 + 60 * 2, 104))
-
-        Qblock.append(object_class.object(48 * 9, ground1 + 60 * 2 + 20, 101))
 
         Qblock.append(object_class.object(48 * 12, ground1 + 60 * 2, 101))
         Qblock.append(object_class.object(48 * 15, ground1 + 60 * 2, 101))
@@ -272,11 +282,6 @@ def mapcreate(stage):
         for k in range(8, 1, -1):
             for i in range(0, k):
                 Steelblock.append(object_class.object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
-
-        item.append(object_class.object_item(48 * 3, ground1 - 15, 300))
-        item.append(object_class.object_item(48 * 4, ground1 - 5, 301))
-        item.append(object_class.object_item(48 * 5, ground1 - 5, 302))
-        item.append(object_class.object_item(48 * 6, ground1 - 5, 303))
 
         for i in grounds:
             game_world.add_object(i, 1)

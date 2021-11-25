@@ -4,6 +4,9 @@ from object_variable import *
 import game_world
 import object_class
 
+import Life_state
+import Start_state
+
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP,\
 UP_DOWN, UP_UP, DOWN_DOWN, DOWN_UP,\
@@ -343,7 +346,12 @@ class DieState:
                 if hero.g > 900:
                     hero.g = 900
                 if hero.y <= -100:
-                    print('end')
+                    global marioLife
+                    marioLife -= 1
+                    if marioLife > 0:
+                        game_framework.change_state(Life_state)
+                    else:
+                        game_framework.change_state(Start_state)
 
     def draw(hero):
         if hero.grow == 1:  # 성장 후
@@ -458,7 +466,17 @@ class hero:
                 game_world.remove_object(eat)
 
         for block in Qblock + brick + skbrick + Steelblock:  # 블럭
-            if contact_aAndb(self, block) == 1:  # 아래서 위로
+            if contact_aAndb(self, block) == 2:  # 위서 아래로
+                if self.py < block.y + block.size[1] + 3:
+                    self.py = block.y + block.size[1] + 3
+                if block.ability == 99:
+                    self.py = block.y + block.size[1]
+                SET_BLOCK = block
+            elif contact_aAndb(self, block) == 3:  # 좌우
+                self.x -= self.velocity * self.xspeed * game_framework.frame_time
+                if self.cur_state == IdleState and self.velocity == 0:
+                    self.x -= self.dir * self.xspeed * game_framework.frame_time
+            elif contact_aAndb(self, block) == 1:  # 아래서 위로
                 self.JUMP = False
                 if block.ability >= 100 and block.ability <= 109:
                     if block.ability >= 101:
@@ -474,21 +492,8 @@ class hero:
                     block.frame = 0
                     block.fs = 0
 
-            elif contact_aAndb(self, block) == 2:  # 위서 아래로
-                if self.py < block.y + block.size[1] + 3:
-                    self.py = block.y + block.size[1] + 3
-                if block.ability == 99:
-                    self.py = block.y + block.size[1]
-                SET_BLOCK = block
-            elif contact_aAndb(self, block) == 3:  # 좌우
-                self.x -= self.velocity * self.xspeed * game_framework.frame_time
-                if self.cur_state == IdleState and self.velocity == 0:
-                    self.x -= self.dir * self.xspeed * game_framework.frame_time
-
         for block in grounds:  # 블럭
-            if contact_aAndb(self, block) == 1:  # 아래서 위로
-                self.JUMP = False
-            elif contact_aAndb(self, block) == 2:  # 위서 아래로
+            if contact_aAndb(self, block) == 2:  # 위서 아래로
                 if self.py < block.y + block.size[1] + self.size[1] / 2 + 1:
                     self.py = block.y + block.size[1] + self.size[1] / 2 + 1
                 SET_BLOCK = block
@@ -496,6 +501,8 @@ class hero:
                 self.x -= self.velocity * self.xspeed * game_framework.frame_time
                 if self.cur_state == IdleState and self.velocity == 0:
                     self.x -= self.dir * self.xspeed * game_framework.frame_time
+            elif contact_aAndb(self, block) == 1:  # 아래서 위로
+                self.JUMP = False
         if not SET_BLOCK == None:
             if not contact_aAndb(self, SET_BLOCK, 3) > 0:
                 self.py = 0

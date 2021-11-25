@@ -130,16 +130,15 @@ class object_item:
         self.dir = 1
         self.frame = 0
         self.JUMP = False
-        self.g = 200
+        self.g = 300
+        self.ga = 9.8
 
-        self.status = 1
-        self.t = 0
-        self.py = self.y
-
-        self.set_block = grounds[0]
+        self.py = 0
 
         if ability >= 300:
             self.size = [32, 32]
+        if ability == 303:
+            self.starH = 0
         if object_item.image == None:
             object_item.image = load_image('object.png')
     def update(self):
@@ -153,10 +152,25 @@ class object_item:
 
 
         else:
-            if self.JUMP:
-                self.move2y += self.g * game_framework.frame_time
+            self.py = self.move2y
+            if self.ability == 303:
+                if self.JUMP:
+                    self.move2y += self.g * game_framework.frame_time
+                    self.g -= self.ga
+                    if self.g < 0:
+                        self.JUMP = False
+
+                else:
+                    self.move2y -= self.g * game_framework.frame_time
+                    self.g += self.ga
+                    if self.g >= 900:
+                        self.g = 900
+
             else:
-                self.move2y -= self.g * game_framework.frame_time
+                if self.JUMP:
+                    self.move2y += self.g * game_framework.frame_time
+                else:
+                    self.move2y -= self.g * game_framework.frame_time
 
 
             if self.ability != 302:
@@ -192,29 +206,43 @@ class object_item:
         return self.x - 16, self.y - 16, self.x + 16, self.y + 14
 
     def check(self):
+        if self.x < 0:
+            self.dir = 1
+
         for block in Qblock + brick + skbrick + Steelblock:  # 블럭
             if contact_aAndb(self, block) == 2:  # 위서 아래로
-                self.move2y += self.g * game_framework.frame_time
-                self.set_block = block
+                if self.ability == 303:
+                    self.JUMP = True
+                    self.g = 900
+                else:
+                    self.move2y = self.py
             elif contact_aAndb(self, block) == 3:  # 좌우
                 if self.dir == 1:
                     self.dir = -1
                 else:
                     self.dir = 1
+            elif contact_aAndb(self, block) == 1:  # 아래서 위로
+                self.JUMP = False
 
         for block in grounds:  # 블럭
             if contact_aAndb(self, block) == 2:  # 위서 아래로
-                self.move2y += self.g * game_framework.frame_time
-                self.set_block = block
+                if self.ability == 303:
+                    self.JUMP = True
+                    self.g = 900
+                else:
+                    self.move2y = self.py
             elif contact_aAndb(self, block) == 3:  # 좌우
                 if self.dir == 1:
                     self.dir = -1
                 else:
                     self.dir = 1
+            elif contact_aAndb(self, block) == 1:  # 아래서 위로
+                self.JUMP = False
 
-        if not self.set_block == None:
-            if not contact_aAndb(self, self.set_block, 3) > 0:
-                self.py = -50
+        if self.y <= -50:
+            item.remove(self)
+            game_world.remove_object(self)
+
 
 
 class Ground:

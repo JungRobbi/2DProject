@@ -1,18 +1,17 @@
 import game_framework
-import Life_state
+import Main_state
 from pico2d import *
 
 
 name = "StartState"
 image = None
+life = None
 logo_time = 0.0
 
 
 def enter():
-    global image
-    global marioLife
-    image = load_image('Mario_credit.png')
-    marioLife = 5
+    global image; global life
+    image = load_image('')
 
 def exit():
     global image
@@ -24,8 +23,9 @@ def update():
     global logo_time
     if (logo_time > 1.0):
         logo_time = 0
-        game_framework.change_state(Life_state)
-    logo_time += game_framework.frame_time
+        game_framework.change_state(Main_state)
+    delay(0.01)
+    logo_time += 0.01
 
 def draw():
     global image
@@ -43,7 +43,3 @@ def pause(): pass
 
 
 def resume(): pass
-
-
-
-

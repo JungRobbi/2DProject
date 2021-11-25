@@ -1,4 +1,5 @@
 mario = None
+marioLife = None
 map1_1 = None
 
 # ground
@@ -15,4 +16,3 @@ item = []
 monsters = []
 
 SET_BLOCK = None
-

@@ -4,28 +4,10 @@ import game_world
 
 from Mario_class import *
 from Map import map
+from object_variable import *
 import object_class
 
 name = "MainState"
-
-mario = None
-map1_1 = None
-
-# ground
-grounds = []
-# block
-coin = []
-Qblock = []
-brick = []
-skbrick = []
-Steelblock = []
-# item
-item = []
-# monster
-monsters = []
-
-SET_BLOCK = None
-SET_CHECK = 0
 
 def enter():
     global map1_1
@@ -82,9 +64,19 @@ def update():
         if contact_aAndb(mario, block) == 1: # 아래서 위로
             mario.JUMP = False
             if block.ability >= 100 and block.ability <= 109:
+                if block.ability >= 101:
+                    t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
+                    t.movex = block.movex
+                    t.movey = block.movey
+
+                    t.frame = 0
+                    item.append(t)
+                    game_world.add_object(t, 1)
+
                 block.ability = block.ability + 10
                 block.frame = 0
                 block.fs = 0
+
         elif contact_aAndb(mario, block) == 2:  # 위서 아래로
             if mario.py < block.y + block.size[1] + 3:
                 mario.py = block.y + block.size[1] + 3
@@ -227,9 +219,14 @@ def mapcreate(stage):
         # Qblock.append(object(48 * 8, ground1 + 32 * 1, 100))
         Qblock.append(object_class.object(48 * 8, ground1, 100))
 
-        Qblock.append(object_class.object(48 * 12, ground1 + 60 * 2, 100))
-        Qblock.append(object_class.object(48 * 15, ground1 + 60 * 2, 100))
-        Qblock.append(object_class.object(48 * 15 + 32, ground1 + 60 * 2, 100))
+        Qblock.append(object_class.object(48 * 3, ground1 + 60 * 2, 101))
+        Qblock.append(object_class.object(48 * 4, ground1 + 60 * 2, 102))
+        Qblock.append(object_class.object(48 * 5, ground1 + 60 * 2, 103))
+        Qblock.append(object_class.object(48 * 6, ground1 + 60 * 2, 104))
+
+        Qblock.append(object_class.object(48 * 12, ground1 + 60 * 2, 101))
+        Qblock.append(object_class.object(48 * 15, ground1 + 60 * 2, 101))
+        Qblock.append(object_class.object(48 * 15 + 32, ground1 + 60 * 2, 101))
 
         coin.append(object_class.object(48 * 22, ground1 + 60 * 1, 0))
         coin.append(object_class.object(48 * 22 + 32, ground1 + 60 * 1 + 32, 0))

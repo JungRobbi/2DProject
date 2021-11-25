@@ -1,5 +1,10 @@
 from pico2d import *
 import game_framework
+from object_variable import *
+
+TIME_PER_ACTION = 0.7
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 15
 
 class object:
     image = None
@@ -104,7 +109,8 @@ class object_item:
         self.crey = y
         self.ability = ability
         self.dir = 1
-        if self.ability == 303:
+        self.frame = 0
+        if self.ability == 303 or self.ability == 1303:
             self.status = 1
             self.ga = 0.1
             self.g = 6.0
@@ -116,25 +122,35 @@ class object_item:
         if object_item.image == None:
             object_item.image = load_image('object.png')
     def update(self):
-        if self.ability == 303:
-            if self.status == 1:  # 상승
-                self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
-                self.t += 0.5
-                if (self.ga / 2) * (self.t ** 2) > self.g * self.t:
-                    self.status = -1
-            elif self.status == -1:  # 하강
-                self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
-                self.t += 0.5
-                if self.y < self.py:
-                    self.y = self.py
-                    self.status = 1
-                    self.t = 0
+        if self.ability >= 1000: # 생성
+            if self.ability >= 1300:
+                self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+                if self.frame >= 10:
+                    self.frame = 0
+                    self.ability = self.ability - 1000
 
-        if self.ability != 302:
-            self.move2x += self.dir * 0.9
+
+        else:
+            if self.ability == 303:
+                if self.status == 1:  # 상승
+                    self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
+                    self.t += 0.5
+                    if (self.ga / 2) * (self.t ** 2) > self.g * self.t:
+                        self.status = -1
+                elif self.status == -1:  # 하강
+                    self.y = -(self.ga / 2) * (self.t ** 2) + self.g * self.t + self.py
+                    self.t += 0.5
+                    if self.y < self.py:
+                        self.y = self.py
+                        self.status = 1
+                        self.t = 0
+
+            if self.ability != 302:
+                self.move2x += self.dir * 0.9
 
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey
+
 
     def draw(self):
         if self.ability == 300:  # 일반 버섯
@@ -145,6 +161,14 @@ class object_item:
             self.image.clip_draw(40 * 2, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
         elif self.ability == 303:  # 별
             self.image.clip_draw(40 * 3, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 1300:  # 생성 일반 버섯
+            self.image.clip_draw(40 * int(self.frame), 40, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 1301:
+            self.image.clip_draw(40 * int(self.frame), 40 * 2, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 1302:
+            self.image.clip_draw(40 * int(self.frame), 40 * 3, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 1303:
+            self.image.clip_draw(40 * int(self.frame), 40 * 4, 40, 40, self.x, self.y, self.size[0], self.size[1])
 
         draw_rectangle(*self.get_bb())
 

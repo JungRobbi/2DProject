@@ -22,8 +22,10 @@ def enter():
     mapcreate(stage)
     SET_BLOCK = grounds[0]
 
-    CHANGE_TIME = 2.0
+    CHANGE_TIME = 1.0
     CHANGE_image = load_image('change_effect_1.png')
+
+    print()
 
 
 def exit():
@@ -52,13 +54,14 @@ def update():
     global CHANGE_TIME
     if CHANGE_TIME >= 0:
         CHANGE_TIME -= game_framework.frame_time*2
+    else:
 
-    mapmove(map1_1, mario)
-    for game_object in game_world.all_objects():
-        game_object.update()
+        mapmove(map1_1, mario)
+        for game_object in game_world.all_objects():
+            game_object.update()
 
 
-    mario.check()
+        mario.check()
 
 
     delay(0.001)
@@ -69,8 +72,14 @@ def draw():
     clear_canvas()
     for game_object in game_world.all_objects():
         game_object.draw()
+
     if CHANGE_TIME >= 0:
-        CHANGE_image.clip_draw(0,0,1024,800, 512, 300 * (3 - CHANGE_TIME))
+        CHANGE_image.clip_draw(512 - int(512 * CHANGE_TIME),300 - int(300 * CHANGE_TIME),2 * int(512 * CHANGE_TIME), 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
+        # in > out
+
+        # CHANGE_image.clip_draw(0 + int(512 * CHANGE_TIME),0 + int(300 * CHANGE_TIME),1024 - 2 * int(512 * CHANGE_TIME), 600 - 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
+        # out > in
+
 
     update_canvas()
 
@@ -150,7 +159,7 @@ def mapmove(map, mario):
 def mapcreate(stage):
     global mario
     if stage == 0:
-        mario = hero(40, 1000)
+        mario = hero(40, 120)
         game_world.add_object(mario, 1)
 
         ground1 = 65

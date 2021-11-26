@@ -1,5 +1,6 @@
 import game_framework
 import Life_state
+from object_variable import *
 from pico2d import *
 
 

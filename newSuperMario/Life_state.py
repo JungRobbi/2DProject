@@ -1,17 +1,19 @@
 import game_framework
 import Main_state
+from object_variable import *
 from pico2d import *
 
 
 name = "StartState"
 image = None
-life = None
 logo_time = 0.0
 
 
 def enter():
-    global image; global life
-    # image = load_image('')
+    global image
+    global marioLife
+
+    image = load_image('Life_image.png')
 
 def exit():
     global image
@@ -29,7 +31,7 @@ def update():
 def draw():
     global image
     clear_canvas()
-    # image.clip_composite_draw(0, 0, 300, 168, 0, '', 512, 300,1024, 600)
+    image.clip_composite_draw(0, 0, 1024, 600, 0, '', 512, 300,1024, 600)
     update_canvas()
 
 

@@ -9,13 +9,10 @@ import object_class
 
 name = "MainState"
 
-CHANGE_TIME = None
-CHANGE_image = None
-
 def enter():
     global map1_1
     global SET_BLOCK
-    global CHANGE_TIME; global CHANGE_image
+    global CHANGE_TIME; global CHANGE_image; global CHANGE_INOUT
     stage = 0
     map1_1 = map(stage)
     game_world.add_object(map1_1, 0)
@@ -24,9 +21,7 @@ def enter():
 
     CHANGE_TIME = 1.0
     CHANGE_image = load_image('change_effect_1.png')
-
-    print()
-
+    CHANGE_INOUT = 'IN'
 
 def exit():
     game_world.clear()
@@ -51,11 +46,11 @@ def handle_events():
 
 
 def update():
-    global CHANGE_TIME
+    global CHANGE_TIME;  global CHANGE_INOUT
     if CHANGE_TIME >= 0:
         CHANGE_TIME -= game_framework.frame_time*2
-    else:
 
+    else:
         mapmove(map1_1, mario)
         for game_object in game_world.all_objects():
             game_object.update()
@@ -74,11 +69,13 @@ def draw():
         game_object.draw()
 
     if CHANGE_TIME >= 0:
-        CHANGE_image.clip_draw(512 - int(512 * CHANGE_TIME),300 - int(300 * CHANGE_TIME),2 * int(512 * CHANGE_TIME), 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
-        # in > out
+        if CHANGE_INOUT == 'IN':
+            CHANGE_image.clip_draw(512 - int(512 * CHANGE_TIME),300 - int(300 * CHANGE_TIME),2 * int(512 * CHANGE_TIME), 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
+            # in > out
+        else:
+            CHANGE_image.clip_draw(0 + int(512 * CHANGE_TIME),0 + int(300 * CHANGE_TIME),1024 - 2 * int(512 * CHANGE_TIME), 600 - 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
+            # out > in
 
-        # CHANGE_image.clip_draw(0 + int(512 * CHANGE_TIME),0 + int(300 * CHANGE_TIME),1024 - 2 * int(512 * CHANGE_TIME), 600 - 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
-        # out > in
 
 
     update_canvas()

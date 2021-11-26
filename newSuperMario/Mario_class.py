@@ -323,7 +323,7 @@ class DieState:
         pass
 
     def do(hero):
-        global DEL_TIME
+        global DEL_TIME; global CHANGE_TIME; global CHANGE_INOUT
 
         DEL_TIME += FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
         if DEL_TIME <= FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 20:
@@ -346,12 +346,8 @@ class DieState:
                 if hero.g > 900:
                     hero.g = 900
                 if hero.y <= -100:
-                    global marioLife
-                    marioLife -= 1
-                    if marioLife > 0:
-                        game_framework.change_state(Life_state)
-                    else:
-                        game_framework.change_state(Start_state)
+                    game_framework.change_state(Life_state)
+
 
     def draw(hero):
         if hero.grow == 1:  # 성장 후

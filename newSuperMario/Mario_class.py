@@ -10,7 +10,7 @@ import Start_state
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP,\
 UP_DOWN, UP_UP, DOWN_DOWN, DOWN_UP,\
-STOP_RUN, STOP_UP, STOP_DOWN, DIE = range(12)
+STOP_RUN, STOP_UP, STOP_DOWN, DIE, SPACE = range(13)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -20,7 +20,8 @@ key_event_table = {
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
     (SDL_KEYUP, SDLK_UP): UP_UP,
-    (SDL_KEYUP, SDLK_DOWN): DOWN_UP
+    (SDL_KEYUP, SDLK_DOWN): DOWN_UP,
+    (SDL_KEYDOWN, SDLK_SPACE): SPACE
 }
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
@@ -80,7 +81,8 @@ class IdleState:
 
 
     def exit(hero, event):
-        pass
+        if event == SPACE:
+            hero.fire_ball()
 
     def do(hero):
         global DEL_TIME
@@ -92,7 +94,7 @@ class IdleState:
             else:
                 if hero.frame > 21:
                     hero.frame = 0
-        elif hero.grow == 1:
+        elif hero.grow >= 1:
             if hero.y > hero.py:
                 if hero.frame > 19:
                     hero.frame = 19
@@ -105,6 +107,7 @@ class IdleState:
         if hero.xspeed < 0:
             hero.xspeed = 0
         hero.x += hero.dir * hero.xspeed * game_framework.frame_time
+        hero.movex += hero.dir * hero.xspeed * game_framework.frame_time
 
         if hero.JUMP:
             hero.y += hero.g * game_framework.frame_time
@@ -128,7 +131,7 @@ class IdleState:
             hero.frame = 0
 
     def draw(hero):
-        if hero.grow == 1:  # 성장 후
+        if hero.grow >= 1:  # 성장 후
             if hero.y > hero.py:
                 if hero.dir == 1:
                     hero.image.clip_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
@@ -197,7 +200,8 @@ class RunState:
 
 
     def exit(hero, event):
-        pass
+        if event == SPACE:
+            hero.fire_ball()
 
     def do(hero):
         global DEL_TIME
@@ -213,7 +217,7 @@ class RunState:
                 if hero.frame > 22:
                     hero.frame = 0
 
-        elif hero.grow == 1:
+        elif hero.grow >= 1:
             if hero.y > hero.py:
                 if hero.frame > 19:
                     hero.frame = 19
@@ -225,6 +229,7 @@ class RunState:
                     hero.frame = 4
 
         hero.x += hero.velocity * hero.xspeed * game_framework.frame_time
+        hero.movex += hero.velocity * hero.xspeed * game_framework.frame_time
         if hero.xspeed < hero.xMAX:
             hero.xspeed += hero.xa
         elif hero.xspeed > hero.xMAX:
@@ -258,7 +263,7 @@ class RunState:
             hero.frame = 0
 
     def draw(hero):
-        if hero.grow == 1:  # 성장 후
+        if hero.grow >= 1:  # 성장 후
             if hero.y > hero.py:
                 if hero.dir == 1:
                     hero.image.clip_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
@@ -313,7 +318,7 @@ class DieState:
             TIME_PER_ACTION = 0.7
             ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
             FRAMES_PER_ACTION = 3
-        elif hero.grow == 1:
+        elif hero.grow >= 1:
             TIME_PER_ACTION = 0.7
             ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
             FRAMES_PER_ACTION = 13
@@ -323,14 +328,15 @@ class DieState:
         pass
 
     def do(hero):
-        global DEL_TIME; global CHANGE_TIME; global CHANGE_INOUT
+        global DEL_TIME, CHANGE_TIME, CHANGE_INOUT
+        global TIME_PER_ACTION, ACTION_PER_TIME, FRAMES_PER_ACTION
 
         DEL_TIME += FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time
         if DEL_TIME <= FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 20:
             hero.y += hero.g * game_framework.frame_time
         elif DEL_TIME >= FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 140:
             hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
-            if hero.frame > 13 and hero.grow == 1:
+            if hero.frame > 13 and hero.grow >= 1:
                 hero.frame = 0
             elif hero.frame > 3 and hero.grow == 0:
                 hero.frame = 0
@@ -345,12 +351,17 @@ class DieState:
                 hero.g = hero.g + hero.ga
                 if hero.g > 900:
                     hero.g = 900
+                    CHANGE_TIME = 1.0
                 if hero.y <= -100:
+                    TIME_PER_ACTION = 0.7
+                    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+                    FRAMES_PER_ACTION = 21
                     game_framework.change_state(Life_state)
+                    game_world.clear()
 
 
     def draw(hero):
-        if hero.grow == 1:  # 성장 후
+        if hero.grow >= 1:  # 성장 후
             hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 7 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                            hero.size[0], hero.size[1])
 
@@ -374,19 +385,22 @@ class ClearState:
 next_state_table = {
 IdleState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: IdleState, LEFT_UP: IdleState,
            UP_DOWN: IdleState, UP_UP: IdleState, DOWN_DOWN: IdleState, DOWN_UP: IdleState,
-           STOP_RUN: IdleState, DIE: DieState},
+           STOP_RUN: IdleState, DIE: DieState , SPACE: IdleState},
 RunState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: RunState, LEFT_UP: RunState,
           UP_DOWN: RunState, UP_UP: RunState, DOWN_DOWN: RunState, DOWN_UP: RunState,
-          STOP_RUN: IdleState, DIE: DieState},
+          STOP_RUN: IdleState, DIE: DieState , SPACE: RunState},
 DieState:{RIGHT_DOWN: DieState, LEFT_DOWN: DieState, RIGHT_UP: DieState, LEFT_UP: DieState,
           UP_DOWN: DieState, UP_UP: DieState, DOWN_DOWN: DieState, DOWN_UP: DieState,
-          STOP_RUN: IdleState, DIE: DieState}
+          STOP_RUN: IdleState, DIE: DieState, SPACE: DieState}
 }
 
 class hero:
     image = None
 
     def __init__(self,x, y):
+        self.crex = x
+        self.crey = y
+        self.movex =0
         self.x = x
         self.y = y
         self.dir = 1
@@ -454,9 +468,11 @@ class hero:
             if contact_aAndb(self, eat) > 0:
                 if eat.ability == 0:
                     coin.remove(eat)
-                elif eat.ability == 300 and eat.ability <= 304:
+                elif eat.ability >= 300 and eat.ability <= 304:
                     if eat.ability == 300:  # 버섯
                         self.grow = 1
+                    elif eat.ability == 302:  # 꽃
+                        self.grow = 2
 
                     item.remove(eat)
                 game_world.remove_object(eat)
@@ -502,3 +518,8 @@ class hero:
         if not SET_BLOCK == None:
             if not contact_aAndb(self, SET_BLOCK, 3) > 0:
                 self.py = 0
+
+    def fire_ball(self):
+        if self.grow == 2:
+            ball = object_class.object_item(self.x - self.movex, self.y, 304, self.dir)
+            game_world.add_object(ball, 1)

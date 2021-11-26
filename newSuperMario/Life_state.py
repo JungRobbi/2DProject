@@ -1,4 +1,5 @@
 import game_framework
+import game_world
 import Main_state
 from object_variable import *
 from pico2d import *
@@ -12,6 +13,8 @@ logo_time = 0.0
 def enter():
     global image
     global marioLife
+    
+    game_world.clear()
 
     image = load_image('Life_image.png')
 
@@ -23,7 +26,7 @@ def exit():
 
 def update():
     global logo_time
-    if (logo_time > 1.0):
+    if (logo_time > 3.0):
         logo_time = 0
         game_framework.change_state(Main_state)
     logo_time += game_framework.frame_time

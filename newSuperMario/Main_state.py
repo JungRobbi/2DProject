@@ -151,6 +151,7 @@ def mapmove(map, mario):
         game_object.movex = map.moveWinx
         game_object.movey = map.moveWiny
 
+
         # 완료
 
 def mapcreate(stage):

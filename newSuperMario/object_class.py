@@ -117,7 +117,7 @@ class object:
 class object_item:
     image = None
 
-    def __init__(self, x, y, ability=None):
+    def __init__(self, x, y, ability=None, dir = 1):
         self.x = x
         self.y = y
         self.movex = 0
@@ -127,7 +127,7 @@ class object_item:
         self.crex = x
         self.crey = y
         self.ability = ability
-        self.dir = 1
+        self.dir = dir
         self.frame = 0
         self.JUMP = False
         self.g = 300
@@ -137,8 +137,11 @@ class object_item:
 
         if ability >= 300:
             self.size = [32, 32]
-        if ability == 303:
-            self.starH = 0
+        if ability == 304:
+            self.g = 200
+            self.JUMP = True
+
+
         if object_item.image == None:
             object_item.image = load_image('object.png')
     def update(self):
@@ -150,10 +153,14 @@ class object_item:
                     self.frame = 0
                     self.ability = self.ability - 1000
 
-
         else:
+            if self.ability == 304:
+                self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+                if self.frame >= 4:
+                    self.frame = 0
+
             self.py = self.move2y
-            if self.ability == 303:
+            if self.ability >= 303:
                 if self.JUMP:
                     self.move2y += self.g * game_framework.frame_time
                     self.g -= self.ga
@@ -163,8 +170,9 @@ class object_item:
                 else:
                     self.move2y -= self.g * game_framework.frame_time
                     self.g += self.ga
-                    if self.g >= 900:
+                    if self.g >= 900 and self.ability == 303:
                         self.g = 900
+
 
             else:
                 if self.JUMP:
@@ -172,8 +180,9 @@ class object_item:
                 else:
                     self.move2y -= self.g * game_framework.frame_time
 
-
-            if self.ability != 302:
+            if self.ability == 304:
+                self.move2x += self.dir * 0.9 * 600 * game_framework.frame_time
+            elif self.ability != 302:
                 self.move2x += self.dir * 0.9 * 200 * game_framework.frame_time
 
         self.x = self.crex + self.movex + self.move2x
@@ -199,10 +208,15 @@ class object_item:
             self.image.clip_draw(40 * int(self.frame), 40 * 3, 40, 40, self.x, self.y, self.size[0], self.size[1])
         elif self.ability == 1303:
             self.image.clip_draw(40 * int(self.frame), 40 * 4, 40, 40, self.x, self.y, self.size[0], self.size[1])
+        elif self.ability == 304:
+            self.image.clip_draw(40 * int(self.frame), 40 * 5, 40, 40, self.x, self.y, self.size[0], self.size[1])
+
 
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
+        if self.ability == 304:
+            return self.x - 6, self.y - 6, self.x + 6, self.y + 6
         return self.x - 16, self.y - 16, self.x + 16, self.y + 14
 
     def check(self):
@@ -214,9 +228,15 @@ class object_item:
                 if self.ability == 303:
                     self.JUMP = True
                     self.g = 900
+                elif self.ability == 304:
+                    self.JUMP = True
+                    self.g = 200
                 else:
                     self.move2y = self.py
             elif contact_aAndb(self, block) == 3:  # 좌우
+                if self.ability == 304:
+                    game_world.remove_object(self)
+
                 if self.dir == 1:
                     self.dir = -1
                 else:
@@ -229,9 +249,15 @@ class object_item:
                 if self.ability == 303:
                     self.JUMP = True
                     self.g = 900
+                elif self.ability == 304:
+                    self.JUMP = True
+                    self.g = 200
                 else:
                     self.move2y = self.py
             elif contact_aAndb(self, block) == 3:  # 좌우
+                if self.ability == 304:
+                    game_world.remove_object(self)
+
                 if self.dir == 1:
                     self.dir = -1
                 else:
@@ -240,7 +266,6 @@ class object_item:
                 self.JUMP = False
 
         if self.y <= -50:
-            item.remove(self)
             game_world.remove_object(self)
 
 
@@ -259,6 +284,7 @@ class Ground:
         self.crex = self.x
         self.crey = self.y
         self.ability = ability
+        # 950 : 깃발
         self.size = [self.x - leftx, self.y - lefty]
 
     def update(self):

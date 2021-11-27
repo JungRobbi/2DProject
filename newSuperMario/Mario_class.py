@@ -634,6 +634,12 @@ class hero:
             elif contact_aAndb(self, block) == 1:  # 아래서 위로
                 self.JUMP = False
                 if block.ability >= 100 and block.ability <= 109:
+                    if block.ability == 100:
+                        t = object_class.debris(block.crex, block.crey + 24, 201)
+                        t.movex = block.movex
+                        t.movey = block.movey
+                        game_world.add_object(t, 1)
+
                     if block.ability >= 101:
                         t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
                         t.movex = block.movex
@@ -673,6 +679,12 @@ class hero:
                     game_world.add_object(t, 1)
 
                     t = object_class.debris(block.crex, block.crey + 20, 200, -1)
+                    t.movex = block.movex
+                    t.movey = block.movey
+                    game_world.add_object(t, 1)
+
+                if block.ability == 3:
+                    t = object_class.debris(block.crex, block.crey + 24, 201)
                     t.movex = block.movex
                     t.movey = block.movey
                     game_world.add_object(t, 1)

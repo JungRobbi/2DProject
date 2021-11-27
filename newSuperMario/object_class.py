@@ -316,42 +316,56 @@ class debris:
         self.JUMP = True
         self.g = 400
         self.ga = 9.8
-
         self.py = 0
-
-
         self.size = [48, 48]
-
 
         if debris.image == None:
             debris.image = load_image('object.png')
     def update(self):
+        if self.ability == 200:
+            self.py = self.move2y
 
-        self.py = self.move2y
+            if self.JUMP:
+                self.move2y += self.g * game_framework.frame_time
+                self.g -= self.ga
+                if self.g < 0:
+                    self.JUMP = False
 
-        if self.JUMP:
-            self.move2y += self.g * game_framework.frame_time
-            self.g -= self.ga
-            if self.g < 0:
-                self.JUMP = False
+            else:
+                self.move2y -= self.g * game_framework.frame_time
+                self.g += self.ga
+                if self.g >= 900 and self.ability == 303:
+                    self.g = 900
 
-        else:
-            self.move2y -= self.g * game_framework.frame_time
-            self.g += self.ga
-            if self.g >= 900 and self.ability == 303:
-                self.g = 900
+            self.move2x += self.dir * 0.9 * 200 * game_framework.frame_time
 
-        self.move2x += self.dir * 0.9 * 200 * game_framework.frame_time
+            self.x = self.crex + self.movex + self.move2x
+            self.y = self.crey + self.movey + self.move2y
 
-        self.x = self.crex + self.movex + self.move2x
-        self.y = self.crey + self.movey + self.move2y
+            if self.y <= -50:
+                game_world.remove_object(self)
+        elif self.ability == 201:
+            self.frame += game_framework.frame_time * 20
 
-        if self.y <= -50:
-            game_world.remove_object(self)
+            self.x = self.crex + self.movex + self.move2x
+            self.y = self.crey + self.movey + self.move2y
+
+            self.move2y += game_framework.frame_time * 500
+            if self.move2y >= 32:
+                self.move2y = 32
+                self.py += game_framework.frame_time
+                if self.py > 1:
+                    game_world.remove_object(self)
+
+            if self.frame >= 4:
+                self.frame = 0
+
 
 
     def draw(self):
-        self.image.clip_draw(96 + 24* self.frame, 1000 - 24 * 3, 24, 24, self.x, self.y, 36, 36)
-
+        if self.ability == 200:
+            self.image.clip_draw(96 + 24 * self.frame, 1000 - 24 * 3, 24, 24, self.x, self.y, 36, 36)
+        elif self.ability == 201:
+            self.image.clip_draw(int(self.frame) * 24 + 96, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
 
 

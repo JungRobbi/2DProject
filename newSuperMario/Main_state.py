@@ -24,6 +24,18 @@ def enter():
     CHANGE_INOUT = 'IN'
 
 def exit():
+    global grounds, coin, Qblock, brick, skbrick, Steelblock, item, monsters
+
+
+    grounds.clear()
+    coin.clear()
+    Qblock.clear()
+    brick.clear()
+    skbrick.clear()
+    Steelblock.clear()
+    item.clear()
+    monsters.clear()
+
     game_world.clear()
 
 def pause():
@@ -58,8 +70,6 @@ def update():
 
         mario.check()
 
-
-    delay(0.001)
 
 def draw():
     global CHANGE_TIME; global CHANGE_image

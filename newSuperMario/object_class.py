@@ -19,8 +19,8 @@ def contact_aAndb(a, b, p = 0):
         if top_a < bottom_b: return 0
         if bottom_a > top_b: return 0
 
-    if top_a - (a.g + 1.0) * game_framework.frame_time < bottom_b: return 1 # 아래에서 위로
-    if bottom_a + (a.g + 1.0) * game_framework.frame_time > top_b: return 2 # 위에서 아래로
+    if top_a - (a.g + 5.0) * game_framework.frame_time < bottom_b: return 1 # 아래에서 위로
+    if bottom_a + (a.g + 5.0) * game_framework.frame_time > top_b: return 2 # 위에서 아래로
 
     return 3 # 좌,우
 
@@ -130,7 +130,7 @@ class object_item:
         self.dir = dir
         self.frame = 0
         self.JUMP = False
-        self.g = 300
+        self.g = 400
         self.ga = 9.8
 
         self.py = 0
@@ -138,7 +138,7 @@ class object_item:
         if ability >= 300:
             self.size = [32, 32]
         if ability == 304:
-            self.g = 200
+            self.g = 300
             self.JUMP = True
 
 
@@ -230,7 +230,7 @@ class object_item:
                     self.g = 900
                 elif self.ability == 304:
                     self.JUMP = True
-                    self.g = 200
+                    self.g = 300
                 else:
                     self.move2y = self.py
             elif contact_aAndb(self, block) == 3:  # 좌우
@@ -251,7 +251,7 @@ class object_item:
                     self.g = 900
                 elif self.ability == 304:
                     self.JUMP = True
-                    self.g = 200
+                    self.g = 300
                 else:
                     self.move2y = self.py
             elif contact_aAndb(self, block) == 3:  # 좌우

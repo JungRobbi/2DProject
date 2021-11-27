@@ -10,7 +10,7 @@ import Start_state
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP,\
 UP_DOWN, UP_UP, DOWN_DOWN, DOWN_UP,\
-STOP_RUN, STOP_UP, STOP_DOWN, DIE, SPACE = range(13)
+STOP_RUN, STOP_UP, STOP_DOWN, DIE, SPACE, CLEAR = range(14)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -34,7 +34,9 @@ TIME_PER_ACTION = 0.7
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 21
 
-DEL_TIME = 0
+DEL_TIME = 1
+temp_grow = 0
+temp2_grow = 0
 
 def contact_aAndb(a, b, p = 0):
     left_a, bottom_a, right_a, top_a = a.get_bb()
@@ -75,7 +77,11 @@ class IdleState:
         elif event == UP_DOWN and hero.y == hero.py:
             hero.JUMP = True
             hero.frame = 0
-            hero.g = 900
+            hero.g = 1100
+        elif event == DOWN_DOWN:
+            hero.sit = 1
+        elif event == DOWN_UP:
+            hero.sit = 0
 
         hero.fs_deel = 8
 
@@ -86,49 +92,84 @@ class IdleState:
 
     def do(hero):
         global DEL_TIME
-        hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
-        if hero.grow == 0:
-            if hero.y > hero.py:
-                if hero.frame > 20:
-                    hero.frame = 20
-            else:
-                if hero.frame > 21:
-                    hero.frame = 0
-        elif hero.grow >= 1:
-            if hero.y > hero.py:
-                if hero.frame > 19:
-                    hero.frame = 19
-            else:
-                if hero.frame > 23:
-                    hero.frame = 0
+        global temp_grow, temp2_grow
 
-        if hero.xspeed > 0:
-            hero.xspeed -= hero.xa * 5
-        if hero.xspeed < 0:
-            hero.xspeed = 0
-        hero.x += hero.dir * hero.xspeed * game_framework.frame_time
-        hero.movex += hero.dir * hero.xspeed * game_framework.frame_time
+        if DEL_TIME <= 1:
+            DEL_TIME += game_framework.frame_time
+            if hero.grow == 0:
+                if hero.y > hero.py:
+                    if hero.frame > 20:
+                        hero.frame = 20
+                else:
+                    if hero.frame > 21:
+                        hero.frame = 0
+            elif hero.grow >= 1:
+                if hero.y > hero.py:
+                    if hero.frame > 19:
+                        hero.frame = 19
+                else:
+                    if hero.frame > 23:
+                        hero.frame = 0
 
-        if hero.JUMP:
-            hero.y += hero.g * game_framework.frame_time
-            hero.g = hero.g - hero.ga
-            if hero.g <= 0:
-                hero.JUMP = False
+            if DEL_TIME <= 0.1:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.3:
+                hero.grow = temp_grow
+            elif DEL_TIME <= 0.5:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.7:
+                hero.grow = temp_grow
+            elif DEL_TIME <= 0.9:
+                hero.grow = temp2_grow
+
+            if DEL_TIME > 1:
+                hero.grow = temp_grow
+                temp_grow = 0
+                temp2_grow = 0
         else:
-            if hero.y > hero.py:
-                hero.y -= hero.g * game_framework.frame_time
-                hero.g = hero.g + hero.ga
-                if hero.g > 900:
-                    hero.g = 900
-            elif hero.y <= hero.py:
-                hero.y = hero.py
+            hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+            if hero.grow == 0:
+                if hero.y > hero.py:
+                    if hero.frame > 20:
+                        hero.frame = 20
+                else:
+                    if hero.frame > 21:
+                        hero.frame = 0
+            elif hero.grow >= 1:
+                if hero.y > hero.py:
+                    if hero.frame > 19:
+                        hero.frame = 19
+                else:
+                    if hero.frame > 23:
+                        hero.frame = 0
 
-        if hero.y <= 0:
-            hero.add_event(DIE)
-            hero.g = 900.0
-            DEL_TIME = 0
-            hero.JUMP = True
-            hero.frame = 0
+            if hero.xspeed > 0:
+                hero.xspeed -= hero.xa * 5
+            if hero.xspeed < 0:
+                hero.xspeed = 0
+            hero.x += hero.dir * hero.xspeed * game_framework.frame_time
+            hero.movex += hero.dir * hero.xspeed * game_framework.frame_time
+
+            if hero.JUMP:
+                hero.y += hero.g * game_framework.frame_time
+                hero.g = hero.g - hero.ga
+                if hero.g <= 0:
+                    hero.JUMP = False
+            else:
+                if hero.y > hero.py:
+                    hero.y -= hero.g * game_framework.frame_time
+                    hero.g = hero.g + hero.ga
+                    if hero.g > 1100:
+                        hero.g = 1100
+                elif hero.y <= hero.py:
+                    hero.y = hero.py
+
+            if hero.y <= 0:
+                hero.add_event(DIE)
+                hero.g = 1100.0
+                DEL_TIME = 0
+                hero.JUMP = True
+                hero.frame = 0
 
     def draw(hero):
         if hero.grow >= 1:  # 성장 후
@@ -194,7 +235,11 @@ class RunState:
         elif event == UP_DOWN and hero.y == hero.py:
             hero.JUMP = True
             hero.frame = 0
-            hero.g = 900
+            hero.g = 1100
+        elif event == DOWN_DOWN:
+            hero.sit = 1
+        elif event == DOWN_UP:
+            hero.sit = 0
 
         hero.velocity = clamp(-1, hero.velocity, 1)
 
@@ -205,62 +250,104 @@ class RunState:
 
     def do(hero):
         global DEL_TIME
-        hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
-        if hero.grow == 0:
-            if hero.y > hero.py:
-                if hero.frame > 20:
-                    hero.frame = 20
-            else:
-                if hero.frame > 9 and hero.xspeed == hero.xMAX:
-                    hero.frame = 0
+        global temp_grow, temp2_grow
 
-                if hero.frame > 22:
-                    hero.frame = 0
+        if DEL_TIME <= 1:
+            DEL_TIME += game_framework.frame_time
+            if hero.grow == 0:
+                if hero.y > hero.py:
+                    if hero.frame > 20:
+                        hero.frame = 20
+                else:
+                    if hero.frame > 9 and hero.xspeed == hero.xMAX:
+                        hero.frame = 0
 
-        elif hero.grow >= 1:
-            if hero.y > hero.py:
-                if hero.frame > 19:
-                    hero.frame = 19
-            else:
-                if hero.frame > 10 and hero.xspeed == hero.xMAX:
-                    hero.frame = 0
+                    if hero.frame > 22:
+                        hero.frame = 0
 
-                if hero.frame > 27:
-                    hero.frame = 4
+            elif hero.grow >= 1:
+                if hero.y > hero.py:
+                    if hero.frame > 19:
+                        hero.frame = 19
+                else:
+                    if hero.frame > 10 and hero.xspeed == hero.xMAX:
+                        hero.frame = 0
 
-        hero.x += hero.velocity * hero.xspeed * game_framework.frame_time
-        hero.movex += hero.velocity * hero.xspeed * game_framework.frame_time
-        if hero.xspeed < hero.xMAX:
-            hero.xspeed += hero.xa
-        elif hero.xspeed > hero.xMAX:
-            hero.xspeed = hero.xMAX
-            hero.frame = 0
+                    if hero.frame > 27:
+                        hero.frame = 4
 
-            # x 이동
-        if hero.collect == 0:
-            hero.add_event(STOP_RUN)
+            if DEL_TIME <= 0.1:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.3:
+                hero.grow = temp_grow
+            elif DEL_TIME <= 0.5:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.7:
+                hero.grow = temp_grow
+            elif DEL_TIME <= 0.9:
+                hero.grow = temp2_grow
 
-        if hero.JUMP:
-            hero.y += hero.g * game_framework.frame_time
-            hero.g = hero.g - hero.ga
-            if hero.g <= 0:
-                hero.JUMP = False
+            if DEL_TIME > 1:
+                hero.grow = temp_grow
+                temp_grow = 0
+                temp2_grow = 0
         else:
-            if hero.y > hero.py:
-                hero.y -= hero.g * game_framework.frame_time
-                hero.g = hero.g + hero.ga
-                if hero.g > 900:
-                    hero.g = 900
-            elif hero.y <= hero.py:
-                hero.y = hero.py
-                hero.g = 0
+            hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+            if hero.grow == 0:
+                if hero.y > hero.py:
+                    if hero.frame > 20:
+                        hero.frame = 20
+                else:
+                    if hero.frame > 9 and hero.xspeed == hero.xMAX:
+                        hero.frame = 0
 
-        if hero.y <= 0:
-            hero.add_event(DIE)
-            hero.g = 900.0
-            DEL_TIME = 0
-            hero.JUMP = True
-            hero.frame = 0
+                    if hero.frame > 22:
+                        hero.frame = 0
+
+            elif hero.grow >= 1:
+                if hero.y > hero.py:
+                    if hero.frame > 19:
+                        hero.frame = 19
+                else:
+                    if hero.frame > 10 and hero.xspeed == hero.xMAX:
+                        hero.frame = 0
+
+                    if hero.frame > 27:
+                        hero.frame = 4
+
+            hero.x += hero.velocity * hero.xspeed * game_framework.frame_time
+            hero.movex += hero.velocity * hero.xspeed * game_framework.frame_time
+            if hero.xspeed < hero.xMAX:
+                hero.xspeed += hero.xa
+            elif hero.xspeed > hero.xMAX:
+                hero.xspeed = hero.xMAX
+                hero.frame = 0
+
+                # x 이동
+            if hero.collect == 0:
+                hero.add_event(STOP_RUN)
+
+            if hero.JUMP:
+                hero.y += hero.g * game_framework.frame_time
+                hero.g = hero.g - hero.ga
+                if hero.g <= 0:
+                    hero.JUMP = False
+            else:
+                if hero.y > hero.py:
+                    hero.y -= hero.g * game_framework.frame_time
+                    hero.g = hero.g + hero.ga
+                    if hero.g > 1100:
+                        hero.g = 1100
+                elif hero.y <= hero.py:
+                    hero.y = hero.py
+                    hero.g = 0
+
+            if hero.y <= 0:
+                hero.add_event(DIE)
+                hero.g = 1100.0
+                DEL_TIME = 0
+                hero.JUMP = True
+                hero.frame = 0
 
     def draw(hero):
         if hero.grow >= 1:  # 성장 후
@@ -349,22 +436,21 @@ class DieState:
             else:
                 hero.y -= hero.g * game_framework.frame_time
                 hero.g = hero.g + hero.ga
-                if hero.g > 900:
-                    hero.g = 900
+                if hero.g > 1100:
+                    hero.g = 1100
                     CHANGE_TIME = 1.0
                 if hero.y <= -100:
                     TIME_PER_ACTION = 0.7
                     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
                     FRAMES_PER_ACTION = 21
+                    DEL_TIME = 1
                     game_framework.change_state(Life_state)
-                    game_world.clear()
 
 
     def draw(hero):
         if hero.grow >= 1:  # 성장 후
             hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 7 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                            hero.size[0], hero.size[1])
-
         elif hero.grow == 0:  # 성장 전
             hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 21 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                            hero.size[0], hero.size[1])
@@ -414,7 +500,7 @@ class hero:
         self.fs = 0
         self.fs_deel = 0
         self.py = 50
-        self.g = 900
+        self.g = 1100
         self.ga = 9.8
         self.size = [64, 80]
         self.grow = 0
@@ -463,6 +549,8 @@ class hero:
 
     def check(self):
         global SET_BLOCK
+        global DEL_TIME
+        global temp_grow, temp2_grow
 
         for eat in coin + item:  # 먹으면 사라지는 객체
             if contact_aAndb(self, eat) > 0:
@@ -470,9 +558,15 @@ class hero:
                     coin.remove(eat)
                 elif eat.ability >= 300 and eat.ability <= 304:
                     if eat.ability == 300:  # 버섯
-                        self.grow = 1
+                        if self.grow < 1:
+                            DEL_TIME = 0
+                            temp2_grow = self.grow
+                            temp_grow = 1
                     elif eat.ability == 302:  # 꽃
-                        self.grow = 2
+                        if self.grow < 2:
+                            DEL_TIME = 0
+                            temp2_grow = self.grow
+                            temp_grow = 2
 
                     item.remove(eat)
                 game_world.remove_object(eat)

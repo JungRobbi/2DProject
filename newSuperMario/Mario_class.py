@@ -78,8 +78,10 @@ class IdleState:
             hero.JUMP = True
             hero.frame = 0
             hero.g = 1100
-        elif event == DOWN_DOWN:
+            hero.sit = 0
+        elif event == DOWN_DOWN and not hero.JUMP:
             hero.sit = 1
+            hero.frame = 0
         elif event == DOWN_UP:
             hero.sit = 0
 
@@ -113,11 +115,19 @@ class IdleState:
 
             if DEL_TIME <= 0.1:
                 hero.grow = temp2_grow
+            elif DEL_TIME <= 0.2:
+                hero.grow = temp_grow
             elif DEL_TIME <= 0.3:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.4:
                 hero.grow = temp_grow
             elif DEL_TIME <= 0.5:
                 hero.grow = temp2_grow
+            elif DEL_TIME <= 0.6:
+                hero.grow = temp_grow
             elif DEL_TIME <= 0.7:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.8:
                 hero.grow = temp_grow
             elif DEL_TIME <= 0.9:
                 hero.grow = temp2_grow
@@ -127,7 +137,12 @@ class IdleState:
                 temp_grow = 0
                 temp2_grow = 0
         else:
-            hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+            if hero.sit == 1:
+                hero.frame = (hero.frame + game_framework.frame_time * 18)
+            else:
+                hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+
+
             if hero.grow == 0:
                 if hero.y > hero.py:
                     if hero.frame > 20:
@@ -135,6 +150,9 @@ class IdleState:
                 else:
                     if hero.frame > 21:
                         hero.frame = 0
+                    if hero.sit == 1:
+                        if hero.frame > 2:
+                            hero.frame = 2
             elif hero.grow >= 1:
                 if hero.y > hero.py:
                     if hero.frame > 19:
@@ -142,6 +160,9 @@ class IdleState:
                 else:
                     if hero.frame > 23:
                         hero.frame = 0
+                    if hero.sit == 1:
+                        if hero.frame > 2:
+                            hero.frame = 2
 
             if hero.xspeed > 0:
                 hero.xspeed -= hero.xa * 5
@@ -173,7 +194,14 @@ class IdleState:
 
     def draw(hero):
         if hero.grow >= 1:  # 성장 후
-            if hero.y > hero.py:
+            if hero.sit == 1:
+                if hero.dir == 1:
+                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 5 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                                         hero.size[1])
+                elif hero.dir == -1:
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 5 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                                                   hero.size[0], hero.size[1])
+            elif hero.y > hero.py:
                 if hero.dir == 1:
                     hero.image.clip_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
@@ -188,7 +216,15 @@ class IdleState:
                     hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 1 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
         elif hero.grow == 0:  # 성장 전
-            if hero.y > hero.py:
+
+            if hero.sit == 1:
+                if hero.dir == 1:
+                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 19 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                                         hero.size[1])
+                elif hero.dir == -1:
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 19 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                                                   hero.size[0], hero.size[1])
+            elif hero.y > hero.py:
                 if hero.dir == 1:
                     hero.image.clip_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
@@ -236,10 +272,8 @@ class RunState:
             hero.JUMP = True
             hero.frame = 0
             hero.g = 1100
-        elif event == DOWN_DOWN:
-            hero.sit = 1
-        elif event == DOWN_UP:
-            hero.sit = 0
+        hero.sit = 0
+
 
         hero.velocity = clamp(-1, hero.velocity, 1)
 
@@ -278,11 +312,19 @@ class RunState:
 
             if DEL_TIME <= 0.1:
                 hero.grow = temp2_grow
+            elif DEL_TIME <= 0.2:
+                hero.grow = temp_grow
             elif DEL_TIME <= 0.3:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.4:
                 hero.grow = temp_grow
             elif DEL_TIME <= 0.5:
                 hero.grow = temp2_grow
+            elif DEL_TIME <= 0.6:
+                hero.grow = temp_grow
             elif DEL_TIME <= 0.7:
+                hero.grow = temp2_grow
+            elif DEL_TIME <= 0.8:
                 hero.grow = temp_grow
             elif DEL_TIME <= 0.9:
                 hero.grow = temp2_grow
@@ -292,7 +334,10 @@ class RunState:
                 temp_grow = 0
                 temp2_grow = 0
         else:
-            hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
+            if hero.sit == 1:
+                hero.frame = (hero.frame + game_framework.frame_time * 18)
+            else:
+                hero.frame = (hero.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
             if hero.grow == 0:
                 if hero.y > hero.py:
                     if hero.frame > 20:
@@ -473,7 +518,7 @@ IdleState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: IdleState, LEFT_
            UP_DOWN: IdleState, UP_UP: IdleState, DOWN_DOWN: IdleState, DOWN_UP: IdleState,
            STOP_RUN: IdleState, DIE: DieState , SPACE: IdleState},
 RunState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: RunState, LEFT_UP: RunState,
-          UP_DOWN: RunState, UP_UP: RunState, DOWN_DOWN: RunState, DOWN_UP: RunState,
+          UP_DOWN: RunState, UP_UP: RunState, DOWN_DOWN: IdleState, DOWN_UP: RunState,
           STOP_RUN: IdleState, DIE: DieState , SPACE: RunState},
 DieState:{RIGHT_DOWN: DieState, LEFT_DOWN: DieState, RIGHT_UP: DieState, LEFT_UP: DieState,
           UP_DOWN: DieState, UP_UP: DieState, DOWN_DOWN: DieState, DOWN_UP: DieState,
@@ -543,8 +588,12 @@ class hero:
     def get_bb(self):
         if self.grow == 0:
             self.heady = 8
+            if self.sit == 1:
+                return self.x - 16, self.y - 40, self.x + 16, self.y - 10
             return self.x - 16, self.y - 40, self.x + 16, self.y + 8
         self.heady = 28
+        if self.sit == 1:
+            return self.x - 16, self.y - 40, self.x + 16, self.y - 6
         return self.x - 16, self.y - 40, self.x + 16, self.y + 28
 
     def check(self):
@@ -597,6 +646,37 @@ class hero:
                     block.ability = block.ability + 10
                     block.frame = 0
                     block.fs = 0
+
+                if block.ability == 4:
+                    block.ability = 5
+                elif block.ability == 5:
+                    block.ability = 4
+
+                if block.ability == 2 and self.grow >= 1:
+                    if block in brick:
+                        brick.remove(block)
+                    game_world.remove_object(block)
+
+                    t = object_class.debris(block.crex - 5, block.crey, 200, 1, 1)
+                    t.movex = block.movex
+                    t.movey = block.movey
+                    game_world.add_object(t, 1)
+
+                    t = object_class.debris(block.crex + 5, block.crey, 200, -1)
+                    t.movex = block.movex
+                    t.movey = block.movey
+                    game_world.add_object(t, 1)
+
+                    t = object_class.debris(block.crex, block.crey + 20, 200, 1, 1)
+                    t.movex = block.movex
+                    t.movey = block.movey
+                    game_world.add_object(t, 1)
+
+                    t = object_class.debris(block.crex, block.crey + 20, 200, -1)
+                    t.movex = block.movex
+                    t.movey = block.movey
+                    game_world.add_object(t, 1)
+
 
         for block in grounds:  # 블럭
             if contact_aAndb(self, block) == 2:  # 위서 아래로

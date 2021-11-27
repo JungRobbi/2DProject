@@ -135,8 +135,8 @@ class object_item:
 
         self.py = 0
 
-        if ability >= 300:
-            self.size = [32, 32]
+
+        self.size = [32, 32]
         if ability == 304:
             self.g = 300
             self.JUMP = True
@@ -176,6 +176,7 @@ class object_item:
 
             else:
                 if self.JUMP:
+
                     self.move2y += self.g * game_framework.frame_time
                 else:
                     self.move2y -= self.g * game_framework.frame_time
@@ -211,11 +212,10 @@ class object_item:
         elif self.ability == 304:
             self.image.clip_draw(40 * int(self.frame), 40 * 5, 40, 40, self.x, self.y, self.size[0], self.size[1])
 
-
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
-        if self.ability == 304:
+        if self.ability == 304 :
             return self.x - 6, self.y - 6, self.x + 6, self.y + 6
         return self.x - 16, self.y - 16, self.x + 16, self.y + 14
 
@@ -297,3 +297,61 @@ class Ground:
 
     def get_bb(self):
         return self.x - self.size[0], self.y - self.size[1], self.x + self.size[0], self.y + self.size[1]
+
+class debris:
+    image = None
+
+    def __init__(self, x, y, ability=None, dir = 1, drw = 0):
+        self.x = x
+        self.y = y
+        self.movex = 0
+        self.move2x = 0
+        self.movey = 0
+        self.move2y = 0
+        self.crex = x
+        self.crey = y
+        self.ability = ability
+        self.dir = dir
+        self.frame = drw
+        self.JUMP = True
+        self.g = 400
+        self.ga = 9.8
+
+        self.py = 0
+
+
+        self.size = [48, 48]
+
+
+        if debris.image == None:
+            debris.image = load_image('object.png')
+    def update(self):
+
+        self.py = self.move2y
+
+        if self.JUMP:
+            self.move2y += self.g * game_framework.frame_time
+            self.g -= self.ga
+            if self.g < 0:
+                self.JUMP = False
+
+        else:
+            self.move2y -= self.g * game_framework.frame_time
+            self.g += self.ga
+            if self.g >= 900 and self.ability == 303:
+                self.g = 900
+
+        self.move2x += self.dir * 0.9 * 200 * game_framework.frame_time
+
+        self.x = self.crex + self.movex + self.move2x
+        self.y = self.crey + self.movey + self.move2y
+
+        if self.y <= -50:
+            game_world.remove_object(self)
+
+
+    def draw(self):
+        self.image.clip_draw(96 + 24* self.frame, 1000 - 24 * 3, 24, 24, self.x, self.y, 36, 36)
+
+
+

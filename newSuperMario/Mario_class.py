@@ -172,13 +172,13 @@ class IdleState:
             hero.movex += hero.dir * hero.xspeed * game_framework.frame_time
 
             if hero.JUMP:
-                hero.y += hero.g * game_framework.frame_time
+                hero.y += clamp(-3, hero.g * game_framework.frame_time, 3)
                 hero.g = hero.g - hero.ga
                 if hero.g <= 0:
                     hero.JUMP = False
             else:
                 if hero.y > hero.py:
-                    hero.y -= hero.g * game_framework.frame_time
+                    hero.y -= clamp(-3, hero.g * game_framework.frame_time, 3)
                     hero.g = hero.g + hero.ga
                     if hero.g > 1100:
                         hero.g = 1100
@@ -373,13 +373,13 @@ class RunState:
                 hero.add_event(STOP_RUN)
 
             if hero.JUMP:
-                hero.y += hero.g * game_framework.frame_time
+                hero.y += clamp(-3, hero.g * game_framework.frame_time, 3)
                 hero.g = hero.g - hero.ga
                 if hero.g <= 0:
                     hero.JUMP = False
             else:
                 if hero.y > hero.py:
-                    hero.y -= hero.g * game_framework.frame_time
+                    hero.y -= clamp(-3, hero.g * game_framework.frame_time, 3)
                     hero.g = hero.g + hero.ga
                     if hero.g > 1100:
                         hero.g = 1100

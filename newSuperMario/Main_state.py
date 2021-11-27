@@ -71,6 +71,7 @@ def update():
         mario.check()
 
 
+
 def draw():
     global CHANGE_TIME; global CHANGE_image
 

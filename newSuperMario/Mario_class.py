@@ -192,6 +192,11 @@ class IdleState:
                 hero.JUMP = True
                 hero.frame = 0
 
+            global BOOL_CLEAR
+            if BOOL_CLEAR:
+                hero.add_event(CLEAR)
+                hero.frame = 0
+
     def draw(hero):
         if hero.grow >= 1:  # 성장 후
             if hero.sit == 1:
@@ -394,6 +399,11 @@ class RunState:
                 hero.JUMP = True
                 hero.frame = 0
 
+            global BOOL_CLEAR
+            if BOOL_CLEAR:
+                hero.add_event(CLEAR)
+                hero.frame = 0
+
     def draw(hero):
         if hero.grow >= 1:  # 성장 후
             if hero.y > hero.py:
@@ -508,21 +518,37 @@ class ClearState:
         pass
 
     def do(hero):
-        pass
+        hero.frame = (hero.frame + 10 * game_framework.frame_time)
+
+        if hero.frame > 22:
+            hero.frame = 22
+
+        hero.x += 300.0 * game_framework.frame_time
+        hero.y += 300.0 * game_framework.frame_time
+
+        if hero.y >= 1000:
+            global BOOL_CLEAR
+            game_framework.change_state(Life_state) # 다음 장면
+            BOOL_CLEAR = False
 
     def draw(hero):
-        pass
+        hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 10 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                                       hero.size[0], hero.size[1])
+
 
 next_state_table = {
 IdleState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: IdleState, LEFT_UP: IdleState,
            UP_DOWN: IdleState, UP_UP: IdleState, DOWN_DOWN: IdleState, DOWN_UP: IdleState,
-           STOP_RUN: IdleState, DIE: DieState , SPACE: IdleState},
+           STOP_RUN: IdleState, DIE: DieState , SPACE: IdleState, CLEAR: ClearState},
 RunState:{RIGHT_DOWN: RunState, LEFT_DOWN: RunState, RIGHT_UP: RunState, LEFT_UP: RunState,
           UP_DOWN: RunState, UP_UP: RunState, DOWN_DOWN: IdleState, DOWN_UP: RunState,
-          STOP_RUN: IdleState, DIE: DieState , SPACE: RunState},
+          STOP_RUN: IdleState, DIE: DieState , SPACE: RunState, CLEAR: ClearState},
 DieState:{RIGHT_DOWN: DieState, LEFT_DOWN: DieState, RIGHT_UP: DieState, LEFT_UP: DieState,
           UP_DOWN: DieState, UP_UP: DieState, DOWN_DOWN: DieState, DOWN_UP: DieState,
-          STOP_RUN: IdleState, DIE: DieState, SPACE: DieState}
+          STOP_RUN: IdleState, DIE: DieState, SPACE: DieState, CLEAR: ClearState},
+ClearState:{RIGHT_DOWN: ClearState, LEFT_DOWN: ClearState, RIGHT_UP: ClearState, LEFT_UP: ClearState,
+          UP_DOWN: ClearState, UP_UP: ClearState, DOWN_DOWN: ClearState, DOWN_UP: ClearState,
+          STOP_RUN: ClearState, DIE: ClearState, SPACE: ClearState, CLEAR: ClearState}
 }
 
 class hero:
@@ -539,7 +565,7 @@ class hero:
         self.velocity = 0
         self.collect = 0
         self.xspeed = 0
-        self.xMAX = 500.0
+        self.xMAX = 5000.0
         self.xa = 4.0
         self.frame = 0
         self.fs = 0
@@ -600,110 +626,115 @@ class hero:
         global SET_BLOCK
         global DEL_TIME
         global temp_grow, temp2_grow
+        global BOOL_CLEAR
+        if not BOOL_CLEAR:
+            for eat in coin + item:  # 먹으면 사라지는 객체
+                if contact_aAndb(self, eat) > 0:
+                    if eat.ability == 0:
+                        coin.remove(eat)
+                    elif eat.ability >= 300 and eat.ability <= 304:
+                        if eat.ability == 300:  # 버섯
+                            if self.grow < 1:
+                                DEL_TIME = 0
+                                temp2_grow = self.grow
+                                temp_grow = 1
+                        elif eat.ability == 302:  # 꽃
+                            if self.grow < 2:
+                                DEL_TIME = 0
+                                temp2_grow = self.grow
+                                temp_grow = 2
 
-        for eat in coin + item:  # 먹으면 사라지는 객체
-            if contact_aAndb(self, eat) > 0:
-                if eat.ability == 0:
-                    coin.remove(eat)
-                elif eat.ability >= 300 and eat.ability <= 304:
-                    if eat.ability == 300:  # 버섯
-                        if self.grow < 1:
-                            DEL_TIME = 0
-                            temp2_grow = self.grow
-                            temp_grow = 1
-                    elif eat.ability == 302:  # 꽃
-                        if self.grow < 2:
-                            DEL_TIME = 0
-                            temp2_grow = self.grow
-                            temp_grow = 2
+                        item.remove(eat)
+                    game_world.remove_object(eat)
 
-                    item.remove(eat)
-                game_world.remove_object(eat)
+            for block in Qblock + brick + skbrick + Steelblock:  # 블럭
+                if contact_aAndb(self, block) == 2:  # 위서 아래로
+                    if self.py < block.y + block.size[1] + 3:
+                        self.py = block.y + block.size[1] + 3
+                    if block.ability == 99:
+                        self.py = block.y + block.size[1]
+                    SET_BLOCK = block
+                elif contact_aAndb(self, block) == 3:  # 좌우
+                    self.x -= self.velocity * self.xspeed * game_framework.frame_time
+                    if self.cur_state == IdleState and self.velocity == 0:
+                        self.x -= self.dir * self.xspeed * game_framework.frame_time
+                elif contact_aAndb(self, block) == 1:  # 아래서 위로
+                    self.JUMP = False
+                    if block.ability >= 100 and block.ability <= 109:
+                        if block.ability == 100:
+                            t = object_class.debris(block.crex, block.crey + 24, 201)
+                            t.movex = block.movex
+                            t.movey = block.movey
+                            game_world.add_object(t, 1)
 
-        for block in Qblock + brick + skbrick + Steelblock:  # 블럭
-            if contact_aAndb(self, block) == 2:  # 위서 아래로
-                if self.py < block.y + block.size[1] + 3:
-                    self.py = block.y + block.size[1] + 3
-                if block.ability == 99:
-                    self.py = block.y + block.size[1]
-                SET_BLOCK = block
-            elif contact_aAndb(self, block) == 3:  # 좌우
-                self.x -= self.velocity * self.xspeed * game_framework.frame_time
-                if self.cur_state == IdleState and self.velocity == 0:
-                    self.x -= self.dir * self.xspeed * game_framework.frame_time
-            elif contact_aAndb(self, block) == 1:  # 아래서 위로
-                self.JUMP = False
-                if block.ability >= 100 and block.ability <= 109:
-                    if block.ability == 100:
+                        if block.ability >= 101:
+                            t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
+                            t.movex = block.movex
+                            t.movey = block.movey
+                            t.set_block = block
+                            t.frame = 0
+                            item.append(t)
+                            game_world.add_object(t, 1)
+
+                        block.ability = block.ability + 10
+                        block.frame = 0
+                        block.fs = 0
+
+                    if block.ability == 4:
+                        block.ability = 5
+                    elif block.ability == 5:
+                        block.ability = 4
+
+                    if block.ability == 2 and self.grow >= 1:
+                        if block in brick:
+                            brick.remove(block)
+                        game_world.remove_object(block)
+
+                        t = object_class.debris(block.crex - 5, block.crey, 200, 1, 1)
+                        t.movex = block.movex
+                        t.movey = block.movey
+                        game_world.add_object(t, 1)
+
+                        t = object_class.debris(block.crex + 5, block.crey, 200, -1)
+                        t.movex = block.movex
+                        t.movey = block.movey
+                        game_world.add_object(t, 1)
+
+                        t = object_class.debris(block.crex, block.crey + 20, 200, 1, 1)
+                        t.movex = block.movex
+                        t.movey = block.movey
+                        game_world.add_object(t, 1)
+
+                        t = object_class.debris(block.crex, block.crey + 20, 200, -1)
+                        t.movex = block.movex
+                        t.movey = block.movey
+                        game_world.add_object(t, 1)
+
+                    if block.ability == 3:
                         t = object_class.debris(block.crex, block.crey + 24, 201)
                         t.movex = block.movex
                         t.movey = block.movey
                         game_world.add_object(t, 1)
 
-                    if block.ability >= 101:
-                        t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
-                        t.movex = block.movex
-                        t.movey = block.movey
-                        t.set_block = block
-                        t.frame = 0
-                        item.append(t)
-                        game_world.add_object(t, 1)
 
-                    block.ability = block.ability + 10
-                    block.frame = 0
-                    block.fs = 0
-
-                if block.ability == 4:
-                    block.ability = 5
-                elif block.ability == 5:
-                    block.ability = 4
-
-                if block.ability == 2 and self.grow >= 1:
-                    if block in brick:
-                        brick.remove(block)
-                    game_world.remove_object(block)
-
-                    t = object_class.debris(block.crex - 5, block.crey, 200, 1, 1)
-                    t.movex = block.movex
-                    t.movey = block.movey
-                    game_world.add_object(t, 1)
-
-                    t = object_class.debris(block.crex + 5, block.crey, 200, -1)
-                    t.movex = block.movex
-                    t.movey = block.movey
-                    game_world.add_object(t, 1)
-
-                    t = object_class.debris(block.crex, block.crey + 20, 200, 1, 1)
-                    t.movex = block.movex
-                    t.movey = block.movey
-                    game_world.add_object(t, 1)
-
-                    t = object_class.debris(block.crex, block.crey + 20, 200, -1)
-                    t.movex = block.movex
-                    t.movey = block.movey
-                    game_world.add_object(t, 1)
-
-                if block.ability == 3:
-                    t = object_class.debris(block.crex, block.crey + 24, 201)
-                    t.movex = block.movex
-                    t.movey = block.movey
-                    game_world.add_object(t, 1)
+            for block in grounds:  # 블럭
+                if contact_aAndb(self, block) == 2:  # 위서 아래로
+                    if self.py < block.y + block.size[1] + self.size[1] / 2 + 1:
+                        self.py = block.y + block.size[1] + self.size[1] / 2 + 1
+                    SET_BLOCK = block
+                elif contact_aAndb(self, block) == 3:  # 좌우
+                    self.x -= self.velocity * self.xspeed * game_framework.frame_time
+                    if self.cur_state == IdleState and self.velocity == 0:
+                        self.x -= self.dir * self.xspeed * game_framework.frame_time
 
 
-        for block in grounds:  # 블럭
-            if contact_aAndb(self, block) == 2:  # 위서 아래로
-                if self.py < block.y + block.size[1] + self.size[1] / 2 + 1:
-                    self.py = block.y + block.size[1] + self.size[1] / 2 + 1
-                SET_BLOCK = block
-            elif contact_aAndb(self, block) == 3:  # 좌우
-                self.x -= self.velocity * self.xspeed * game_framework.frame_time
-                if self.cur_state == IdleState and self.velocity == 0:
-                    self.x -= self.dir * self.xspeed * game_framework.frame_time
-            elif contact_aAndb(self, block) == 1:  # 아래서 위로
-                self.JUMP = False
-        if not SET_BLOCK == None:
-            if not contact_aAndb(self, SET_BLOCK, 3) > 0:
-                self.py = 0
+                    if block.ability == 950: # 깃발
+                        BOOL_CLEAR = True
+                elif contact_aAndb(self, block) == 1:  # 아래서 위로
+                    self.JUMP = False
+            if not SET_BLOCK == None:
+                if not contact_aAndb(self, SET_BLOCK, 3) > 0:
+                    self.py = 0
 
     def fire_ball(self):
         if self.grow == 2:

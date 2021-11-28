@@ -19,3 +19,5 @@ SET_BLOCK = None
 CHANGE_TIME = None
 CHANGE_image = None
 CHANGE_INOUT = None
+
+BOOL_CLEAR = False

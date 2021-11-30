@@ -73,7 +73,7 @@ def update():
 
 
 def draw():
-    global CHANGE_TIME; global CHANGE_image
+    global CHANGE_TIME; global CHANGE_image, mario
 
     clear_canvas()
     for game_object in game_world.all_objects():
@@ -86,6 +86,7 @@ def draw():
         else:
             CHANGE_image.clip_draw(0 + int(512 * CHANGE_TIME),0 + int(300 * CHANGE_TIME),1024 - 2 * int(512 * CHANGE_TIME), 600 - 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
             # out > in
+
 
 
 

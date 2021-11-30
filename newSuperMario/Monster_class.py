@@ -20,8 +20,9 @@ def contact_aAndb(a, b, p = 0):
 
     return 3 # 좌,우
 
-class monster:
-    def __init__(self, x, y, ability=None, dir=1):
+class goomba:
+    image = None
+    def __init__(self, x, y, dir=1):
         self.x = x
         self.y = y
         self.movex = 0
@@ -30,80 +31,176 @@ class monster:
         self.move2y = 0
         self.crex = x
         self.crey = y
-        self.ability = ability
         self.dir = dir
         self.frame = 0
-        self.size = [48, 48]
-
-        if monster.image == None:
-            monster.image = load_image('Monster.png')
+        self.size = [40, 40]
+        self.g = 0
+        if goomba.image == None:
+            goomba.image = load_image('Monster.png')
 
     def update(self):
-        if self.ability == 5000:  # 굼바
-            self.frame = (self.frame + 20 * game_framework.frame_time)
-            if self.frame >= 10:
-                self.frame = 0
-                
+        self.frame = (self.frame + 10 * game_framework.frame_time)
+        if self.frame >= 9:
+            self.frame = 0
+        self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
+        self.x = self.crex + self.movex + self.move2x
+        self.y = self.crey + self.movey + self.move2y
+
+        self.check()
+
 
     def draw(self):
-        if self.ability == 5000:  # 일반 버섯
-            self.image.clip_draw(0, 0, 40, 40, self.x, self.y, self.size[0], self.size[1])
-
+        if self.dir == -1:
+            self.image.clip_draw(int(self.frame) * 24, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+        else:
+            self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 24, 24, 24, 0, 'h', self.x, self.y,
+                                           self.size[0], self.size[1])
         draw_rectangle(*self.get_bb())
 
+
+
     def get_bb(self):
-        if self.ability == 304:
-            return self.x - 6, self.y - 6, self.x + 6, self.y + 6
-        return self.x - 16, self.y - 16, self.x + 16, self.y + 14
+        return self.x - 13, self.y - 12, self.x + 13, self.y + 12
 
     def check(self):
         if self.x < 0:
             self.dir = 1
 
         for block in Qblock + brick + skbrick + Steelblock:  # 블럭
-            if contact_aAndb(self, block) == 2:  # 위서 아래로
-                if self.ability == 303:
-                    self.JUMP = True
-                    self.g = 900
-                elif self.ability == 304:
-                    self.JUMP = True
-                    self.g = 300
-                else:
-                    self.move2y = self.py
-            elif contact_aAndb(self, block) == 3:  # 좌우
-                if self.ability == 304:
-                    game_world.remove_object(self)
-
+            if contact_aAndb(self, block) == 3:  # 좌우
                 if self.dir == 1:
                     self.dir = -1
                 else:
                     self.dir = 1
-            elif contact_aAndb(self, block) == 1:  # 아래서 위로
-                self.JUMP = False
 
         for block in grounds:  # 블럭
-            if contact_aAndb(self, block) == 2:  # 위서 아래로
-                if self.ability == 303:
-                    self.JUMP = True
-                    self.g = 900
-                elif self.ability == 304:
-                    self.JUMP = True
-                    self.g = 300
-                else:
-                    self.move2y = self.py
-            elif contact_aAndb(self, block) == 3:  # 좌우
-                if self.ability == 304:
-                    game_world.remove_object(self)
-
+            if contact_aAndb(self, block) == 3:  # 좌우
                 if self.dir == 1:
                     self.dir = -1
                 else:
                     self.dir = 1
-            elif contact_aAndb(self, block) == 1:  # 아래서 위로
-                self.JUMP = False
 
-        if self.y <= -50:
-            game_world.remove_object(self)
+
+class boo:
+    image = None
+    def __init__(self, x, y, dir=1):
+        self.x = x
+        self.y = y
+        self.movex = 0
+        self.move2x = 0
+        self.movey = 0
+        self.move2y = 0
+        self.crex = x
+        self.crey = y
+        self.dir = dir
+        self.frame = 0
+        self.size = [40, 40]
+        self.g = 0
+        if boo.image == None:
+            boo.image = load_image('Monster.png')
+
+    def update(self):
+        self.frame = (self.frame + 10 * game_framework.frame_time)
+        if self.frame >= 3:
+            self.frame = 0
+        self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
+        self.x = self.crex + self.movex + self.move2x
+        self.y = self.crey + self.movey + self.move2y
+
+        self.check()
+
+
+    def draw(self):
+        if self.dir == -1:
+            self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+        else:
+            self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24, 24, 24, 0, 'h', self.x, self.y,
+                                           self.size[0], self.size[1])
+        draw_rectangle(*self.get_bb())
+
+
+
+    def get_bb(self):
+        return self.x - 20, self.y - 20, self.x + 15, self.y + 15
+
+    def check(self):
+        if self.x < 0:
+            self.dir = 1
+
+        for block in Qblock + brick + skbrick + Steelblock:  # 블럭
+            if contact_aAndb(self, block) == 3:  # 좌우
+                if self.dir == 1:
+                    self.dir = -1
+                else:
+                    self.dir = 1
+
+        for block in grounds:  # 블럭
+            if contact_aAndb(self, block) == 3:  # 좌우
+                if self.dir == 1:
+                    self.dir = -1
+                else:
+                    self.dir = 1
+
+
+class Hammer_bros:
+    image = None
+    def __init__(self, x, y, dir=1):
+        self.x = x
+        self.y = y
+        self.movex = 0
+        self.move2x = 0
+        self.movey = 0
+        self.move2y = 0
+        self.crex = x
+        self.crey = y
+        self.dir = dir
+        self.frame = 0
+        self.size = [40, 67]
+        self.g = 0
+        if Hammer_bros.image == None:
+            Hammer_bros.image = load_image('Monster.png')
+
+    def update(self):
+        self.frame = (self.frame + 10 * game_framework.frame_time)
+        if self.frame >= 25:
+            self.frame = 0
+        self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
+        self.x = self.crex + self.movex + self.move2x
+        self.y = self.crey + self.movey + self.move2y
+
+        self.check()
+
+
+    def draw(self):
+        if self.dir == -1:
+            self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, self.x, self.y, self.size[0], self.size[1])
+        else:
+            self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, 0, 'h', self.x, self.y,
+                                           self.size[0], self.size[1])
+        draw_rectangle(*self.get_bb())
+
+
+
+    def get_bb(self):
+        return self.x - 20, self.y - 20, self.x + 15, self.y + 15
+
+    def check(self):
+        if self.x < 0:
+            self.dir = 1
+
+        for block in Qblock + brick + skbrick + Steelblock:  # 블럭
+            if contact_aAndb(self, block) == 3:  # 좌우
+                if self.dir == 1:
+                    self.dir = -1
+                else:
+                    self.dir = 1
+
+        for block in grounds:  # 블럭
+            if contact_aAndb(self, block) == 3:  # 좌우
+                if self.dir == 1:
+                    self.dir = -1
+                else:
+                    self.dir = 1
 
 
 

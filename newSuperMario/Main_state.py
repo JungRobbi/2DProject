@@ -6,6 +6,7 @@ from Mario_class import *
 from Map import map
 from object_variable import *
 import object_class
+import Monster_class
 
 name = "MainState"
 
@@ -173,6 +174,11 @@ def mapcreate(stage):
         game_world.add_object(mario, 1)
 
         ground1 = 65
+
+        monsters.append(Monster_class.goomba(48 * 3, ground1))
+        monsters.append(Monster_class.boo(48 * 5, ground1))
+        monsters.append(Monster_class.Hammer_bros(48 * 7, ground1 + 30))
+
         grounds.append(object_class.Ground(0, 0, 2914, 35))
         grounds.append(object_class.Ground(434 * 2.5, 0, 514 * 2.5, 30 * 2.5))
         grounds.append(object_class.Ground(512 * 2.5, 0, (514+92) * 2.5, 62 * 2.5))
@@ -314,6 +320,6 @@ def mapcreate(stage):
             game_world.add_object(i, 1)
         for i in Steelblock:
             game_world.add_object(i, 1)
-        for i in item:
+        for i in item + monsters:
             game_world.add_object(i, 1)
 

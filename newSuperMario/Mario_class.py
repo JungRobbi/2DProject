@@ -201,47 +201,47 @@ class IdleState:
         if hero.grow >= 1:  # 성장 후
             if hero.sit == 1:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 5 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 5 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 5 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 5 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             elif hero.y > hero.py:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 4 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             else:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 1 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 1 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 else:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 1 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 1 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
         elif hero.grow == 0:  # 성장 전
 
             if hero.sit == 1:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 19 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 19 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 19 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 19 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             elif hero.y > hero.py:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 18 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 18 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             else:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 15 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 15 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 else:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 15 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 15 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
 
 
@@ -408,49 +408,49 @@ class RunState:
         if hero.grow >= 1:  # 성장 후
             if hero.y > hero.py:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 4 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 4 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 4 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             else:
                 if hero.dir == 1:  # 오른쪽 걸음
                     if hero.xspeed == hero.xMAX:
-                        hero.image.clip_draw(int(hero.frame) * 32, 1000 - 3 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                        hero.image.clip_draw(int(hero.frame) * 32, 2000 - 3 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                              hero.size[1])
                     else:
-                        hero.image.clip_draw(int(hero.frame) * 32, 1000 - 2 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                        hero.image.clip_draw(int(hero.frame) * 32, 2000 - 2 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                              hero.size[1])
                 elif hero.dir == -1:  # 왼쪽 걸음
                     if hero.xspeed == hero.xMAX:
-                        hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 3 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                        hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 3 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                        hero.size[0], hero.size[1])
                     else:
-                        hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 2 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                        hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 2 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                        hero.size[0], hero.size[1])
 
         elif hero.grow == 0:  # 성장 전
             if hero.y > hero.py:
                 if hero.dir == 1:
-                    hero.image.clip_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                    hero.image.clip_draw(int(hero.frame) * 32, 2000 - 18 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                          hero.size[1])
                 elif hero.dir == -1:
-                    hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 18 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                    hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 18 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                    hero.size[0], hero.size[1])
             else:
                 if hero.dir == 1:  # 오른쪽 걸음
                     if hero.xspeed == hero.xMAX:
-                        hero.image.clip_draw(int(hero.frame) * 32, 1000 - 17 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                        hero.image.clip_draw(int(hero.frame) * 32, 2000 - 17 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                              hero.size[1])
                     else:
-                        hero.image.clip_draw(int(hero.frame) * 32, 1000 - 16 * 40, 32, 40, hero.x, hero.y, hero.size[0],
+                        hero.image.clip_draw(int(hero.frame) * 32, 2000 - 16 * 40, 32, 40, hero.x, hero.y, hero.size[0],
                                              hero.size[1])
                 elif hero.dir == -1:  # 왼쪽 걸음
                     if hero.xspeed == hero.xMAX:
-                        hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 17 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                        hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 17 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                        hero.size[0], hero.size[1])
                     else:
-                        hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 16 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+                        hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 16 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                                        hero.size[0], hero.size[1])
 
 class DieState:
@@ -504,10 +504,10 @@ class DieState:
 
     def draw(hero):
         if hero.grow >= 1:  # 성장 후
-            hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 7 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+            hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 7 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                            hero.size[0], hero.size[1])
         elif hero.grow == 0:  # 성장 전
-            hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 21 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+            hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 21 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                            hero.size[0], hero.size[1])
 
 class ClearState:
@@ -534,7 +534,7 @@ class ClearState:
                 BOOL_CLEAR = False
 
     def draw(hero):
-        hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 10 * 40, 32, 40, 0, 'h', hero.x, hero.y,
+        hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 10 * 40, 32, 40, 0, 'h', hero.x, hero.y,
                                        hero.size[0], hero.size[1])
 
 

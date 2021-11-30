@@ -494,7 +494,7 @@ class DieState:
                 if hero.g > 1100:
                     hero.g = 1100
                     CHANGE_TIME = 1.0
-                if hero.y <= -100:
+                if hero.y <= -1000:
                     TIME_PER_ACTION = 0.7
                     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
                     FRAMES_PER_ACTION = 21
@@ -518,18 +518,20 @@ class ClearState:
         pass
 
     def do(hero):
+        global ROUND
         hero.frame = (hero.frame + 10 * game_framework.frame_time)
 
         if hero.frame > 22:
             hero.frame = 22
 
-        hero.x += 300.0 * game_framework.frame_time
-        hero.y += 300.0 * game_framework.frame_time
+        if ROUND == 1:
+            hero.x += 300.0 * game_framework.frame_time
+            hero.y += 300.0 * game_framework.frame_time
 
-        if hero.y >= 1000:
-            global BOOL_CLEAR
-            game_framework.change_state(Life_state) # 다음 장면
-            BOOL_CLEAR = False
+            if hero.y >= 1000:
+                global BOOL_CLEAR
+                game_framework.change_state(Life_state) # 다음 장면
+                BOOL_CLEAR = False
 
     def draw(hero):
         hero.image.clip_composite_draw(int(hero.frame) * 32, 1000 - 10 * 40, 32, 40, 0, 'h', hero.x, hero.y,

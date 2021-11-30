@@ -1,5 +1,7 @@
 from pico2d import *
-import object_class
+import game_framework
+from object_variable import *
+import game_world
 
 class monster:
     frame = 0

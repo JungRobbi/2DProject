@@ -21,3 +21,5 @@ CHANGE_image = None
 CHANGE_INOUT = None
 
 BOOL_CLEAR = False
+
+ROUND = 1

@@ -4,6 +4,7 @@ from object_variable import *
 import game_world
 from BehaviorTree import *
 import Main_state
+import object_class
 
 def contact_aAndb(a, b, p = 0):
     left_a, bottom_a, right_a, top_a = a.get_bb()
@@ -54,7 +55,7 @@ class goomba:
 
     def move(self):
         self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
-        return BehaviorTree.RUNNING
+        return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):
         move_node = LeafNode("move", self.move)
@@ -174,9 +175,11 @@ class Hammer_bros:
         self.crex = x
         self.crey = y
         self.dir = dir
+        self.velocity = 1
         self.frame = 0
         self.size = [40, 67]
         self.g = 0
+        self.timer = 1.0
 
         self.build_behavior_tree()
         if Hammer_bros.image == None:
@@ -187,7 +190,7 @@ class Hammer_bros:
         self.frame = (self.frame + 10 * game_framework.frame_time)
         if self.frame >= 25:
             self.frame = 0
-        self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
+        self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey + self.move2y
 
@@ -204,13 +207,37 @@ class Hammer_bros:
 
 
     def move(self):
-        pass
+        if self.dir == 1:
+            self.velocity = 1
+        else:
+            self.velocity = -1
+        return BehaviorTree.SUCCESS
 
     def find_and_see(self):
-        pass
+        self.velocity = 0
+        distance = (Main_state.get_mario().x - self.x) ** 2 + (Main_state.get_mario().y - self.y) ** 2
+        if distance < 300 ** 2:
+            dx = Main_state.get_mario().x - self.x
+            if dx < 0:
+                self.dir = -1
+            else:
+                self.dir = 1
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
 
     def throwing(self):
-        pass
+        self.timer -= game_framework.frame_time
+
+        if self.timer <= 0:
+            self.timer = 1.0
+
+            # 망치 생성
+            return BehaviorTree.SUCCESS
+
+        return BehaviorTree.RUNNING
+
+
 
     def build_behavior_tree(self):
         move_node = LeafNode("move", self.move)
@@ -228,21 +255,23 @@ class Hammer_bros:
         return self.x - 20, self.y - 20, self.x + 15, self.y + 15
 
     def check(self):
-        if self.x < 0:
-            self.dir = 1
 
         for block in Qblock + brick + skbrick + Steelblock:  # 블럭
             if contact_aAndb(self, block) == 3:  # 좌우
-                if self.dir == 1:
+                if self.velocity == 1:
+                    self.velocity = -1
                     self.dir = -1
                 else:
+                    self.velocity = 1
                     self.dir = 1
 
         for block in grounds:  # 블럭
             if contact_aAndb(self, block) == 3:  # 좌우
-                if self.dir == 1:
+                if self.velocity == 1:
+                    self.velocity = -1
                     self.dir = -1
                 else:
+                    self.velocity = 1
                     self.dir = 1
 
 

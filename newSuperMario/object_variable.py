@@ -1,6 +1,7 @@
 mario = None
 marioLife = None
 map1_1 = None
+stage = 0
 
 # ground
 grounds = []

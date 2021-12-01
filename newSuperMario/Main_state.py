@@ -9,12 +9,14 @@ import object_class
 import Monster_class
 
 name = "MainState"
+def get_mario():
+    global mario
+    return mario
 
 def enter():
     global map1_1
     global SET_BLOCK
     global CHANGE_TIME; global CHANGE_image; global CHANGE_INOUT
-    stage = 0
     map1_1 = map(stage)
     game_world.add_object(map1_1, 0)
     mapcreate(stage)

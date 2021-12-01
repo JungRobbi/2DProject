@@ -615,11 +615,9 @@ class hero:
 
     def get_bb(self):
         if self.grow == 0:
-            self.heady = 8
             if self.sit == 1:
                 return self.x - 16, self.y - 40, self.x + 16, self.y - 10
             return self.x - 16, self.y - 40, self.x + 16, self.y + 8
-        self.heady = 28
         if self.sit == 1:
             return self.x - 16, self.y - 40, self.x + 16, self.y - 6
         return self.x - 16, self.y - 40, self.x + 16, self.y + 28

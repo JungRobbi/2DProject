@@ -188,9 +188,13 @@ class Hammer_bros:
     def update(self):
         self.bt.run()
         self.frame = (self.frame + 10 * game_framework.frame_time)
-        if self.frame >= 25:
-            self.frame = 0
-        self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time
+        if self.velocity == 0:
+            if self.frame >= 16:
+                self.frame = 0
+        else:
+            if self.frame >= 25:
+                self.frame = 0
+        self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey + self.move2y
 
@@ -199,19 +203,19 @@ class Hammer_bros:
 
     def draw(self):
         if self.dir == -1:
-            self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, self.x, self.y, self.size[0], self.size[1])
+            if self.velocity == 0:
+                self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 40, self.x, self.y, self.size[0],
+                                     self.size[1]+ 8)
+            else:
+                self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, self.x, self.y, self.size[0], self.size[1])
         else:
-            self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, 0, 'h', self.x, self.y,
+            if self.velocity == 0:
+                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 40, 0, 'h', self.x, self.y,
+                                               self.size[0], self.size[1] + 8)
+            else:
+                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, 0, 'h', self.x, self.y,
                                            self.size[0], self.size[1])
         draw_rectangle(*self.get_bb())
-
-
-    def move(self):
-        if self.dir == 1:
-            self.velocity = 1
-        else:
-            self.velocity = -1
-        return BehaviorTree.SUCCESS
 
     def find_and_see(self):
         self.velocity = 0
@@ -233,6 +237,7 @@ class Hammer_bros:
             self.timer = 1.0
 
             # 망치 생성
+
             return BehaviorTree.SUCCESS
 
         return BehaviorTree.RUNNING
@@ -240,13 +245,12 @@ class Hammer_bros:
 
 
     def build_behavior_tree(self):
-        move_node = LeafNode("move", self.move)
         find_and_see_node = LeafNode("find_and_see", self.find_and_see)
         throwing_node = LeafNode("throwing", self.throwing)
 
 
         offense = SequenceNode('offense')
-        offense.add_children(move_node, find_and_see_node, throwing_node)
+        offense.add_children(find_and_see_node, throwing_node)
 
         self.bt = BehaviorTree(offense)
 

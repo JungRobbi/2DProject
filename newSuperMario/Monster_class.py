@@ -244,7 +244,6 @@ class Hammer_bros:
                 dx -= Main_state.get_mario().size[0]
             else:
                 dx += Main_state.get_mario().size[0]
-
             ham = Hammer(self.x - self.movex, self.y, 305, self.dir, dx)
             game_world.add_object(ham, 1)
 
@@ -318,7 +317,6 @@ class Hammer:
         if Hammer.image == None:
             Hammer.image = load_image('Monster.png')
     def update(self):
-
         if self.ability == 305:
             self.frame = (self.frame + 60 * game_framework.frame_time)
             if self.frame >= 32:
@@ -342,8 +340,7 @@ class Hammer:
             else:
                 self.move2y -= self.g * game_framework.frame_time
 
-        if self.ability == 305:
-            self.move2x += self.dir * 0.9 * self.parabola * game_framework.frame_time
+        self.move2x += self.dir * 0.9 * self.parabola * game_framework.frame_time
 
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey + self.move2y

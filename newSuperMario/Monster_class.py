@@ -37,18 +37,27 @@ class goomba:
         self.frame = 0
         self.size = [40, 40]
         self.g = 0
+        self.timer = 1.0
+        self.die = False
         self.build_behavior_tree()
         if goomba.image == None:
             goomba.image = load_image('Monster.png')
 
     def update(self):
-        self.bt.run()
-        self.frame = (self.frame + 10 * game_framework.frame_time)
-        if self.frame >= 9:
-            self.frame = 0
+        if self.die == False:
+            self.bt.run()
+            self.frame = (self.frame + 10 * game_framework.frame_time)
+            if self.frame >= 9:
+                self.frame = 0
+            self.check()
+        else:
+            self.timer -= game_framework.frame_time
+
+            if self.timer <= 0:
+                self.timer = 1.0
+                game_world.remove_object(self)
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey + self.move2y
-        self.check()
 
 
 
@@ -63,11 +72,15 @@ class goomba:
 
 
     def draw(self):
-        if self.dir == -1:
-            self.image.clip_draw(int(self.frame) * 24, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+        if self.die == False:
+            if self.dir == -1:
+                self.image.clip_draw(int(self.frame) * 24, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+            else:
+                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 24, 24, 24, 0, 'h', self.x, self.y,
+                                               self.size[0], self.size[1])
         else:
-            self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 24, 24, 24, 0, 'h', self.x, self.y,
-                                           self.size[0], self.size[1])
+            self.image.clip_draw(9 * 24, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+
         draw_rectangle(*self.get_bb())
 
 
@@ -107,15 +120,25 @@ class boo:
         self.frame = 0
         self.size = [40, 40]
         self.g = 0
+        self.timer = 1.5
+        self.die = False
         self.build_behavior_tree()
         if boo.image == None:
             boo.image = load_image('Monster.png')
 
     def update(self):
-        self.bt.run()
-        self.frame = (self.frame + 10 * game_framework.frame_time)
-        if self.frame >= 3:
-            self.frame = 0
+        if self.die == False:
+            self.bt.run()
+            self.frame = (self.frame + 10 * game_framework.frame_time)
+            if self.frame >= 3:
+                self.frame = 0
+        else:
+            self.timer -= game_framework.frame_time
+
+            if self.timer <= 0:
+                self.timer = 1.5
+                self.die = False
+
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey + self.move2y
 
@@ -150,11 +173,19 @@ class boo:
         self.bt = BehaviorTree(find_and_move_node)
 
     def draw(self):
-        if self.dir == -1:
-            self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+        if self.die == False:
+            if self.dir == -1:
+                self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+            else:
+                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24, 24, 24, 0, 'h', self.x, self.y,
+                                               self.size[0], self.size[1])
         else:
-            self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24, 24, 24, 0, 'h', self.x, self.y,
-                                           self.size[0], self.size[1])
+            if self.dir == -1:
+                self.image.clip_draw(3 * 24, 1000 - 2 * 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
+            else:
+                self.image.clip_composite_draw(3 * 24, 1000 - 2 * 24, 24, 24, 0, 'h', self.x, self.y,
+                                               self.size[0], self.size[1])
+
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
@@ -179,6 +210,7 @@ class Hammer_bros:
         self.frame = 0
         self.size = [40, 67]
         self.g = 0
+        self.die = False
         self.timer = 1.0
 
         self.build_behavior_tree()
@@ -186,35 +218,44 @@ class Hammer_bros:
             Hammer_bros.image = load_image('Monster.png')
 
     def update(self):
-        self.bt.run()
-        self.frame = (self.frame + 10 * game_framework.frame_time)
-        if self.velocity == 0:
-            if self.frame >= 16:
-                self.frame = 0
+        if self.die == False:
+            self.bt.run()
+            self.frame = (self.frame + 10 * game_framework.frame_time)
+            if self.velocity == 0:
+                if self.frame >= 16:
+                    self.frame = 0
+            else:
+                if self.frame >= 25:
+                    self.frame = 0
+            self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time
+            self.check()
         else:
-            if self.frame >= 25:
-                self.frame = 0
-        self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time
+            self.timer -= game_framework.frame_time
+
+            if self.timer <= 0:
+                self.timer = 1.0
+                game_world.remove_object(self)
+
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey + self.move2y
 
-        self.check()
 
 
     def draw(self):
-        if self.dir == -1:
-            if self.motion == 0:
-                self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 48, self.x, self.y + 5, self.size[0],
-                                     self.size[1] + 13)
+        if self.die == False:
+            if self.dir == -1:
+                if self.motion == 0:
+                    self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 48, self.x, self.y + 5, self.size[0],
+                                         self.size[1] + 13)
+                else:
+                    self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, self.x, self.y, self.size[0], self.size[1])
             else:
-                self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, self.x, self.y, self.size[0], self.size[1])
-        else:
-            if self.motion == 0:
-                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 48, 0, 'h', self.x, self.y + 5,
-                                               self.size[0], self.size[1] + 13)
-            else:
-                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, 0, 'h', self.x, self.y,
-                                           self.size[0], self.size[1])
+                if self.motion == 0:
+                    self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 48, 0, 'h', self.x, self.y + 5,
+                                                   self.size[0], self.size[1] + 13)
+                else:
+                    self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, 0, 'h', self.x, self.y,
+                                               self.size[0], self.size[1])
         draw_rectangle(*self.get_bb())
 
     def find_and_see(self):
@@ -245,6 +286,7 @@ class Hammer_bros:
             else:
                 dx += Main_state.get_mario().size[0]
             ham = Hammer(self.x - self.movex, self.y, 305, self.dir, dx)
+
             game_world.add_object(ham, 1)
 
             return BehaviorTree.SUCCESS
@@ -305,6 +347,8 @@ class Hammer:
         self.JUMP = False
         self.ga = 5.0
         self.parabola = parabola
+        if self.parabola < 0:
+            self.parabola *= -1
 
         self.py = 0
 

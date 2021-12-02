@@ -8,7 +8,7 @@ from pico2d import *
 name = "StartState"
 image = None
 logo_time = 0.0
-
+marioLife = 5
 
 def enter():
     global image, ROUND
@@ -16,7 +16,6 @@ def enter():
     
     game_world.clear()
 
-    print(ROUND)
 
     image = load_image('Life_image.png')
 

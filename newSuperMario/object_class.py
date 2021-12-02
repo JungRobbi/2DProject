@@ -140,6 +140,7 @@ class object_item:
         if ability == 304:
             self.g = 300
             self.JUMP = True
+            self.timer = 1.0
 
 
         if object_item.image == None:
@@ -155,6 +156,12 @@ class object_item:
 
         else:
             if self.ability == 304:
+                self.timer -= game_framework.frame_time
+
+                if self.timer <= 0:
+                    self.timer = 1.0
+                    game_world.remove_object(self)
+
                 self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time)
                 if self.frame >= 4:
                     self.frame = 0
@@ -220,8 +227,6 @@ class object_item:
         return self.x - 16, self.y - 16, self.x + 16, self.y + 14
 
     def check(self):
-        if self.x < 0:
-            self.dir = 1
 
         for block in Qblock + brick + skbrick + Steelblock:  # 블럭
             if contact_aAndb(self, block) == 2:  # 위서 아래로

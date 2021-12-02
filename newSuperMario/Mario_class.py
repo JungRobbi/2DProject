@@ -627,7 +627,7 @@ class hero:
         global DEL_TIME
         global temp_grow, temp2_grow
         global BOOL_CLEAR
-        if not BOOL_CLEAR:
+        if not BOOL_CLEAR and not self.cur_state == DieState:
             for eat in coin + item:  # 먹으면 사라지는 객체
                 if contact_aAndb(self, eat) > 0:
                     if eat.ability == 0:
@@ -732,6 +732,42 @@ class hero:
                         BOOL_CLEAR = True
                 elif contact_aAndb(self, block) == 1:  # 아래서 위로
                     self.JUMP = False
+
+            for block in monsters:  # 몬스터
+                for att in game_world.all_objects():
+                    if att.__class__.__name__ == "object_item" and att.ability == 304:
+                        if contact_aAndb(block, att) > 0:
+                            block.die = True
+                            block.timer = 1.0
+
+                if block.die == False:
+                    if contact_aAndb(self, block) == 2:  # 위서 아래로
+                        self.JUMP = True
+                        self.g = 400
+                        block.die = True
+                        block.timer = 1.0
+                    elif contact_aAndb(self, block) == 3:  # 좌우
+                        self.add_event(DIE)
+                        self.g = 1100.0
+                        DEL_TIME = 0
+                        self.JUMP = True
+                        self.frame = 0
+                    elif contact_aAndb(self, block) == 1:  # 아래서 위로
+                        self.add_event(DIE)
+                        self.g = 1100.0
+                        DEL_TIME = 0
+                        self.JUMP = True
+                        self.frame = 0
+
+            for block in game_world.all_objects():  # 몬스터 공격
+                if block.__class__.__name__ == "Hammer":
+                    if contact_aAndb(self, block) > 0:
+                        self.add_event(DIE)
+                        self.g = 1100.0
+                        DEL_TIME = 0
+                        self.JUMP = True
+                        self.frame = 0
+
             if not SET_BLOCK == None:
                 if not contact_aAndb(self, SET_BLOCK, 3) > 0:
                     self.py = 0

@@ -177,9 +177,9 @@ def mapcreate(stage):
 
         ground1 = 65
 
-        monsters.append(Monster_class.goomba(48 * 3, ground1))
-        monsters.append(Monster_class.boo(48 * 5, ground1))
-        monsters.append(Monster_class.Hammer_bros(48 * 7, ground1 + 30))
+        monsters.append(Monster_class.goomba(48 * 10, ground1))
+        monsters.append(Monster_class.boo(48 * 15, ground1))
+        monsters.append(Monster_class.Hammer_bros(48 * 20, ground1 + 30))
 
         grounds.append(object_class.Ground(0, 0, 2914, 35))
         grounds.append(object_class.Ground(434 * 2.5, 0, 514 * 2.5, 30 * 2.5))

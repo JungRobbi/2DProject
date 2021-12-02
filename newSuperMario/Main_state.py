@@ -70,8 +70,10 @@ def update():
         for game_object in game_world.all_objects():
             game_object.update()
 
-
-        mario.check()
+        if mario.IVtimer <= 0:
+            mario.check()
+        else:
+            mario.IVtimer -= game_framework.frame_time
 
 
 

@@ -579,6 +579,7 @@ class hero:
         self.grow = 0
         self.sit = 0
         self.SET_BLOCK = None
+        self.IVtimer = 0.0
 
         self.event_que = []
         self.cur_state = IdleState
@@ -747,26 +748,38 @@ class hero:
                         block.die = True
                         block.timer = 1.0
                     elif contact_aAndb(self, block) == 3:  # 좌우
-                        self.add_event(DIE)
-                        self.g = 1100.0
-                        DEL_TIME = 0
-                        self.JUMP = True
-                        self.frame = 0
+                        if self.grow > 0:
+                            self.grow -= 1
+                            self.IVtimer = 1.0
+                        else:
+                            self.add_event(DIE)
+                            self.g = 1100.0
+                            DEL_TIME = 0
+                            self.JUMP = True
+                            self.frame = 0
                     elif contact_aAndb(self, block) == 1:  # 아래서 위로
-                        self.add_event(DIE)
-                        self.g = 1100.0
-                        DEL_TIME = 0
-                        self.JUMP = True
-                        self.frame = 0
+                        if self.grow > 0:
+                            self.grow -= 1
+                            self.IVtimer = 1.0
+                        else:
+                            self.add_event(DIE)
+                            self.g = 1100.0
+                            DEL_TIME = 0
+                            self.JUMP = True
+                            self.frame = 0
 
             for block in game_world.all_objects():  # 몬스터 공격
                 if block.__class__.__name__ == "Hammer":
                     if contact_aAndb(self, block) > 0:
-                        self.add_event(DIE)
-                        self.g = 1100.0
-                        DEL_TIME = 0
-                        self.JUMP = True
-                        self.frame = 0
+                        if self.grow > 0:
+                            self.grow -= 1
+                            self.IVtimer = 1.0
+                        else:
+                            self.add_event(DIE)
+                            self.g = 1100.0
+                            DEL_TIME = 0
+                            self.JUMP = True
+                            self.frame = 0
 
             if not SET_BLOCK == None:
                 if not contact_aAndb(self, SET_BLOCK, 3) > 0:

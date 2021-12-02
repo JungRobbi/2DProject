@@ -494,7 +494,7 @@ class DieState:
                 if hero.g > 1100:
                     hero.g = 1100
                     CHANGE_TIME = 1.0
-                if hero.y <= -1000:
+                if hero.y <= -500:
                     TIME_PER_ACTION = 0.7
                     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
                     FRAMES_PER_ACTION = 21

@@ -240,6 +240,10 @@ class Hammer_bros:
             self.timer = 1.0
 
             dx = Main_state.get_mario().x - self.x
+            if dx < 0:
+                dx -= Main_state.get_mario().size[0]
+            else:
+                dx += Main_state.get_mario().size[0]
 
             ham = Hammer(self.x - self.movex, self.y, 305, self.dir, dx)
             game_world.add_object(ham, 1)
@@ -287,7 +291,7 @@ class Hammer_bros:
 class Hammer:
     image = None
 
-    def __init__(self, x, y, ability=None, dir = 1, parabola):
+    def __init__(self, x, y, ability=None, dir = None, parabola = None):
         self.x = x
         self.y = y
         self.movex = 0
@@ -331,8 +335,7 @@ class Hammer:
             else:
                 self.move2y -= self.g * game_framework.frame_time
                 self.g += self.ga
-                if self.g >= 900 and self.ability == 303:
-                    self.g = 900
+
         else:
             if self.JUMP:
                 self.move2y += self.g * game_framework.frame_time

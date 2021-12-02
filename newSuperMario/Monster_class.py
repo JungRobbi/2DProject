@@ -176,6 +176,7 @@ class Hammer_bros:
         self.crey = y
         self.dir = dir
         self.velocity = 1
+        self.motion = 1
         self.frame = 0
         self.size = [40, 67]
         self.g = 0
@@ -194,7 +195,7 @@ class Hammer_bros:
         else:
             if self.frame >= 25:
                 self.frame = 0
-        self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
+        self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time
         self.x = self.crex + self.movex + self.move2x
         self.y = self.crey + self.movey + self.move2y
 
@@ -203,24 +204,25 @@ class Hammer_bros:
 
     def draw(self):
         if self.dir == -1:
-            if self.velocity == 0:
-                self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 40, self.x, self.y, self.size[0],
-                                     self.size[1]+ 8)
+            if self.motion == 0:
+                self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 48, self.x, self.y + 5, self.size[0],
+                                     self.size[1] + 13)
             else:
                 self.image.clip_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, self.x, self.y, self.size[0], self.size[1])
         else:
-            if self.velocity == 0:
-                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 40, 0, 'h', self.x, self.y,
-                                               self.size[0], self.size[1] + 8)
+            if self.motion == 0:
+                self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 88, 24, 48, 0, 'h', self.x, self.y + 5,
+                                               self.size[0], self.size[1] + 13)
             else:
                 self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, 0, 'h', self.x, self.y,
                                            self.size[0], self.size[1])
         draw_rectangle(*self.get_bb())
 
     def find_and_see(self):
-        self.velocity = 0
         distance = (Main_state.get_mario().x - self.x) ** 2 + (Main_state.get_mario().y - self.y) ** 2
         if distance < 300 ** 2:
+            self.velocity = 0
+            self.motion = 0
             dx = Main_state.get_mario().x - self.x
             if dx < 0:
                 self.dir = -1
@@ -228,6 +230,8 @@ class Hammer_bros:
                 self.dir = 1
             return BehaviorTree.SUCCESS
         else:
+            self.velocity = self.dir
+            self.motion = 1
             return BehaviorTree.FAIL
 
     def throwing(self):
@@ -236,11 +240,12 @@ class Hammer_bros:
         if self.timer <= 0:
             self.timer = 1.0
 
-            # 망치 생성
+            Hammer = object_class.object_item(self.x - self.movex, self.y, 304, self.dir)
+            game_world.add_object(Hammer, 1)
 
             return BehaviorTree.SUCCESS
 
-        return BehaviorTree.RUNNING
+        return BehaviorTree.FAIL
 
 
 
@@ -256,7 +261,7 @@ class Hammer_bros:
 
 
     def get_bb(self):
-        return self.x - 20, self.y - 20, self.x + 15, self.y + 15
+        return self.x - 16, self.y - 35, self.x + 16, self.y + 20
 
     def check(self):
 

@@ -24,6 +24,7 @@ def contact_aAndb(a, b, p = 0):
 
 class goomba:
     image = None
+    size = [40, 40]
     def __init__(self, x, y, dir=1):
         self.x = x
         self.y = y
@@ -35,7 +36,6 @@ class goomba:
         self.crey = y
         self.dir = dir
         self.frame = 0
-        self.size = [40, 40]
         self.g = 0
         self.timer = 1.0
         self.die = False
@@ -94,19 +94,24 @@ class goomba:
             if contact_aAndb(self, block) == 3:  # 좌우
                 if self.dir == 1:
                     self.dir = -1
+                    self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time* 2
                 else:
                     self.dir = 1
+                    self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time* 2
 
         for block in grounds:  # 블럭
             if contact_aAndb(self, block) == 3:  # 좌우
                 if self.dir == 1:
                     self.dir = -1
+                    self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time* 2
                 else:
                     self.dir = 1
+                    self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time* 2
 
 
 class boo:
     image = None
+    size = [40, 40]
     def __init__(self, x, y, dir=1):
         self.x = x
         self.y = y
@@ -118,7 +123,6 @@ class boo:
         self.crey = y
         self.dir = dir
         self.frame = 0
-        self.size = [40, 40]
         self.g = 0
         self.timer = 1.5
         self.die = False
@@ -195,6 +199,7 @@ class boo:
 
 class Hammer_bros:
     image = None
+    size = [40, 67]
     def __init__(self, x, y, dir=1):
         self.x = x
         self.y = y
@@ -208,7 +213,6 @@ class Hammer_bros:
         self.velocity = 1
         self.motion = 1
         self.frame = 0
-        self.size = [40, 67]
         self.g = 0
         self.die = False
         self.timer = 1.0
@@ -220,7 +224,7 @@ class Hammer_bros:
     def update(self):
         if self.die == False:
             self.bt.run()
-            self.frame = (self.frame + 10 * game_framework.frame_time)
+            self.frame = (self.frame + 20 * game_framework.frame_time)
             if self.velocity == 0:
                 if self.frame >= 16:
                     self.frame = 0
@@ -307,7 +311,7 @@ class Hammer_bros:
 
 
     def get_bb(self):
-        return self.x - 16, self.y - 35, self.x + 16, self.y + 20
+        return self.x - 16, self.y - 30, self.x + 16, self.y + 20
 
     def check(self):
 
@@ -316,18 +320,22 @@ class Hammer_bros:
                 if self.velocity == 1:
                     self.velocity = -1
                     self.dir = -1
+                    self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time* 2
                 else:
                     self.velocity = 1
                     self.dir = 1
+                    self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time* 2
 
         for block in grounds:  # 블럭
             if contact_aAndb(self, block) == 3:  # 좌우
                 if self.velocity == 1:
                     self.velocity = -1
                     self.dir = -1
+                    self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time* 2
                 else:
                     self.velocity = 1
                     self.dir = 1
+                    self.move2x += self.velocity * 0.9 * 100 * game_framework.frame_time* 2
 
 class Hammer:
     image = None

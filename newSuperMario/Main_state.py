@@ -179,9 +179,15 @@ def mapcreate(stage):
 
         ground1 = 65
 
-        monsters.append(Monster_class.goomba(48 * 10, ground1))
-        monsters.append(Monster_class.boo(48 * 15, ground1))
-        monsters.append(Monster_class.Hammer_bros(48 * 20, ground1 + 30))
+        monsters.append(Monster_class.goomba(350 * 2.5, (14 + 8) * 2.5))
+        monsters.append(Monster_class.goomba(700 * 2.5, (14 + 8) * 2.5))
+        monsters.append(Monster_class.goomba(800 * 2.5, (14 + 8) * 2.5))
+        monsters.append(Monster_class.goomba(900 * 2.5, (14 + 8) * 2.5))
+
+        monsters.append(Monster_class.boo(800 * 2.5, 100 * 2.5))
+        monsters.append(Monster_class.boo(1180 * 2.5, 100 * 2.5))
+
+        # monsters.append(Monster_class.Hammer_bros(300 * 2.5, (14 + 12) * 2.5))
 
         grounds.append(object_class.Ground(0, 0, 2914, 35))
         grounds.append(object_class.Ground(434 * 2.5, 0, 514 * 2.5, 30 * 2.5))
@@ -208,10 +214,10 @@ def mapcreate(stage):
 
 
 
-        Qblock.append(object_class.object(48 * 3, ground1 + 60 * 2, 101))
-        Qblock.append(object_class.object(48 * 4, ground1 + 60 * 2, 102))
-        Qblock.append(object_class.object(48 * 5, ground1 + 60 * 2, 103))
-        Qblock.append(object_class.object(48 * 6, ground1 + 60 * 2, 104))
+        # Qblock.append(object_class.object(48 * 3, ground1 + 60 * 2, 101))
+        # Qblock.append(object_class.object(48 * 4, ground1 + 60 * 2, 102))
+        # Qblock.append(object_class.object(48 * 5, ground1 + 60 * 2, 103))
+        # Qblock.append(object_class.object(48 * 6, ground1 + 60 * 2, 104))
 
         Qblock.append(object_class.object(48 * 12, ground1 + 60 * 2, 101))
         Qblock.append(object_class.object(48 * 15, ground1 + 60 * 2, 100))
@@ -230,7 +236,7 @@ def mapcreate(stage):
         brick.append(object_class.object(48 * 35, ground1 + 60 * 2, 2))
         skbrick.append(object_class.object(48 * 35 + 32, ground1 + 60 * 2, 3))
         brick.append(object_class.object(48 * 35 + 32 * 2, ground1 + 60 * 2, 2))
-        Qblock.append(object_class.object(48 * 35 + 32, ground1 + 60 * 5, 100))
+        Qblock.append(object_class.object(48 * 35 + 32, ground1 + 60 * 5, 103))
 
         coin.append(object_class.object(48 * 42, ground1 + 60 * 2, 0))
         coin.append(object_class.object(48 * 42 + 32, ground1 + 60 * 2 + 32, 0))
@@ -286,7 +292,7 @@ def mapcreate(stage):
         coin.append(object_class.object(48 * 136 + 32 * 2, ground1 + 60 * 2 + 32, 0))
         coin.append(object_class.object(48 * 136 + 32 * 3, ground1 + 60 * 2, 0))
 
-        Qblock.append(object_class.object(48 * 142, ground1 + 60 * 2, 102))
+        Qblock.append(object_class.object(48 * 142, ground1 + 60 * 2, 104))
 
         brick.append(object_class.object(48 * 151 - 37, ground1 + 60 + 20, 2))
         brick.append(object_class.object(48 * 151 - 5, ground1 + 60 + 20, 2))

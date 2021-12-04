@@ -5,15 +5,14 @@ from object_variable import *
 from pico2d import *
 
 
-name = "StartState"
+name = "LifeState"
 image = None
 logo_time = 0.0
-marioLife = 5
 
 def enter():
     global image, ROUND
     global marioLife
-    
+
     game_world.clear()
 
 

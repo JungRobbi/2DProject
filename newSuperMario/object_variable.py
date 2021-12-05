@@ -1,6 +1,4 @@
 mario = None
-map1_1 = None
-stage = 0
 
 # ground
 grounds = []
@@ -22,4 +20,3 @@ CHANGE_INOUT = None
 
 BOOL_CLEAR = False
 
-ROUND = 1

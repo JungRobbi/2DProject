@@ -25,7 +25,7 @@ def contact_aAndb(a, b, p = 0):
 class goomba:
     image = None
     size = [40, 40]
-    def __init__(self, x, y, dir=1):
+    def __init__(self, x, y, dir=-1,minx = -10000, maxx = 10000):
         self.x = x
         self.y = y
         self.movex = 0
@@ -39,6 +39,9 @@ class goomba:
         self.g = 0
         self.timer = 1.0
         self.die = False
+        self.minx = minx
+        self.maxx = maxx
+
         self.build_behavior_tree()
         if goomba.image == None:
             goomba.image = load_image('Monster.png')
@@ -89,6 +92,21 @@ class goomba:
         return self.x - 13, self.y - 12, self.x + 13, self.y + 12
 
     def check(self):
+        if self.move2x < self.minx:
+            if self.dir == 1:
+                self.dir = -1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+            else:
+                self.dir = 1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+        elif self.move2x > self.maxx:
+            if self.dir == 1:
+                self.dir = -1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+            else:
+                self.dir = 1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+
 
         for block in Qblock + brick + skbrick + Steelblock:  # 블럭
             if contact_aAndb(self, block) == 3:  # 좌우
@@ -200,7 +218,7 @@ class boo:
 class Hammer_bros:
     image = None
     size = [40, 67]
-    def __init__(self, x, y, dir=1):
+    def __init__(self, x, y, dir=1 , minx = -10000, maxx = 10000):
         self.x = x
         self.y = y
         self.movex = 0
@@ -216,6 +234,8 @@ class Hammer_bros:
         self.g = 0
         self.die = False
         self.timer = 1.0
+        self.minx = minx
+        self.maxx = maxx
 
         self.build_behavior_tree()
         if Hammer_bros.image == None:
@@ -314,6 +334,21 @@ class Hammer_bros:
         return self.x - 16, self.y - 30, self.x + 16, self.y + 20
 
     def check(self):
+        if self.move2x < self.minx:
+            if self.dir == 1:
+                self.dir = -1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+            else:
+                self.dir = 1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+        elif self.move2x > self.maxx:
+            if self.dir == 1:
+                self.dir = -1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+            else:
+                self.dir = 1
+                self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time * 2
+
 
         for block in Qblock + brick + skbrick + Steelblock:  # 블럭
             if contact_aAndb(self, block) == 3:  # 좌우

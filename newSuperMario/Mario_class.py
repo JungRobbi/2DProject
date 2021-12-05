@@ -530,14 +530,13 @@ class ClearState:
         if hero.frame > 22:
             hero.frame = 22
 
-        if ROUND == 1:
-            hero.x += 300.0 * game_framework.frame_time
-            hero.y += 300.0 * game_framework.frame_time
+        hero.x += 300.0 * game_framework.frame_time
+        hero.y += 300.0 * game_framework.frame_time
 
-            if hero.y >= 1000:
-                global BOOL_CLEAR
-                game_framework.change_state(Life_state) # 다음 장면
-                BOOL_CLEAR = False
+        if hero.y >= 1000:
+            global BOOL_CLEAR
+            game_framework.change_state(Life_state)  # 다음 장면
+            BOOL_CLEAR = False
 
     def draw(hero):
         hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 10 * 40, 32, 40, 0, 'h', hero.x, hero.y,

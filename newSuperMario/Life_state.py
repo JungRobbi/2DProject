@@ -11,7 +11,6 @@ logo_time = 0.0
 
 def enter():
     global image, ROUND
-    global marioLife
 
     game_world.clear()
 
@@ -34,10 +33,7 @@ def update():
 def draw():
     global image, ROUND
     clear_canvas()
-    if ROUND == 1:
-        image.clip_composite_draw(0, 0, 1024, 600, 0, '', 512, 300,1024, 600)
-    else:
-        image.clip_composite_draw(0, 0, 1024, 600, 0, '', 512, 300, 1024, 600)
+    image.clip_composite_draw(0, 0, 1024, 600, 0, '', 512, 300,1024, 600)
     update_canvas()
 
 

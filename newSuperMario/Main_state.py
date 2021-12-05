@@ -9,6 +9,10 @@ import object_class
 import Monster_class
 
 name = "MainState"
+
+map1_1 = None
+stage = None
+
 def get_mario():
     global mario
     return mario
@@ -17,9 +21,10 @@ def enter():
     global map1_1
     global SET_BLOCK
     global CHANGE_TIME; global CHANGE_image; global CHANGE_INOUT
-    map1_1 = map(stage)
+    map1_1 = map(1)
+
     game_world.add_object(map1_1, 0)
-    mapcreate(stage)
+    mapcreate(map1_1)
     SET_BLOCK = grounds[0]
 
     CHANGE_TIME = 1.0
@@ -120,49 +125,49 @@ def contact_aAndb(a, b, p = 0):
 def mapmove(map, mario):
     WINx = 1024
     WINy = 600
-    if map.stage == 0:
-        map.mapmax = -(4222 * 2 + WINx - 15)
 
-        if map.moveWinx < map.mapmax:
-            map.moveWinx = map.mapmax
-        if map.moveWinx > 0:
-            map.moveWinx = 0
+    map.mapmax = -(4222 * 2 + WINx - 15)
 
-        if map.moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.velocity == -1:
-            if mario.x + mario.xMAX >= WINx * 3 / 5:
-                map.moveWinx += mario.xspeed * game_framework.frame_time
-            else:
-                map.moveWinx += mario.xspeed * 2 * game_framework.frame_time
-            mario.x += mario.xspeed * 1.3 * game_framework.frame_time
-            if mario.x > WINx * 3 / 5:
-                mario.x = WINx * 3 / 5
+    if map.moveWinx < map.mapmax:
+        map.moveWinx = map.mapmax
+    if map.moveWinx > 0:
+        map.moveWinx = 0
 
-        if map.moveWinx > map.mapmax and mario.x > WINx * 2 / 5 and mario.velocity == 1:
-            if mario.x - mario.xMAX <= WINx * 2 / 5:
-                map.moveWinx -= mario.xspeed * game_framework.frame_time
-            else:
-                map.moveWinx -= mario.xspeed * 2 * game_framework.frame_time
-            mario.x -= mario.xspeed * 1.3 * game_framework.frame_time
-            if mario.x < WINx * 2 / 5:
-                mario.x = WINx * 2 / 5
+    if map.moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.velocity == -1:
+        if mario.x + mario.xMAX >= WINx * 3 / 5:
+            map.moveWinx += mario.xspeed * game_framework.frame_time
+        else:
+            map.moveWinx += mario.xspeed * 2 * game_framework.frame_time
+        mario.x += mario.xspeed * 1.3 * game_framework.frame_time
+        if mario.x > WINx * 3 / 5:
+            mario.x = WINx * 3 / 5
 
-        if map.moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.velocity == 0 and mario.dir == -1:
-            if mario.x + mario.xMAX >= WINx * 3 / 5:
-                map.moveWinx += mario.xspeed * game_framework.frame_time
-            else:
-                map.moveWinx += mario.xspeed * 2 * game_framework.frame_time
-            mario.x += mario.xspeed * 1.3 * game_framework.frame_time
-            if mario.x > WINx * 3 / 5:
-                mario.x = WINx * 3 / 5
+    if map.moveWinx > map.mapmax and mario.x > WINx * 2 / 5 and mario.velocity == 1:
+        if mario.x - mario.xMAX <= WINx * 2 / 5:
+            map.moveWinx -= mario.xspeed * game_framework.frame_time
+        else:
+            map.moveWinx -= mario.xspeed * 2 * game_framework.frame_time
+        mario.x -= mario.xspeed * 1.3 * game_framework.frame_time
+        if mario.x < WINx * 2 / 5:
+            mario.x = WINx * 2 / 5
 
-        if map.moveWinx > map.mapmax and mario.x > WINx * 2 / 5 and mario.velocity == 0 and mario.dir == 1:
-            if mario.x - mario.xMAX <= WINx * 2 / 5:
-                map.moveWinx -= mario.xspeed * game_framework.frame_time
-            else:
-                map.moveWinx -= mario.xspeed * 2 * game_framework.frame_time
-            mario.x -= mario.xspeed * 1.3 * game_framework.frame_time
-            if mario.x < WINx * 2 / 5:
-                mario.x = WINx * 2 / 5
+    if map.moveWinx < 0 and mario.x < WINx * 3 / 5 and mario.velocity == 0 and mario.dir == -1:
+        if mario.x + mario.xMAX >= WINx * 3 / 5:
+            map.moveWinx += mario.xspeed * game_framework.frame_time
+        else:
+            map.moveWinx += mario.xspeed * 2 * game_framework.frame_time
+        mario.x += mario.xspeed * 1.3 * game_framework.frame_time
+        if mario.x > WINx * 3 / 5:
+            mario.x = WINx * 3 / 5
+
+    if map.moveWinx > map.mapmax and mario.x > WINx * 2 / 5 and mario.velocity == 0 and mario.dir == 1:
+        if mario.x - mario.xMAX <= WINx * 2 / 5:
+            map.moveWinx -= mario.xspeed * game_framework.frame_time
+        else:
+            map.moveWinx -= mario.xspeed * 2 * game_framework.frame_time
+        mario.x -= mario.xspeed * 1.3 * game_framework.frame_time
+        if mario.x < WINx * 2 / 5:
+            mario.x = WINx * 2 / 5
 
     for game_object in game_world.all_objects():
         game_object.movex = map.moveWinx
@@ -171,23 +176,26 @@ def mapmove(map, mario):
 
         # 완료
 
-def mapcreate(stage):
+def mapcreate(map):
     global mario
-    if stage == 0:
+    if map.stage == 0:
         mario = hero(40, 120)
-        game_world.add_object(mario, 1)
 
         ground1 = 65
 
-        monsters.append(Monster_class.goomba(350 * 2.5, (14 + 8) * 2.5))
-        monsters.append(Monster_class.goomba(700 * 2.5, (14 + 8) * 2.5))
-        monsters.append(Monster_class.goomba(800 * 2.5, (14 + 8) * 2.5))
-        monsters.append(Monster_class.goomba(900 * 2.5, (14 + 8) * 2.5))
-
-        monsters.append(Monster_class.boo(800 * 2.5, 100 * 2.5))
-        monsters.append(Monster_class.boo(1180 * 2.5, 100 * 2.5))
-
-        # monsters.append(Monster_class.Hammer_bros(300 * 2.5, (14 + 12) * 2.5))
+        #  몬스터
+        # monsters.append(Monster_class.goomba(350 * 2.5, (14 + 8) * 2.5))
+        # monsters.append(Monster_class.goomba(700 * 2.5, (14 + 8) * 2.5))
+        # monsters.append(Monster_class.goomba(800 * 2.5, (14 + 8) * 2.5))
+        # monsters.append(Monster_class.goomba(900 * 2.5, (14 + 8) * 2.5))
+        #
+        # monsters.append(Monster_class.goomba(1900 * 2.5, (14 + 8) * 2.5))
+        # monsters.append(Monster_class.goomba(2200 * 2.5, (14 + 8) * 2.5))
+        #
+        # monsters.append(Monster_class.boo(800 * 2.5, 100 * 2.5))
+        # monsters.append(Monster_class.boo(1180 * 2.5, 100 * 2.5))
+        #
+        # monsters.append(Monster_class.Hammer_bros(1421 * 2.5, (14 + 12) * 2.5, -1,-221 * 2.5, 221 * 2.5))
 
         grounds.append(object_class.Ground(0, 0, 2914, 35))
         grounds.append(object_class.Ground(434 * 2.5, 0, 514 * 2.5, 30 * 2.5))
@@ -318,18 +326,64 @@ def mapcreate(stage):
             for i in range(0, k):
                 Steelblock.append(object_class.object(48 * 200 - 32 * i, ground1 + 32 * 8 - 32 * k - 10, 98))
 
-        for i in grounds:
-            game_world.add_object(i, 1)
-        for i in coin:
-            game_world.add_object(i, 1)
-        for i in Qblock:
-            game_world.add_object(i, 1)
-        for i in brick:
-            game_world.add_object(i, 1)
-        for i in skbrick:
-            game_world.add_object(i, 1)
-        for i in Steelblock:
-            game_world.add_object(i, 1)
-        for i in item + monsters:
-            game_world.add_object(i, 1)
+
+
+    else:
+        mario = hero(40, 200)
+
+        grounds.append(object_class.Ground(0 * 2.5, 42 * 2.5, 94 * 2.5, 58 * 2.5))
+        grounds.append(object_class.Ground(158 * 2.5, 26 * 2.5, 286 * 2.5, 42 * 2.5))
+        grounds.append(object_class.Ground((336 - 2) * 2.5, (12 - 2) * 2.5, (560 - 2) * 2.5, (28 - 2) * 2.5))
+        grounds.append(object_class.Ground((621 - 2) * 2.5, (12 - 2) * 2.5, (720 - 2) * 2.5, (28 - 2) * 2.5))
+        grounds.append(object_class.Ground((750 - 2) * 2.5, (12 - 2) * 2.5, (929 - 2) * 2.5, (28 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((956 - 2) * 2.5, (36 - 2) * 2.5, (1088 - 2) * 2.5, (60 - 2) * 2.5))
+        grounds.append(object_class.Ground((1120 - 2) * 2.5, (12 - 2) * 2.5, (1343 - 2) * 2.5, (28 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((1356 - 2) * 2.5, (51 - 2) * 2.5, (1395 - 2) * 2.5, (76 - 2) * 2.5))
+        grounds.append(object_class.Ground((1436 - 2) * 2.5, (51 - 2) * 2.5, (1572 - 2) * 2.5, (76 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((1612 - 2) * 2.5, (4 - 2) * 2.5, (1684 - 2) * 2.5, (28 - 2) * 2.5))
+        grounds.append(object_class.Ground((1728 - 2) * 2.5, (12 - 2) * 2.5, (1876 - 2) * 2.5, (28 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((1920 - 2) * 2.5, (28 - 2) * 2.5, (1988 ) * 2.5, (44 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((1984 - 2) * 2.5, (76 - 2) * 2.5, (2032 ) * 2.5, (92 - 2) * 2.5))
+        grounds.append(object_class.Ground((1897 - 2) * 2.5, (108 - 2) * 2.5, (1958 ) * 2.5, (122 - 2) * 2.5))
+        grounds.append(object_class.Ground((1760 - 2) * 2.5, (124 - 2) * 2.5, (1808) * 2.5, (140 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((2080 - 2) * 2.5, (44 - 2) * 2.5, (2144) * 2.5, (60 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((2176 - 2) * 2.5, (52 - 2) * 2.5, (2271 ) * 2.5, (76 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((2336 - 2) * 2.5, (36 - 2) * 2.5, (2400 ) * 2.5, (60 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((2448 - 2) * 2.5, (20 - 2) * 2.5, (2512 ) * 2.5, (44 - 2) * 2.5))
+        grounds.append(object_class.Ground((2576 - 2) * 2.5, (20 - 2) * 2.5, (2640 ) * 2.5, (44 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((2720 - 2) * 2.5, (12 - 2) * 2.5, (2864 ) * 2.5, (28 - 2) * 2.5))
+        grounds.append(object_class.Ground((2864 - 2) * 2.5, (60 - 2) * 2.5, (2912 ) * 2.5, (76 - 2) * 2.5))
+        grounds.append(object_class.Ground((2784 - 2) * 2.5, (108 - 2) * 2.5, (2832 ) * 2.5, (124 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((2976 - 2) * 2.5, (35 - 2) * 2.5, (3008 ) * 2.5, (59 - 2) * 2.5))
+        grounds.append(object_class.Ground((3056 - 2) * 2.5, (42 - 2) * 2.5, (3088 ) * 2.5, (66 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((3120 - 2) * 2.5, (12 - 2) * 2.5, (3136 ) * 2.5, (28 - 2) * 2.5))
+        grounds.append(object_class.Ground((3152 - 2) * 2.5, (83 - 2) * 2.5, (3184 ) * 2.5, (107 - 2) * 2.5))
+        grounds.append(object_class.Ground((3200 - 2) * 2.5, (12 - 2) * 2.5, (3216 ) * 2.5, (28 - 2) * 2.5))
+        grounds.append(object_class.Ground((3264 - 2) * 2.5, (2 - 2) * 2.5, (3296 ) * 2.5, (12 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((3360 - 2) * 2.5, (12 - 2) * 2.5, (3456 ) * 2.5, (36 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((3504 - 2) * 2.5, (26 - 2) * 2.5, (3696 ) * 2.5, (42 - 2) * 2.5))
+        grounds.append(object_class.Ground((3616 - 2) * 2.5, (100 - 2) * 2.5, (3648 ) * 2.5, (124 - 2) * 2.5))
+
+        grounds.append(object_class.Ground((3744 - 2) * 2.5, (84 - 2) * 2.5, (3872 ) * 2.5, (108 - 2) * 2.5))
+
+
+    game_world.add_object(mario, 1)
+    for i in grounds + coin + Qblock + brick + skbrick + Steelblock + item + monsters:
+        game_world.add_object(i, 1)
+
+
 

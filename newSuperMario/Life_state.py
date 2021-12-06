@@ -10,7 +10,7 @@ image = None
 logo_time = 0.0
 
 def enter():
-    global image, ROUND
+    global image
 
     game_world.clear()
 
@@ -31,7 +31,7 @@ def update():
     logo_time += game_framework.frame_time
 
 def draw():
-    global image, ROUND
+    global image
     clear_canvas()
     image.clip_composite_draw(0, 0, 1024, 600, 0, '', 512, 300,1024, 600)
     update_canvas()

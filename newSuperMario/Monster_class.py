@@ -452,3 +452,93 @@ class Hammer:
         return self.x - 16, self.y - 16, self.x + 16, self.y + 14
 
 
+
+class plant:
+    image = None
+    size = [56, 76]
+    def __init__(self, x, y, dir=-1,minx = -10000, maxx = 10000):
+        self.x = x
+        self.y = y
+        self.movex = 0
+        self.move2x = 0
+        self.movey = 0
+        self.move2y = 0
+        self.crex = x
+        self.crey = y
+        self.dir = dir
+        self.frame = 0
+        self.framey = 0
+        self.g = 0
+        self.timer = 1.0
+        self.die = False
+        self.minx = minx
+        self.maxx = maxx
+
+        self.build_behavior_tree()
+        if plant.image == None:
+            plant.image = load_image('Monster.png')
+
+    def update(self):
+        if self.die == False:
+            self.bt.run()
+            self.frame = (self.frame + 40 * game_framework.frame_time)
+            if self.framey == 0 or self.framey == 2 or self.framey == 4:
+                if self.frame >= 21:
+                    self.frame = 0
+                    self.framey += 1
+                    if self.framey >= 5:
+                        self.framey = 0
+            elif self.framey == 1 or self.framey == 3:
+                if self.frame >= 22:
+                    self.frame = 0
+                    self.framey += 1
+                    if self.framey >= 5:
+                        self.framey = 0
+
+            self.check()
+        else:
+            self.timer -= game_framework.frame_time
+
+            if self.timer <= 0:
+                self.timer = 1.0
+                game_world.remove_object(self)
+        self.x = self.crex + self.movex + self.move2x
+        self.y = self.crey + self.movey + self.move2y
+
+
+
+    def move(self):
+        # self.move2x += self.dir * 0.9 * 100 * game_framework.frame_time
+        return BehaviorTree.SUCCESS
+
+    def build_behavior_tree(self):
+        move_node = LeafNode("move", self.move)
+
+        self.bt = BehaviorTree(move_node)
+
+
+    def draw(self):
+        if self.die == False:
+            if self.dir == -1:
+                self.image.clip_draw(int(self.frame) * 28, 792 - 39 * int(self.framey), 28, 32, self.x, self.y, self.size[0], self.size[1])
+            else:
+                self.image.clip_composite_draw(int(self.frame) * 28, 792 - 39 * int(self.framey), 28, 32, 0, 'h', self.x, self.y,
+                                               self.size[0], self.size[1])
+        else:
+            self.image.clip_draw(int(self.frame) * 28, 792 - 39 * int(self.framey), 28, 32, self.x, self.y, self.size[0], self.size[1])
+
+        draw_rectangle(*self.get_bb())
+
+
+
+    def get_bb(self):
+        if int(self.frame) < 15 and self.framey == 0:
+            return self.x - 20, self.y - 15, self.x + 20, self.y - 30 + int(self.frame)*2
+        elif self.framey == 4:
+            return self.x - 20, self.y - 15, self.x + 20, self.y + 30 - int(self.frame)*2
+        return self.x - 20, self.y - 30, self.x + 20, self.y + 30
+
+    def check(self):
+        pass
+
+

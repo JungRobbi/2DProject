@@ -8,15 +8,19 @@ name = "StartState"
 image = None
 logo_time = 0.0
 
+ROUND = None
+LIFE = None
 
 def enter():
     global image
-    global marioLife
     image = load_image('Mario_credit.png')
-    marioLife = 5
 
 def exit():
     global image
+    global ROUND, LIFE
+    ROUND = 0
+    LIFE = 5
+
     del(image)
 
 

@@ -748,10 +748,21 @@ class hero:
 
                 if block.die == False:
                     if contact_aAndb(self, block) == 2:  # 위서 아래로
-                        self.JUMP = True
-                        self.g = 400
-                        block.die = True
-                        block.timer = 1.0
+                        if block.__class__.__name__ == "plant":
+                            if self.grow > 0:
+                                self.grow -= 1
+                                self.IVtimer = 1.0
+                            else:
+                                self.add_event(DIE)
+                                self.g = 1100.0
+                                DEL_TIME = 0
+                                self.JUMP = True
+                                self.frame = 0
+                        else:
+                            self.JUMP = True
+                            self.g = 400
+                            block.die = True
+                            block.timer = 1.0
                     elif contact_aAndb(self, block) == 3:  # 좌우
                         if self.grow > 0:
                             self.grow -= 1

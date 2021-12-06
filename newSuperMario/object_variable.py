@@ -1,5 +1,8 @@
 mario = None
 
+ROUND = None
+LIFE = None
+
 # ground
 grounds = []
 # block

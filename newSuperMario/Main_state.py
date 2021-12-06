@@ -21,7 +21,7 @@ def enter():
     global map1_1
     global SET_BLOCK
     global CHANGE_TIME; global CHANGE_image; global CHANGE_INOUT
-    map1_1 = map(1)
+    map1_1 = map(0)
 
     game_world.add_object(map1_1, 0)
     mapcreate(map1_1)
@@ -197,6 +197,9 @@ def mapcreate(map):
         #
         # monsters.append(Monster_class.Hammer_bros(1421 * 2.5, (14 + 12) * 2.5, -1,-221 * 2.5, 221 * 2.5))
 
+        monsters.append(Monster_class.plant(990 * 2.5, (46 + 14) * 2.5))
+        monsters.append(Monster_class.plant(2318 * 2.5, (46 + 14) * 2.5))
+
         grounds.append(object_class.Ground(0, 0, 2914, 35))
         grounds.append(object_class.Ground(434 * 2.5, 0, 514 * 2.5, 30 * 2.5))
         grounds.append(object_class.Ground(512 * 2.5, 0, (514+92) * 2.5, 62 * 2.5))
@@ -328,7 +331,7 @@ def mapcreate(map):
 
 
 
-    else:
+    elif map.stage == 1:
         mario = hero(40, 200)
 
         grounds.append(object_class.Ground(0 * 2.5, 42 * 2.5, 94 * 2.5, 58 * 2.5))

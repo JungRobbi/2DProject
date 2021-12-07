@@ -1,5 +1,6 @@
 import game_framework
 import Life_state
+import Mario_class
 from object_variable import *
 from pico2d import *
 
@@ -30,7 +31,6 @@ def exit():
     global ROUND, LIFE
     ROUND = 0
     LIFE = 5
-
     del(image)
 
 

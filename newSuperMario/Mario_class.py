@@ -542,7 +542,7 @@ class ClearState:
         pass
 
     def do(hero):
-        hero.frame = (hero.frame + 10 * game_framework.frame_time)
+        hero.frame = (hero.frame + 15 * game_framework.frame_time)
 
         if hero.frame > 22:
             hero.frame = 22
@@ -561,6 +561,16 @@ class ClearState:
             data += 1
             f.write(str(data))
             f.close()
+
+            hero.x = 40
+            hero.y = 300
+            hero.add_event(STOP_RUN)
+            hero.SET_BLOCK = None
+            hero.velocity = 0
+            hero.JUMP = False
+            global BOOL_CLEAR
+            BOOL_CLEAR = False
+
 
 
 
@@ -588,10 +598,10 @@ ClearState:{RIGHT_DOWN: ClearState, LEFT_DOWN: ClearState, RIGHT_UP: ClearState,
 class hero:
     image = None
 
-    def __init__(self,x, y):
+    def __init__(self,x, y, round):
         self.crex = x
         self.crey = y
-        self.movex =0
+        self.movex = 0
         self.x = x
         self.y = y
         self.dir = 1
@@ -617,6 +627,14 @@ class hero:
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
+
+
+        if round == 1:
+            self.bgm = load_music('round1.mp3')
+        else:
+            self.bgm = load_music('round2.mp3')
+        self.bgm.set_volume(64)
+        self.bgm.repeat_play()
 
         if hero.image == None:
             hero.image = load_image('MarioMove.png')

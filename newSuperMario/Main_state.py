@@ -30,12 +30,14 @@ def enter():
     global CHANGE_TIME; global CHANGE_image; global CHANGE_INOUT
     global Num_image_black, Num_image_white
     global Timer
+    global mario
 
     f = open("Stage.txt", 'r')
     line = f.readline()
     data = int(line)
     f.close()
 
+    mario = hero(40, 300, data)
     if data == 2:
         game_framework.change_state(end_state)
     else:
@@ -56,9 +58,7 @@ def enter():
 
 def exit():
     global grounds, coin, Qblock, brick, skbrick, Steelblock, item, monsters, mario
-
-
-
+    global SET_BLOCK,CHANGE_TIME,CHANGE_image,CHANGE_INOUT, BOOL_CLEAR
 
     grounds.clear()
     coin.clear()
@@ -70,6 +70,13 @@ def exit():
     monsters.clear()
 
     game_world.clear()
+
+    SET_BLOCK = None
+    CHANGE_TIME = None
+    CHANGE_image = None
+    CHANGE_INOUT = None
+
+    BOOL_CLEAR = False
 
 def pause():
     pass
@@ -91,7 +98,7 @@ def handle_events():
 
 
 def update():
-    global CHANGE_TIME;  global CHANGE_INOUT, Timer
+    global CHANGE_TIME;  global CHANGE_INOUT, Timer, map1_1
     if CHANGE_TIME >= 0:
         CHANGE_TIME -= game_framework.frame_time*2
 
@@ -112,6 +119,9 @@ def update():
             mario.check()
         else:
             mario.IVtimer -= game_framework.frame_time
+
+        if not map1_1.moveWinx == map1_1.mapmax and mario.cur_state == ClearState:
+            mario.cur_state = IdleState
 
 
 
@@ -226,9 +236,7 @@ def mapmove(map, mario):
         # 완료
 
 def mapcreate(map):
-    global mario
     if map.stage == 0:
-        mario = hero(40, 120)
 
         ground1 = 65
 
@@ -381,7 +389,6 @@ def mapcreate(map):
 
 
     elif map.stage == 1:
-        mario = hero(40, 200)
 
         grounds.append(object_class.Ground(0 * 2.5, 42 * 2.5, 94 * 2.5, 58 * 2.5))
         grounds.append(object_class.Ground(158 * 2.5, 26 * 2.5, 286 * 2.5, 42 * 2.5))

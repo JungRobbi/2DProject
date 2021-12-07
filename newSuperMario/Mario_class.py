@@ -692,7 +692,7 @@ class hero:
         self.crush_block.set_volume(32)
 
         self.clear = load_wav('clear_round.wav')
-        self.clear.set_volume(64)
+        self.clear.set_volume(128)
 
 
         if hero.image == None:

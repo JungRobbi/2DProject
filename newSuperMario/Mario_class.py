@@ -82,6 +82,11 @@ class IdleState:
             hero.frame = 0
             hero.g = 1100
             hero.sit = 0
+            if hero.grow == 0:
+                hero.mini_jump.play()
+            else:
+                hero.jump.play()
+
         elif event == DOWN_DOWN and not hero.JUMP:
             hero.sit = 1
             hero.frame = 0
@@ -140,6 +145,12 @@ class IdleState:
                 temp_grow = 0
                 temp2_grow = 0
         else:
+            if hero.startimer > 0:
+                if hero.startimer < 0.2:
+                    hero.star.stop()
+                    hero.bgm.repeat_play()
+                hero.startimer -= game_framework.frame_time
+
             if hero.sit == 1:
                 hero.frame = (hero.frame + game_framework.frame_time * 18)
             else:
@@ -282,6 +293,12 @@ class RunState:
             hero.JUMP = True
             hero.frame = 0
             hero.g = 1100
+
+            if hero.grow == 0:
+                hero.mini_jump.play()
+            else:
+                hero.jump.play()
+
         hero.sit = 0
 
 
@@ -344,6 +361,11 @@ class RunState:
                 temp_grow = 0
                 temp2_grow = 0
         else:
+            if hero.startimer > 0:
+                if hero.startimer < 0.2:
+                    hero.star.stop()
+                    hero.bgm.repeat_play()
+                hero.startimer -= game_framework.frame_time
             if hero.sit == 1:
                 hero.frame = (hero.frame + game_framework.frame_time * 18)
             else:
@@ -474,6 +496,13 @@ class DieState:
             ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
             FRAMES_PER_ACTION = 13
 
+        if event == DIE:
+            hero.bgm.stop()
+            hero.bgm = load_music('lifelost.mp3')
+            hero.bgm.set_volume(48)
+            hero.bgm.play(1)
+
+
 
     def exit(hero, event):
         pass
@@ -536,7 +565,9 @@ class DieState:
 
 class ClearState:
     def enter(hero, event):
-        pass
+        if event == CLEAR:
+            hero.bgm.stop()
+            hero.clear.play(1)
 
     def exit(hero, event):
         pass
@@ -624,17 +655,43 @@ class hero:
         self.IVtimer = 0.0
         self.score = 0
 
+        self.startimer = 0.0
+
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
 
-
         if round == 1:
-            self.bgm = load_music('round1.mp3')
-        else:
             self.bgm = load_music('round2.mp3')
-        self.bgm.set_volume(64)
+        else:
+            self.bgm = load_music('round1.mp3')
+        self.bgm.set_volume(48)
         self.bgm.repeat_play()
+
+        self.star = load_music('starman.mp3')
+        self.bgm.set_volume(48)
+
+        self.eat_coin = load_wav('coin.wav')
+        self.eat_coin.set_volume(64)
+
+        self.eat_grow = load_wav('grow.wav')
+        self.eat_grow.set_volume(64)
+
+        self.jump = load_wav('jump.wav')
+        self.jump.set_volume(64)
+
+        self.mini_jump = load_wav('mini_jump.wav')
+        self.mini_jump.set_volume(512)
+
+        self.fireball = load_wav('fireball.wav')
+        self.fireball.set_volume(64)
+
+        self.crush_block = load_wav('crush_block.wav')
+        self.crush_block.set_volume(32)
+
+        self.clear = load_wav('clear_round.wav')
+        self.clear.set_volume(64)
+
 
         if hero.image == None:
             hero.image = load_image('MarioMove.png')
@@ -684,19 +741,26 @@ class hero:
             for eat in coin + item:  # 먹으면 사라지는 객체
                 if contact_aAndb(self, eat) > 0:
                     if eat.ability == 0:
+                        self.eat_coin.play()
                         coin.remove(eat)
                         self.score += 1
                     elif eat.ability >= 300 and eat.ability <= 304:
                         if eat.ability == 300:  # 버섯
                             if self.grow < 1:
+                                self.eat_grow.play()
                                 DEL_TIME = 0
                                 temp2_grow = self.grow
                                 temp_grow = 1
                         elif eat.ability == 302:  # 꽃
                             if self.grow < 2:
+                                self.eat_grow.play()
                                 DEL_TIME = 0
                                 temp2_grow = self.grow
                                 temp_grow = 2
+                        elif eat.ability == 303:  # 별
+                            self.bgm.pause()
+                            self.star.play()
+                            self.startimer = 10.0
 
                         item.remove(eat)
                     game_world.remove_object(eat)
@@ -721,6 +785,7 @@ class hero:
                             t.movey = block.movey
                             game_world.add_object(t, 1)
                             self.score += 1
+                            self.eat_coin.play()
 
                         if block.ability >= 101:
                             t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
@@ -744,6 +809,7 @@ class hero:
                         if block in brick:
                             brick.remove(block)
                         game_world.remove_object(block)
+                        self.crush_block.play()
 
                         t = object_class.debris(block.crex - 5, block.crey, 200, 1, 1)
                         t.movex = block.movex
@@ -767,6 +833,7 @@ class hero:
 
                     if block.ability == 3:
                         self.score += 1
+                        self.eat_coin.play()
                         t = object_class.debris(block.crex, block.crey + 24, 201)
                         t.movex = block.movex
                         t.movey = block.movey
@@ -799,6 +866,24 @@ class hero:
                 if block.die == False:
                     if contact_aAndb(self, block) == 2:  # 위서 아래로
                         if block.__class__.__name__ == "plant":
+                            if self.startimer <= 0:
+
+                                if self.grow > 0:
+                                    self.grow -= 1
+                                    self.IVtimer = 1.0
+                                else:
+                                    self.add_event(DIE)
+                                    self.g = 1100.0
+                                    DEL_TIME = 0
+                                    self.JUMP = True
+                                    self.frame = 0
+                        else:
+                            self.JUMP = True
+                            self.g = 400
+                            block.die = True
+                            block.timer = 1.0
+                    elif contact_aAndb(self, block) == 3:  # 좌우
+                        if self.startimer <= 0:
                             if self.grow > 0:
                                 self.grow -= 1
                                 self.IVtimer = 1.0
@@ -808,44 +893,31 @@ class hero:
                                 DEL_TIME = 0
                                 self.JUMP = True
                                 self.frame = 0
-                        else:
-                            self.JUMP = True
-                            self.g = 400
-                            block.die = True
-                            block.timer = 1.0
-                    elif contact_aAndb(self, block) == 3:  # 좌우
-                        if self.grow > 0:
-                            self.grow -= 1
-                            self.IVtimer = 1.0
-                        else:
-                            self.add_event(DIE)
-                            self.g = 1100.0
-                            DEL_TIME = 0
-                            self.JUMP = True
-                            self.frame = 0
                     elif contact_aAndb(self, block) == 1:  # 아래서 위로
-                        if self.grow > 0:
-                            self.grow -= 1
-                            self.IVtimer = 1.0
-                        else:
-                            self.add_event(DIE)
-                            self.g = 1100.0
-                            DEL_TIME = 0
-                            self.JUMP = True
-                            self.frame = 0
+                        if self.startimer <= 0:
+                            if self.grow > 0:
+                                self.grow -= 1
+                                self.IVtimer = 1.0
+                            else:
+                                self.add_event(DIE)
+                                self.g = 1100.0
+                                DEL_TIME = 0
+                                self.JUMP = True
+                                self.frame = 0
 
             for block in game_world.all_objects():  # 몬스터 공격
                 if block.__class__.__name__ == "Hammer":
                     if contact_aAndb(self, block) > 0:
-                        if self.grow > 0:
-                            self.grow -= 1
-                            self.IVtimer = 1.0
-                        else:
-                            self.add_event(DIE)
-                            self.g = 1100.0
-                            DEL_TIME = 0
-                            self.JUMP = True
-                            self.frame = 0
+                        if self.startimer <= 0:
+                            if self.grow > 0:
+                                self.grow -= 1
+                                self.IVtimer = 1.0
+                            else:
+                                self.add_event(DIE)
+                                self.g = 1100.0
+                                DEL_TIME = 0
+                                self.JUMP = True
+                                self.frame = 0
 
             if not SET_BLOCK == None:
                 if not contact_aAndb(self, SET_BLOCK, 3) > 0:
@@ -853,5 +925,6 @@ class hero:
 
     def fire_ball(self):
         if self.grow == 2:
+            self.fireball.play()
             ball = object_class.object_item(self.x - self.movex, self.y, 304, self.dir)
             game_world.add_object(ball, 1)

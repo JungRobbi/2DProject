@@ -241,18 +241,18 @@ def mapcreate(map):
         ground1 = 65
 
         #  몬스터
-        # monsters.append(Monster_class.goomba(350 * 2.5, (14 + 8) * 2.5))
-        # monsters.append(Monster_class.goomba(700 * 2.5, (14 + 8) * 2.5))
-        # monsters.append(Monster_class.goomba(800 * 2.5, (14 + 8) * 2.5))
-        # monsters.append(Monster_class.goomba(900 * 2.5, (14 + 8) * 2.5))
-        #
-        # monsters.append(Monster_class.goomba(1900 * 2.5, (14 + 8) * 2.5))
-        # monsters.append(Monster_class.goomba(2200 * 2.5, (14 + 8) * 2.5))
-        #
-        # monsters.append(Monster_class.boo(800 * 2.5, 100 * 2.5))
-        # monsters.append(Monster_class.boo(1180 * 2.5, 100 * 2.5))
-        #
-        # monsters.append(Monster_class.Hammer_bros(1421 * 2.5, (14 + 12) * 2.5, -1, -221 * 2.5, 221 * 2.5))
+        monsters.append(Monster_class.goomba(350 * 2.5, (14 + 8) * 2.5))
+        monsters.append(Monster_class.goomba(700 * 2.5, (14 + 8) * 2.5))
+        monsters.append(Monster_class.goomba(800 * 2.5, (14 + 8) * 2.5))
+        monsters.append(Monster_class.goomba(900 * 2.5, (14 + 8) * 2.5))
+
+        monsters.append(Monster_class.goomba(1900 * 2.5, (14 + 8) * 2.5))
+        monsters.append(Monster_class.goomba(2200 * 2.5, (14 + 8) * 2.5))
+
+        monsters.append(Monster_class.boo(800 * 2.5, 100 * 2.5))
+        monsters.append(Monster_class.boo(1180 * 2.5, 100 * 2.5))
+
+        monsters.append(Monster_class.Hammer_bros(1421 * 2.5, (14 + 12) * 2.5, -1, -221 * 2.5, 221 * 2.5))
 
         monsters.append(Monster_class.plant(990 * 2.5, (46 + 14) * 2.5))
         monsters.append(Monster_class.plant(2318 * 2.5, (46 + 14) * 2.5))
@@ -282,10 +282,10 @@ def mapcreate(map):
 
 
 
-        # Qblock.append(object_class.object(48 * 3, ground1 + 60 * 2, 101))
-        # Qblock.append(object_class.object(48 * 4, ground1 + 60 * 2, 102))
-        # Qblock.append(object_class.object(48 * 5, ground1 + 60 * 2, 103))
-        # Qblock.append(object_class.object(48 * 6, ground1 + 60 * 2, 104))
+        Qblock.append(object_class.object(48 * 3, ground1 + 60 * 2, 101))
+        Qblock.append(object_class.object(48 * 4, ground1 + 60 * 2, 102))
+        Qblock.append(object_class.object(48 * 5, ground1 + 60 * 2, 103))
+        Qblock.append(object_class.object(48 * 6, ground1 + 60 * 2, 104))
 
         Qblock.append(object_class.object(48 * 12, ground1 + 60 * 2, 101))
         Qblock.append(object_class.object(48 * 15, ground1 + 60 * 2, 100))

@@ -4,6 +4,7 @@ from object_variable import *
 import game_world
 from BehaviorTree import *
 import Main_state
+import random
 
 def contact_aAndb(a, b, p = 0):
     left_a, bottom_a, right_a, top_a = a.get_bb()
@@ -237,6 +238,9 @@ class Hammer_bros:
         self.minx = minx
         self.maxx = maxx
 
+        self.throw_sound = load_wav("hammer_thw.wav")
+        self.throw_sound.set_volume(128)
+
         self.build_behavior_tree()
         if Hammer_bros.image == None:
             Hammer_bros.image = load_image('Monster.png')
@@ -309,6 +313,7 @@ class Hammer_bros:
                 dx -= Main_state.get_mario().size[0]
             else:
                 dx += Main_state.get_mario().size[0]
+            self.throw_sound.play()
             ham = Hammer(self.x - self.movex, self.y, 305, self.dir, dx)
 
             game_world.add_object(ham, 1)

@@ -16,6 +16,7 @@ Num_image_black = None
 Num_image_white = None
 Timer = None
 mario = None
+itemimage = None
 
 def get_Timer():
     return Timer
@@ -31,6 +32,9 @@ def enter():
     global Num_image_black, Num_image_white
     global Timer
     global mario
+    global itemimage
+
+    itemimage = load_image('object.png')
 
     f = open("Stage.txt", 'r')
     line = f.readline()
@@ -128,7 +132,7 @@ def update():
 
 
 def draw():
-    global CHANGE_TIME; global CHANGE_image, mario, Num_image_black, Timer
+    global CHANGE_TIME; global CHANGE_image, mario, Num_image_black, Timer, itemimage
 
     clear_canvas()
     for game_object in game_world.all_objects():
@@ -157,6 +161,13 @@ def draw():
     if int(Timer % 10) == 9:Num_image_white.clip_composite_draw(24, 286 - 120, 64, 64, 0, '', 32 * 3 + 900, 600 - 32, 32, 32)
     else:Num_image_white.clip_composite_draw(24 + int(Timer % 10) * 110, 286, 64, 64, 0, '', 32 * 3 + 900, 600 - 32, 32, 32)
 
+
+    if mario.startimer > 0:
+        itemimage.clip_draw(40 * 3, 0, 40, 40, 200, 530, 64, 64)
+    elif mario.grow == 1:
+        itemimage.clip_draw(0, 0, 40, 40, 200, 530, 64, 64)
+    elif mario.grow == 2:
+        itemimage.clip_draw(40 * 2, 0, 40, 40, 200, 530, 64, 64)
 
 
     update_canvas()

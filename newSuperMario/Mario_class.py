@@ -1,3 +1,5 @@
+import random
+
 from pico2d import *
 
 import Main_state
@@ -640,7 +642,7 @@ class hero:
         self.velocity = 0
         self.collect = 0
         self.xspeed = 0
-        self.xMAX = 5000.0
+        self.xMAX = 500.0
         self.xa = 4.0
         self.frame = 0
         self.fs = 0
@@ -761,6 +763,13 @@ class hero:
                             self.bgm.pause()
                             self.star.play()
                             self.startimer = 10.0
+                        else: # 파란버섯
+                            self.eat_grow.play()
+                            DEL_TIME = 0
+                            temp2_grow = self.grow
+                            temp_grow = random.randint(0, 100) % 3
+
+
 
                         item.remove(eat)
                     game_world.remove_object(eat)
@@ -862,6 +871,9 @@ class hero:
                         if contact_aAndb(block, att) > 0:
                             block.die = True
                             block.timer = 1.0
+                if self.startimer > 0 and contact_aAndb(self, block) > 0:
+                    block.die = True
+                    block.timer = 1.0
 
                 if block.die == False:
                     if contact_aAndb(self, block) == 2:  # 위서 아래로

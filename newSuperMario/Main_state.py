@@ -46,7 +46,7 @@ def enter():
         game_framework.change_state(end_state)
     else:
 
-        map1_1 = map(data)
+        map1_1 = map(1)
 
         game_world.add_object(map1_1, 0)
         mapcreate(map1_1)
@@ -401,6 +401,48 @@ def mapcreate(map):
 
     elif map.stage == 1:
 
+        monsters.append(Monster_class.boo(800 * 2.5, 170 * 2.5))
+        monsters.append(Monster_class.boo(1200 * 2.5, 170 * 2.5))
+
+        monsters.append(Monster_class.boo(2400 * 2.5, 180 * 2.5))
+        monsters.append(Monster_class.boo(2600 * 2.5, 170 * 2.5))
+        monsters.append(Monster_class.boo(3000 * 2.5, 170 * 2.5))
+        monsters.append(Monster_class.boo(3200 * 2.5, 170 * 2.5))
+
+        monsters.append(Monster_class.Hammer_bros(1784 * 2.5, (138 + 12) * 2.5, -1, -24 * 2.5, 24 * 2.5))
+
+        Qblock.append(object_class.object(475 * 2.5, 90 * 2.5, 103))
+        Qblock.append(object_class.object(1630 * 2.5, 90 * 2.5, 104))
+
+        coin.append(object_class.object((200 * 2.5),80 * 2.5, 0))
+        coin.append(object_class.object(200 * 2.5 + 32, 80 * 2.5 + 32, 0))
+        coin.append(object_class.object(200 * 2.5 + 32 * 2, 80 * 2.5 + 32, 0))
+        coin.append(object_class.object(200 * 2.5 + 32 * 3, 80 * 2.5, 0))
+
+        coin.append(object_class.object((565 * 2.5), 80 * 2.5, 0))
+        coin.append(object_class.object(565 * 2.5 + 32, 80 * 2.5 + 32, 0))
+        coin.append(object_class.object(565 * 2.5 + 32 * 2, 80 * 2.5 + 32, 0))
+        coin.append(object_class.object(565 * 2.5 + 32 * 3, 80 * 2.5, 0))
+
+        coin.append(object_class.object((910 * 2.5), 100 * 2.5, 0))
+        coin.append(object_class.object(910 * 2.5 + 32, 100 * 2.5 + 32, 0))
+        coin.append(object_class.object(910 * 2.5 + 32 * 2, 100 * 2.5 + 32, 0))
+
+        coin.append(object_class.object((1500 * 2.5), 120 * 2.5, 0))
+        coin.append(object_class.object(1500 * 2.5 + 32, 120 * 2.5 + 32, 0))
+        coin.append(object_class.object(1500 * 2.5 + 32 * 2, 120 * 2.5 + 32, 0))
+        coin.append(object_class.object(1500 * 2.5 + 32 * 3, 120 * 2.5, 0))
+
+        coin.append(object_class.object((2500 * 2.5), 90 * 2.5, 0))
+        coin.append(object_class.object(2500 * 2.5 + 32, 90 * 2.5 + 32, 0))
+        coin.append(object_class.object(2500 * 2.5 + 32 * 2, 90 * 2.5 + 32, 0))
+        coin.append(object_class.object(2500 * 2.5 + 32 * 3, 90 * 2.5, 0))
+
+        coin.append(object_class.object(3500 * 2.5 + 32, 100 * 2.5 + 32, 0))
+        coin.append(object_class.object(3500 * 2.5 + 32 * 2, 100 * 2.5 + 32, 0))
+        coin.append(object_class.object(3500 * 2.5 + 32 * 3, 100 * 2.5, 0))
+
+
         grounds.append(object_class.Ground(0 * 2.5, 42 * 2.5, 94 * 2.5, 58 * 2.5))
         grounds.append(object_class.Ground(158 * 2.5, 26 * 2.5, 286 * 2.5, 42 * 2.5))
         grounds.append(object_class.Ground((336 - 2) * 2.5, (12 - 2) * 2.5, (560 - 2) * 2.5, (28 - 2) * 2.5))
@@ -449,7 +491,9 @@ def mapcreate(map):
         grounds.append(object_class.Ground((3616 - 2) * 2.5, (100 - 2) * 2.5, (3648 ) * 2.5, (124 - 2) * 2.5))
 
         grounds.append(object_class.Ground((3744 - 2) * 2.5, (84 - 2) * 2.5, (3872 ) * 2.5, (108 - 2) * 2.5))
+        grounds.append(object_class.Ground((3938 - 2) * 2.5, (2 - 2) * 2.5, (4221 - 2) * 2.5, (12 - 2) * 2.5))
 
+        grounds.append(object_class.Ground((3986 -2) * 2.5, 14 * 2.5, (3986 + 2) * 2.5, 174 * 2.5, 950)) # 깃발
 
     game_world.add_object(mario, 1)
     for i in grounds + coin + Qblock + brick + skbrick + Steelblock + item + monsters:

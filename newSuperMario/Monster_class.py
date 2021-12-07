@@ -85,7 +85,7 @@ class goomba:
         else:
             self.image.clip_draw(9 * 24, 1000 - 24, 24, 24, self.x, self.y, self.size[0], self.size[1])
 
-        draw_rectangle(*self.get_bb())
+
 
 
 
@@ -209,7 +209,7 @@ class boo:
                 self.image.clip_composite_draw(3 * 24, 1000 - 2 * 24, 24, 24, 0, 'h', self.x, self.y,
                                                self.size[0], self.size[1])
 
-        draw_rectangle(*self.get_bb())
+
 
     def get_bb(self):
         return self.x - 20, self.y - 20, self.x + 15, self.y + 15
@@ -284,7 +284,7 @@ class Hammer_bros:
                 else:
                     self.image.clip_composite_draw(int(self.frame) * 24, 1000 - 2 * 24 - 40, 24, 40, 0, 'h', self.x, self.y,
                                                self.size[0], self.size[1])
-        draw_rectangle(*self.get_bb())
+
 
     def find_and_see(self):
         distance = (Main_state.get_mario().x - self.x) ** 2 + (Main_state.get_mario().y - self.y) ** 2
@@ -449,7 +449,7 @@ class Hammer:
             self.image.clip_composite_draw(int(self.frame) * 16, 1000 - 2 * 24 - 112, 16, 16, 0, 'h', self.x,
                                            self.y,self.size[0], self.size[1])
 
-        draw_rectangle(*self.get_bb())
+
 
     def get_bb(self):
         if self.ability == 304 :
@@ -532,7 +532,7 @@ class plant:
         else:
             self.image.clip_draw(int(self.frame) * 28, 792 - 39 * int(self.framey), 28, 32, self.x, self.y, self.size[0], self.size[1])
 
-        draw_rectangle(*self.get_bb())
+
 
 
 

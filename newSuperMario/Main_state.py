@@ -46,7 +46,7 @@ def enter():
         game_framework.change_state(end_state)
     else:
 
-        map1_1 = map(1)
+        map1_1 = map(data)
 
         game_world.add_object(map1_1, 0)
         mapcreate(map1_1)
@@ -413,6 +413,10 @@ def mapcreate(map):
 
         Qblock.append(object_class.object(475 * 2.5, 90 * 2.5, 103))
         Qblock.append(object_class.object(1630 * 2.5, 90 * 2.5, 104))
+
+        brick.append(object_class.object(3710 * 2.5, 70 * 2.5, 2))
+        brick.append(object_class.object(3710 * 2.5 + 32, 70 * 2.5, 2))
+        brick.append(object_class.object(3710 * 2.5 + 32 * 2, 70 * 2.5, 2))
 
         coin.append(object_class.object((200 * 2.5),80 * 2.5, 0))
         coin.append(object_class.object(200 * 2.5 + 32, 80 * 2.5 + 32, 0))

@@ -583,12 +583,16 @@ class ClearState:
         hero.x += 300.0 * game_framework.frame_time
         hero.y += 300.0 * game_framework.frame_time
 
-        if hero.y >= 1000:
-            game_framework.change_state(Life_state)  # 다음 장면
+        if hero.y >= 2500:
             f = open("Stage.txt", 'r')
             line = f.readline()
             data = int(line)
             f.close()
+
+            if data == 0:
+                game_framework.change_state(Life_state)  # 다음 장면
+            else:
+                game_framework.change_state(end_state)  # 엔딩
 
             f = open("Stage.txt", 'w')
             data += 1
@@ -720,7 +724,7 @@ class hero:
 
     def draw(self):
         self.cur_state.draw(self)
-        draw_rectangle(*self.get_bb())
+
 
         # debug_print('Velocity :' + str(self.velocity) + '  Dir:' + str(self.dir))
 

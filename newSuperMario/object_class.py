@@ -109,7 +109,7 @@ class object:
             # 아이템 블럭 사용 후 블럭 (아무효과 X)
             self.image.clip_draw(8 * 24, 1000 - 24 * 2, 24, 24, self.x , self.y, self.size[0], self.size[1])
 
-        draw_rectangle(*self.get_bb())
+
 
     def get_bb(self):
         return self.x - 16, self.y - 24, self.x + 16, self.y + 6
@@ -219,7 +219,7 @@ class object_item:
         elif self.ability == 304:
             self.image.clip_draw(40 * int(self.frame), 40 * 5, 40, 40, self.x, self.y, self.size[0], self.size[1])
 
-        draw_rectangle(*self.get_bb())
+
 
     def get_bb(self):
         if self.ability == 304 :
@@ -297,7 +297,7 @@ class Ground:
         self.y = self.crey + self.movey
 
     def draw(self):
-        draw_rectangle(*self.get_bb())
+
         pass
 
     def get_bb(self):

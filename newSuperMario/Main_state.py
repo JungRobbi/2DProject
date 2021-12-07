@@ -12,6 +12,13 @@ name = "MainState"
 
 map1_1 = None
 stage = None
+Num_image_black = None
+Num_image_white = None
+Timer = None
+mario = None
+
+def get_Timer():
+    return Timer
 
 def get_mario():
     global mario
@@ -21,18 +28,36 @@ def enter():
     global map1_1
     global SET_BLOCK
     global CHANGE_TIME; global CHANGE_image; global CHANGE_INOUT
-    map1_1 = map(0)
+    global Num_image_black, Num_image_white
+    global Timer
 
-    game_world.add_object(map1_1, 0)
-    mapcreate(map1_1)
-    SET_BLOCK = grounds[0]
+    f = open("Stage.txt", 'r')
+    line = f.readline()
+    data = int(line)
+    f.close()
 
-    CHANGE_TIME = 1.0
-    CHANGE_image = load_image('change_effect_1.png')
-    CHANGE_INOUT = 'IN'
+    if data == 2:
+        game_framework.change_state(end_state)
+    else:
+
+        map1_1 = map(data)
+
+        game_world.add_object(map1_1, 0)
+        mapcreate(map1_1)
+        SET_BLOCK = grounds[0]
+
+        CHANGE_TIME = 1.0
+        CHANGE_image = load_image('change_effect_1.png')
+        CHANGE_INOUT = 'IN'
+
+        Num_image_black = load_image('font_Black.png')
+        Num_image_white = load_image('font_White.png')
+        Timer = 300
 
 def exit():
-    global grounds, coin, Qblock, brick, skbrick, Steelblock, item, monsters
+    global grounds, coin, Qblock, brick, skbrick, Steelblock, item, monsters, mario
+
+
 
 
     grounds.clear()
@@ -66,11 +91,19 @@ def handle_events():
 
 
 def update():
-    global CHANGE_TIME;  global CHANGE_INOUT
+    global CHANGE_TIME;  global CHANGE_INOUT, Timer
     if CHANGE_TIME >= 0:
         CHANGE_TIME -= game_framework.frame_time*2
 
     else:
+        if Timer > 0:
+            Timer -= game_framework.frame_time
+        elif Timer < 0:
+            mario.add_event(DIE)
+            mario.g = 1100.0
+            mario.JUMP = True
+            mario.frame = 0
+            Timer = 0
         mapmove(map1_1, mario)
         for game_object in game_world.all_objects():
             game_object.update()
@@ -82,8 +115,10 @@ def update():
 
 
 
+
+
 def draw():
-    global CHANGE_TIME; global CHANGE_image, mario
+    global CHANGE_TIME; global CHANGE_image, mario, Num_image_black, Timer
 
     clear_canvas()
     for game_object in game_world.all_objects():
@@ -97,6 +132,20 @@ def draw():
             CHANGE_image.clip_draw(0 + int(512 * CHANGE_TIME),0 + int(300 * CHANGE_TIME),1024 - 2 * int(512 * CHANGE_TIME), 600 - 2 * int(300 * CHANGE_TIME), 512, 300, 1024, 600)
             # out > in
 
+    if int(mario.score / 100) == 9:Num_image_black.clip_composite_draw(24, 286 - 120, 64, 64, 0, '', 32, 600 - 32, 32, 32)
+    else:Num_image_black.clip_composite_draw(24 + int(mario.score / 100) * 110, 286, 64, 64, 0, '', 32, 600 - 32, 32, 32)
+    if int(mario.score % 100 / 10) == 9:Num_image_black.clip_composite_draw(24, 286 - 120, 64, 64, 0, '', 32 * 2, 600 - 32, 32, 32)
+    else:Num_image_black.clip_composite_draw(24 + int(mario.score % 100 / 10) * 110, 286, 64, 64, 0, '', 32 * 2, 600 - 32, 32, 32)
+    if int(mario.score % 10) == 9:Num_image_black.clip_composite_draw(24, 286 - 120, 64, 64, 0, '', 32 * 3, 600 - 32, 32, 32)
+    else:Num_image_black.clip_composite_draw(24 + int(mario.score % 10) * 110, 286, 64, 64, 0, '', 32 * 3, 600 - 32, 32, 32)
+
+
+    if int(Timer / 100) == 9:Num_image_white.clip_composite_draw(24, 286 - 120, 64, 64, 0, '', 32 + 900, 600 - 32, 32, 32)
+    else:Num_image_white.clip_composite_draw(24 + int(Timer / 100) * 110, 286, 64, 64, 0, '', 32 + 900, 600 - 32, 32, 32)
+    if int(Timer % 100 / 10) == 9:Num_image_white.clip_composite_draw(24, 286 - 120, 64, 64, 0, '', 32 * 2 + 900, 600 - 32, 32, 32)
+    else:Num_image_white.clip_composite_draw(24 + int(Timer % 100 / 10) * 110, 286, 64, 64, 0, '', 32 * 2 + 900, 600 - 32, 32, 32)
+    if int(Timer % 10) == 9:Num_image_white.clip_composite_draw(24, 286 - 120, 64, 64, 0, '', 32 * 3 + 900, 600 - 32, 32, 32)
+    else:Num_image_white.clip_composite_draw(24 + int(Timer % 10) * 110, 286, 64, 64, 0, '', 32 * 3 + 900, 600 - 32, 32, 32)
 
 
 
@@ -195,7 +244,7 @@ def mapcreate(map):
         # monsters.append(Monster_class.boo(800 * 2.5, 100 * 2.5))
         # monsters.append(Monster_class.boo(1180 * 2.5, 100 * 2.5))
         #
-        # monsters.append(Monster_class.Hammer_bros(1421 * 2.5, (14 + 12) * 2.5, -1,-221 * 2.5, 221 * 2.5))
+        # monsters.append(Monster_class.Hammer_bros(1421 * 2.5, (14 + 12) * 2.5, -1, -221 * 2.5, 221 * 2.5))
 
         monsters.append(Monster_class.plant(990 * 2.5, (46 + 14) * 2.5))
         monsters.append(Monster_class.plant(2318 * 2.5, (46 + 14) * 2.5))

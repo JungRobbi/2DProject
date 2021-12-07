@@ -1,45 +1,28 @@
 import game_framework
-import Life_state
-from object_variable import *
 from pico2d import *
 
 
-name = "StartState"
+name = "EndState"
 image = None
 logo_time = 0.0
 
-ROUND = None
 LIFE = None
 
 def enter():
     global image
     image = load_image('Mario_credit.png')
 
-    f = open("Life.txt", 'w')
-    data = "3"
-    f.write(data)
-    f.close()
-
-    f = open("Stage.txt", 'w')
-    data = "0"
-    f.write(data)
-    f.close()
-
 def exit():
     global image
-    global ROUND, LIFE
-    ROUND = 0
-    LIFE = 5
-
     del(image)
 
 
 
 def update():
     global logo_time
-    if (logo_time > 1.0):
+    if (logo_time > 2.0):
         logo_time = 0
-        game_framework.change_state(Life_state)
+        game_framework.quit()
     logo_time += game_framework.frame_time
 
 def draw():

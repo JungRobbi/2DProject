@@ -1,4 +1,6 @@
 from pico2d import *
+
+import Main_state
 import game_framework
 from object_variable import *
 import game_world
@@ -6,6 +8,7 @@ import object_class
 
 import Life_state
 import Start_state
+import end_state
 
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP,\
@@ -505,7 +508,22 @@ class DieState:
                     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
                     FRAMES_PER_ACTION = 21
                     DEL_TIME = 1
-                    game_framework.change_state(Life_state)
+
+                    f = open("Life.txt", 'r')
+                    line = f.readline()
+                    data = int(line)
+                    f.close()
+
+                    if data == 0:
+                        game_framework.change_state(end_state)
+                    else:
+                        game_framework.change_state(Life_state)
+
+                    f = open("Life.txt", 'w')
+                    data -= 1
+                    f.write(str(data))
+                    f.close()
+
 
 
     def draw(hero):
@@ -524,7 +542,6 @@ class ClearState:
         pass
 
     def do(hero):
-        global ROUND
         hero.frame = (hero.frame + 10 * game_framework.frame_time)
 
         if hero.frame > 22:
@@ -534,9 +551,19 @@ class ClearState:
         hero.y += 300.0 * game_framework.frame_time
 
         if hero.y >= 1000:
-            global BOOL_CLEAR
             game_framework.change_state(Life_state)  # 다음 장면
-            BOOL_CLEAR = False
+            f = open("Stage.txt", 'r')
+            line = f.readline()
+            data = int(line)
+            f.close()
+
+            f = open("Stage.txt", 'w')
+            data += 1
+            f.write(str(data))
+            f.close()
+
+
+
 
     def draw(hero):
         hero.image.clip_composite_draw(int(hero.frame) * 32, 2000 - 10 * 40, 32, 40, 0, 'h', hero.x, hero.y,
@@ -555,7 +582,7 @@ DieState:{RIGHT_DOWN: DieState, LEFT_DOWN: DieState, RIGHT_UP: DieState, LEFT_UP
           STOP_RUN: IdleState, DIE: DieState, SPACE: DieState, CLEAR: ClearState},
 ClearState:{RIGHT_DOWN: ClearState, LEFT_DOWN: ClearState, RIGHT_UP: ClearState, LEFT_UP: ClearState,
           UP_DOWN: ClearState, UP_UP: ClearState, DOWN_DOWN: ClearState, DOWN_UP: ClearState,
-          STOP_RUN: ClearState, DIE: ClearState, SPACE: ClearState, CLEAR: ClearState}
+          STOP_RUN: IdleState, DIE: ClearState, SPACE: ClearState, CLEAR: ClearState}
 }
 
 class hero:
@@ -585,6 +612,7 @@ class hero:
         self.sit = 0
         self.SET_BLOCK = None
         self.IVtimer = 0.0
+        self.score = 0
 
         self.event_que = []
         self.cur_state = IdleState
@@ -633,11 +661,13 @@ class hero:
         global DEL_TIME
         global temp_grow, temp2_grow
         global BOOL_CLEAR
+
         if not BOOL_CLEAR and not self.cur_state == DieState:
             for eat in coin + item:  # 먹으면 사라지는 객체
                 if contact_aAndb(self, eat) > 0:
                     if eat.ability == 0:
                         coin.remove(eat)
+                        self.score += 1
                     elif eat.ability >= 300 and eat.ability <= 304:
                         if eat.ability == 300:  # 버섯
                             if self.grow < 1:
@@ -672,6 +702,7 @@ class hero:
                             t.movex = block.movex
                             t.movey = block.movey
                             game_world.add_object(t, 1)
+                            self.score += 1
 
                         if block.ability >= 101:
                             t = object_class.object_item(block.crex, block.crey + 25, 1299 + (block.ability % 100))
@@ -717,6 +748,7 @@ class hero:
                         game_world.add_object(t, 1)
 
                     if block.ability == 3:
+                        self.score += 1
                         t = object_class.debris(block.crex, block.crey + 24, 201)
                         t.movex = block.movex
                         t.movey = block.movey
